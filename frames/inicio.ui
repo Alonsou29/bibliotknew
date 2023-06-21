@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#frame
+{
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #220054, stop:0.5 #000232, stop:1 #000000);
+}
+
+#frame_2
+{
+background-color:#000034
+}
+
+QLabel{
+font-family: Aharoni;
+font-weight: bold;
+color: white;
+font-size: 36px;
+background: transparent;
+}
+
+#borde{
+background: transparent;
+font-size: 24px;
+border-top: 1px solid white;
+}
+
+
+#Descripcion{
+
+color: white;
+font-size: 22px;
+background: transparent;
+border: none;
+}
+
+
+
+
+</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QFrame" name="frame">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>801</width>
+      <height>591</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>40</y>
+       <width>501</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>BIENVENIDO A BIBLIOTEK!</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="borde">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>90</y>
+       <width>531</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QTextBrowser" name="Descripcion">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>150</y>
+       <width>421</width>
+       <height>361</height>
+      </rect>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:22px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Comic sans'; font-size:16pt;&quot;&gt;Bibliotek es una aplicación diseñada específicamente para gestionar y organizar las operaciones diarias de una biblioteca. Proporciona gestión de préstamos, búsqueda de libros, administración de usuarios y generación de informes. Permite a los bibliotecarios mantener un inventario actualizado, facilitar la consulta de libros por parte de los usuarios, y enviar recordatorios de devolución. En resumen, Bibliotek automatiza y agiliza los procesos de una biblioteca, mejorando la eficiencia y la experiencia del personal.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>120</y>
+       <width>331</width>
+       <height>511</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>imagen2.png</pixmap>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>30</y>
+       <width>101</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>../logo1.png</pixmap>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menuInicio">
+    <property name="title">
+     <string>Inicio</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuClientes">
+    <property name="title">
+     <string>Clientes </string>
+    </property>
+    <addaction name="actionRegistrosC"/>
+   </widget>
+   <widget class="QMenu" name="menuLibros">
+    <property name="title">
+     <string>Libros </string>
+    </property>
+    <addaction name="actionRegistrosL"/>
+   </widget>
+   <widget class="QMenu" name="menuPrestamos">
+    <property name="title">
+     <string>Préstamos</string>
+    </property>
+    <addaction name="actionRegistroP"/>
+    <addaction name="separator"/>
+    <addaction name="actionAgregar_5"/>
+    <addaction name="actionModificar_4"/>
+   </widget>
+   <widget class="QMenu" name="menuReportes">
+    <property name="title">
+     <string>Reportes   </string>
+    </property>
+    <addaction name="actionPrestamos"/>
+   </widget>
+   <widget class="QMenu" name="menuAyuda">
+    <property name="geometry">
+     <rect>
+      <x>946</x>
+      <y>215</y>
+      <width>159</width>
+      <height>94</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Ayuda   </string>
+    </property>
+    <addaction name="actionAcerca_de"/>
+    <addaction name="actionManual_de_Usuario"/>
+   </widget>
+   <widget class="QMenu" name="menuAutores">
+    <property name="title">
+     <string>Autores  </string>
+    </property>
+    <addaction name="actionRegistrosA"/>
+   </widget>
+   <widget class="QMenu" name="menuEstadisticas">
+    <property name="title">
+     <string>Estadisticas    </string>
+    </property>
+    <addaction name="actionRegistroE"/>
+    <addaction name="separator"/>
+    <addaction name="actionAgregar_6"/>
+    <addaction name="actionModificar_5"/>
+   </widget>
+   <widget class="QMenu" name="menuMantenimiento">
+    <property name="title">
+     <string>Mantenimiento  </string>
+    </property>
+    <addaction name="actionBackup"/>
+    <addaction name="actionRestore"/>
+   </widget>
+   <widget class="QMenu" name="menuUsuarios">
+    <property name="title">
+     <string>Usuarios</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuAdministraci_n">
+    <property name="title">
+     <string>Administración</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuSalir">
+    <property name="title">
+     <string>Salir</string>
+    </property>
+   </widget>
+   <addaction name="menuInicio"/>
+   <addaction name="menuUsuarios"/>
+   <addaction name="menuClientes"/>
+   <addaction name="menuLibros"/>
+   <addaction name="menuAutores"/>
+   <addaction name="menuPrestamos"/>
+   <addaction name="menuEstadisticas"/>
+   <addaction name="menuReportes"/>
+   <addaction name="menuMantenimiento"/>
+   <addaction name="menuAdministraci_n"/>
+   <addaction name="menuAyuda"/>
+   <addaction name="menuSalir"/>
+  </widget>
+  <action name="actionAgregar">
+   <property name="text">
+    <string>Agregar</string>
+   </property>
+  </action>
+  <action name="actionAgregar_2">
+   <property name="text">
+    <string>Agregar</string>
+   </property>
+  </action>
+  <action name="actionModificar">
+   <property name="text">
+    <string>Modificar</string>
+   </property>
+  </action>
+  <action name="actionAgregar_3">
+   <property name="text">
+    <string>Agregar</string>
+   </property>
+  </action>
+  <action name="actionModificar_2">
+   <property name="text">
+    <string>Modificar</string>
+   </property>
+  </action>
+  <action name="actionAgregar_4">
+   <property name="text">
+    <string>Agregar</string>
+   </property>
+  </action>
+  <action name="actionModificar_3">
+   <property name="text">
+    <string>Modificar</string>
+   </property>
+  </action>
+  <action name="actionAgregar_5">
+   <property name="text">
+    <string>Agregar</string>
+   </property>
+  </action>
+  <action name="actionModificar_4">
+   <property name="text">
+    <string>Modificar</string>
+   </property>
+  </action>
+  <action name="actionAgregar_6">
+   <property name="text">
+    <string>Agregar</string>
+   </property>
+  </action>
+  <action name="actionModificar_5">
+   <property name="text">
+    <string>Modificar</string>
+   </property>
+  </action>
+  <action name="actionPrestamos">
+   <property name="text">
+    <string>Préstamos</string>
+   </property>
+  </action>
+  <action name="actionBackup">
+   <property name="text">
+    <string>Backup</string>
+   </property>
+  </action>
+  <action name="actionRestore">
+   <property name="text">
+    <string>Restore</string>
+   </property>
+  </action>
+  <action name="actionAcerca_de">
+   <property name="text">
+    <string>Acerca de</string>
+   </property>
+  </action>
+  <action name="actionManual_de_Usuario">
+   <property name="text">
+    <string>Manual de Usuario</string>
+   </property>
+  </action>
+  <action name="actionRegistro">
+   <property name="text">
+    <string>Registro</string>
+   </property>
+  </action>
+  <action name="actionRegistro_2">
+   <property name="text">
+    <string>Registro</string>
+   </property>
+  </action>
+  <action name="actionRegistro_3">
+   <property name="text">
+    <string>Registro</string>
+   </property>
+  </action>
+  <action name="actionRegistroP">
+   <property name="text">
+    <string>Registro</string>
+   </property>
+  </action>
+  <action name="actionRegistroE">
+   <property name="text">
+    <string>Registro</string>
+   </property>
+  </action>
+  <action name="actionRegistrosC">
+   <property name="text">
+    <string>Registros</string>
+   </property>
+  </action>
+  <action name="actionRegistrosL">
+   <property name="text">
+    <string>Registros</string>
+   </property>
+  </action>
+  <action name="actionRegistrosA">
+   <property name="text">
+    <string>Registros</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
