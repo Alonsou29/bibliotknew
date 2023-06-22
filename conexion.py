@@ -1,18 +1,11 @@
 from ast import Global
-import MySQLdb
+import sqlite3
 
-def conec(consul,param=()):
-    try:
-        conec=MySQLdb.connect(host='localhost',user='root',password="",database='mydb')
-        print("conexion realizada")
+BDDbliotk='Bibliotkmdb.db'
 
-        cur=conec.cursor()
-
-        q1=cur.execute(consul,param)
-        resultado=cur.fetchall()
-        conec.commit()
-        conec.close()
-
-        return resultado
-    except Exception as xtr:
-        print(xtr)
+def consulta(Consul, parametros=()):
+    with sqlite3.connect(BDDbliotk) as cone:
+        cursor= cone.cursor()
+        resultado=cursor.execute(Consul,parametros)
+        cone.commit()
+    return resultado

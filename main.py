@@ -2,8 +2,10 @@ import typing
 from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QMessageBox
 from PyQt5 import QtCore, uic
 from panel import PanelControl
-from conexion import conec
+from conexion import consulta
+import sqlite3
 import re
+
 
 
 # Clase de la ventana principal
@@ -53,9 +55,9 @@ class MainWindow(QMainWindow):
 
     # Funciones para validar antes de pasar al panel
     def panelIr(self):
-        con = conec("Select * from clientes")
+        con = ("Select * from clientes")
         if self.stacked_widget.widget(1).TFUser.text()!='' and self.stacked_widget.widget(1).TFClave.text()!='':
-            if self.verificarUser() != False and self.verificarClave() != False:
+            if  self.verificarClave() != False:
                     self.panel = PanelControl()
                     self.panel.show()
                     self.hide()
@@ -75,33 +77,37 @@ class MainWindow(QMainWindow):
 
     def verificarUser(self): #Esta funcion verifica el usuario
         user=str(self.stacked_widget.widget(1).TFUser.text())#Asi se extrae los datos del texfield
-        usuario=conec("Select Nombre From empleados where username=%s",[user]) #asi se haran las consultas a la bdd
-        if usuario != ():
+        consulta2='Select Nombre From empleados where username= ?'
+        parametros=(user,)
+        row=consulta(consulta2,parametros).fetchall() #asi se haran las consultas a la bdd
+        print(row)
+        if row != []:
             print("Si esta en bdd")  #estos print indican si encontro a la persona en la bdd
             return True
         else:
             print("no esta en bdd") 
             return False
         
-    def verificarClave (self):  #Esta funcion verifica la clave del usuario
+    def verificarClave(self):  #Esta funcion verifica la clave del usuario
         user=str(self.stacked_widget.widget(1).TFUser.text())   
-        claveU=str(self.stacked_widget.widget(1).TFClave.text())
-        print(user)
-        Clave=conec("Select Clave From empleados where username=%s",[user]) #asi se haran las consultas a la bdd
-        print(claveU)
-        print(Clave)
+        claveU=str(self.stacked_widget.widget(1).TFClave.text(),)
+        #se hace la consulta a la bdd
+        consul="SELECT Clave FROM Empleados WHERE Username=?"
+        param=(user,)
+        Clave=consulta(consul,param).fetchone()
         #Esto elimina caracteres que da la bdd
-        Clave1=str(Clave[0])
+        Clave1=str(Clave)
         clave2=re.sub(",","",Clave1)
         clave3=re.sub("'","",clave2)
         clave4=re.sub("()","",clave3)
         Clavebd =re.sub("[()]","",clave4)
-        print(Clavebd)
         #verifica la clave xd
-        if user != () and claveU != ():
+        if user != [] and claveU != []:
             if claveU == Clavebd:
                 print("Si esta en bdd")  #estos print indican si encontro a la persona en la bdd
                 return True
+            else:
+                return False
         else:
             print("no esta en bdd") 
             return False 
