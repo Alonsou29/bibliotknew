@@ -1,3 +1,20 @@
 .class
-__pycache__
+__pycache__/
+
+*.py[cod]
+*$py.class
+
+#Entorno virtual
+.env
+.venv
+env/
+venv/
+ENV/
 envBibliotk/
+.envBibliotk/
+envBibliotk.bak/
+env.bak/
+venv.bak/
+
+
+

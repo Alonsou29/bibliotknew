@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
     # Constructor
     def __init__(self):
         super().__init__()
-
+        
         # Establece el titulo de la ventana
         self.setWindowTitle("Bibliotk")
 
@@ -55,7 +55,6 @@ class MainWindow(QMainWindow):
 
     # Funciones para validar antes de pasar al panel
     def panelIr(self):
-        con = ("Select * from clientes")
         if self.stacked_widget.widget(1).TFUser.text()!='' and self.stacked_widget.widget(1).TFClave.text()!='':
             if  self.verificarClave() != False:
                     self.panel = PanelControl()
