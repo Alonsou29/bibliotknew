@@ -29,16 +29,3 @@ class PanelControl(QMainWindow):
 
         # Agrega el frame al stacked widget
         self.stacked_widget.addWidget(frame)
-
-if __name__ == "__main__":
-    # Crea la app de Pyqt5
-    app = QApplication([])
-
-    # Crea la instancia de nuestra ventana
-    window = PanelControl()
-
-    # Muestra la ventana
-    window.show()
-
-    # Ejecuta la app
-    app.exec_()
