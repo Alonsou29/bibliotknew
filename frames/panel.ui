@@ -63,7 +63,7 @@ background-color: rgb(163, 3, 47); /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>8</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -198,7 +198,7 @@ p, li { white-space: pre-wrap; }
       </widget>
      </widget>
     </widget>
-    <widget class="QWidget" name="Usuarios">
+    <widget class="QWidget" name="Perfil">
      <widget class="QFrame" name="frame_6">
       <property name="enabled">
        <bool>true</bool>
@@ -1809,7 +1809,7 @@ background-color:#000034
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="Administracion">
+    <widget class="QWidget" name="Usuarios">
      <widget class="QFrame" name="frame_12">
       <property name="enabled">
        <bool>true</bool>
@@ -1884,13 +1884,13 @@ background-color:#000034
     <property name="title">
      <string>Inicio </string>
     </property>
+    <addaction name="actionMostrarI"/>
    </widget>
-   <widget class="QMenu" name="menuUsuarios">
+   <widget class="QMenu" name="menuPerfil">
     <property name="title">
-     <string>Usuarios </string>
+     <string>Perfil</string>
     </property>
-    <addaction name="separator"/>
-    <addaction name="actionRegistrosU"/>
+    <addaction name="actionMostrarP"/>
    </widget>
    <widget class="QMenu" name="menuClientes">
     <property name="title">
@@ -1914,6 +1914,7 @@ background-color:#000034
     <property name="title">
      <string>Préstamos </string>
     </property>
+    <addaction name="actionResgistrosP"/>
    </widget>
    <widget class="QMenu" name="menuEstadisticas">
     <property name="font">
@@ -1930,30 +1931,36 @@ background-color:#000034
     <property name="separatorsCollapsible">
      <bool>true</bool>
     </property>
+    <addaction name="actionMostrarE"/>
    </widget>
    <widget class="QMenu" name="menuReportes">
     <property name="title">
      <string>Reportes</string>
     </property>
+    <addaction name="actionMostrarR"/>
    </widget>
    <widget class="QMenu" name="menuMantenimiento">
     <property name="title">
      <string>Mantenimiento </string>
     </property>
+    <addaction name="actionRespaldar"/>
+    <addaction name="actionRestaurar"/>
    </widget>
-   <widget class="QMenu" name="menuAdministraci_n">
+   <widget class="QMenu" name="menuUsuarios">
     <property name="title">
-     <string>Administración</string>
+     <string>Usuarios</string>
     </property>
+    <addaction name="actionResgistrosU"/>
    </widget>
    <widget class="QMenu" name="menuAyuda">
     <property name="title">
      <string>Ayuda</string>
     </property>
     <addaction name="actionAcerca_de"/>
+    <addaction name="actionManual_de_Usuario"/>
    </widget>
    <addaction name="menuInicio"/>
-   <addaction name="menuUsuarios"/>
+   <addaction name="menuPerfil"/>
    <addaction name="menuClientes"/>
    <addaction name="menuLibros"/>
    <addaction name="menuAutores"/>
@@ -1961,7 +1968,7 @@ background-color:#000034
    <addaction name="menuEstadisticas"/>
    <addaction name="menuReportes"/>
    <addaction name="menuMantenimiento"/>
-   <addaction name="menuAdministraci_n"/>
+   <addaction name="menuUsuarios"/>
    <addaction name="menuAyuda"/>
   </widget>
   <action name="actionDf">
@@ -1974,9 +1981,9 @@ background-color:#000034
     <string>Acerca de</string>
    </property>
   </action>
-  <action name="actionRegistrosU">
+  <action name="actionMostrarP">
    <property name="text">
-    <string>Registros</string>
+    <string>Mostrar</string>
    </property>
   </action>
   <action name="actionRegistrosC">
@@ -1992,6 +1999,46 @@ background-color:#000034
   <action name="actionRegistrosA">
    <property name="text">
     <string>Registros</string>
+   </property>
+  </action>
+  <action name="actionMostrarI">
+   <property name="text">
+    <string>Mostrar</string>
+   </property>
+  </action>
+  <action name="actionResgistrosP">
+   <property name="text">
+    <string>Resgistros</string>
+   </property>
+  </action>
+  <action name="actionMostrarE">
+   <property name="text">
+    <string>Mostrar</string>
+   </property>
+  </action>
+  <action name="actionManual_de_Usuario">
+   <property name="text">
+    <string>Manual de Usuario</string>
+   </property>
+  </action>
+  <action name="actionRespaldar">
+   <property name="text">
+    <string>Respaldar datos</string>
+   </property>
+  </action>
+  <action name="actionRestaurar">
+   <property name="text">
+    <string>Restaurar datos</string>
+   </property>
+  </action>
+  <action name="actionResgistrosU">
+   <property name="text">
+    <string>Resgistros</string>
+   </property>
+  </action>
+  <action name="actionMostrarR">
+   <property name="text">
+    <string>Mostrar</string>
    </property>
   </action>
  </widget>

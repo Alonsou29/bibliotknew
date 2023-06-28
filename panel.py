@@ -6,26 +6,25 @@ import re
 
 class PanelControl(QMainWindow):
 
+    # Constructor del frame
     def __init__(self):
         super().__init__()
-        # Establece el titulo de la ventana
-        #uic.loadUi("frames\diseño.ui",self)
-        self.setWindowTitle("Bibliotk")
+        # Carga Panel de cotrol
+        self.panel = uic.loadUi("frames\panel.ui",self)
+
+        # Establece titulo de la ventana
+        self.panel.setWindowTitle("Bibliotk")
 
         # Establece el tamaño de la ventana y hace que no puedas cambiar su tamaño
-        self.setFixedSize(800, 600) # (Ancho, Alto)
+        self.panel.setFixedSize(800, 600) # (Ancho, Alto)
 
-        # Crea instancia de QStackedWidget
-        self.stacked_widget = QStackedWidget(self)
-        self.setCentralWidget(self.stacked_widget)
+        # Visualiza pantalla de inicio
+        self.panel.stackedWidget.setCurrentIndex(0)
 
-        # Crea y agrega frames al stacked widget
-        self.addFrame("frames\panel.ui")
+        # Opciones del menubar
+        self.panel.actionRegistrosC.triggered.connect(self.clientesIr)
         
-
-    def addFrame(self, ui_file):
-        # Carga el archivo ui para el frame
-        frame = uic.loadUi(ui_file)
-
-        # Agrega el frame al stacked widget
-        self.stacked_widget.addWidget(frame)
+    
+    # Funciones del menubar
+    def clientesIr(self):
+        self.panel.stackedWidget.setCurrentIndex(2)
