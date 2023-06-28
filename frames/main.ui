@@ -66,14 +66,14 @@ border-top: 1px solid white;
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>270</x>
        <y>210</y>
-       <width>301</width>
+       <width>261</width>
        <height>81</height>
       </rect>
      </property>
      <property name="text">
-      <string>Bibliotek</string>
+      <string>Bibliotk</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">

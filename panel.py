@@ -22,9 +22,34 @@ class PanelControl(QMainWindow):
         self.panel.stackedWidget.setCurrentIndex(0)
 
         # Opciones del menubar
+        self.panel.actionMostrarI.triggered.connect(self.inicioIrIr)
         self.panel.actionRegistrosC.triggered.connect(self.clientesIr)
-        
+
     
     # Funciones del menubar
+    def inicioIr(self):
+        self.panel.stackedWidget.setCurrentIndex(0)
+
+    def perfilIr(self):
+        self.panel.stackedWidget.setCurrentIndex(1)
+
     def clientesIr(self):
         self.panel.stackedWidget.setCurrentIndex(2)
+
+    def librosIr(self):
+        self.panel.stackedWidget.setCurrentIndex(3)
+
+    def autoresIr(self):
+        self.panel.stackedWidget.setCurrentIndex(4)
+
+    def prestamosIr(self):
+        self.panel.stackedWidget.setCurrentIndex(5)
+
+    def estadisticasIr(self):
+        self.panel.stackedWidget.setCurrentIndex(6)
+
+    def reportesIr(self):
+        self.panel.stackedWidget.setCurrentIndex(7)
+
+    def usuariosIr(self):
+        self.panel.stackedWidget.setCurrentIndex(9)
