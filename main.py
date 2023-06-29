@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, 
 from PyQt5 import QtCore, uic
 from panel import PanelControl
 from conexion import consulta
+import sys
 import sqlite3
 import re
 
@@ -33,6 +34,9 @@ class MainWindow(QMainWindow):
         self.stacked_widget.widget(0).Inicio.clicked.connect(self.loginIr)
 
         self.stacked_widget.widget(1).Seguir.clicked.connect(self.panelIr)
+
+        # Contador de veces que se escribio la clave de usuario incorrectamente
+        self.contClave = 0
     
 
     # Funcion para agregar los frames al stacked widget
@@ -61,7 +65,13 @@ class MainWindow(QMainWindow):
                     self.panel.show()
                     self.hide()
             else:
-                self.msjAvrt("Datos incorrectos", "Clave o usuario incorrecto")
+                self.contClave = self.contClave + 1
+
+                if self.contClave != 3:
+                    self.msjAvrt("Datos incorrectos", "Clave o usuario incorrecto")
+                else:
+                    self.msjAvrt("Datos incorrectos", "Acceso denegado. Por favor comuniquese con un administrador")
+                    sys.exit()
         else:
             self.msjAvrt("No hay datos", "por favor ingrese un dato para continuar")
 
