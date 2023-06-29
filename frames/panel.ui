@@ -63,7 +63,7 @@ background-color: rgb(163, 3, 47); /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>8</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -128,7 +128,7 @@ border: none;
         </rect>
        </property>
        <property name="text">
-        <string>BIENVENIDO A BIBLIOTEK!</string>
+        <string>BIENVENIDO A BIBLIOTK!</string>
        </property>
       </widget>
       <widget class="QLabel" name="borde">
@@ -161,7 +161,7 @@ border: none;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:22px; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Comic sans'; font-size:12pt;&quot;&gt;Bibliotek es una aplicación diseñada específicamente para gestionar y organizar las operaciones diarias de una biblioteca. Proporciona gestión de préstamos, búsqueda de libros, administración de usuarios y generación de informes. Permite a los bibliotecarios mantener un inventario actualizado, facilitar la consulta de libros por parte de los usuarios, y enviar recordatorios de devolución. En resumen, Bibliotek automatiza y agiliza los procesos de una biblioteca, mejorando la eficiencia y la experiencia del personal.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Comic sans'; font-size:12pt;&quot;&gt;Bibliotk es una aplicación diseñada específicamente para gestionar y organizar las operaciones diarias de una biblioteca. Proporciona gestión de préstamos, búsqueda de libros, administración de usuarios y generación de informes. Permite a los bibliotecarios mantener un inventario actualizado, facilitar la consulta de libros por parte de los usuarios, y enviar recordatorios de devolución. En resumen, Bibliotk automatiza y agiliza los procesos de una biblioteca, mejorando la eficiencia y la experiencia del personal.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_2">
@@ -1914,7 +1914,7 @@ background-color:#000034
     <property name="title">
      <string>Préstamos </string>
     </property>
-    <addaction name="actionResgistrosP"/>
+    <addaction name="actionRegistrosP"/>
    </widget>
    <widget class="QMenu" name="menuEstadisticas">
     <property name="font">
@@ -1950,7 +1950,7 @@ background-color:#000034
     <property name="title">
      <string>Usuarios</string>
     </property>
-    <addaction name="actionResgistrosU"/>
+    <addaction name="actionRegistrosU"/>
    </widget>
    <widget class="QMenu" name="menuAyuda">
     <property name="title">
@@ -2006,9 +2006,9 @@ background-color:#000034
     <string>Mostrar</string>
    </property>
   </action>
-  <action name="actionResgistrosP">
+  <action name="actionRegistrosP">
    <property name="text">
-    <string>Resgistros</string>
+    <string>Registros</string>
    </property>
   </action>
   <action name="actionMostrarE">
@@ -2031,9 +2031,9 @@ background-color:#000034
     <string>Restaurar datos</string>
    </property>
   </action>
-  <action name="actionResgistrosU">
+  <action name="actionRegistrosU">
    <property name="text">
-    <string>Resgistros</string>
+    <string>Registros</string>
    </property>
   </action>
   <action name="actionMostrarR">
