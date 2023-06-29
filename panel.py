@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import QMainWindow,QApplication,QMessageBox,QStackedWidget,
 from conexion import consulta
 import re
 import shutil
+import webbrowser
+import prestamo
 
 class PanelControl(QMainWindow):
 
@@ -91,4 +93,6 @@ class PanelControl(QMainWindow):
         msgAbout.exec()
 
     def abrirManual(self):
-        pass
+        # Abre el manual de usuario en una pestaña del navegador predeterminado
+        path = "manual_usuario.pdf"
+        webbrowser.open_new_tab(path)

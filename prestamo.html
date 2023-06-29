@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        h2 {
+            text-align: center;
+        }
+
+        .gris {
+            background-color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h2>BIBLIOTK</h2>
+    <h2><b>COMPROBANTE DE PRÉSTAMO EXTERNO</b></h2>
+    <hr>
+    <h3><b>Número de préstamo: </b>{{numpres}}</h3>
+    <h3><b>Identificación: </b>{{cedula}}</h3>
+    <h3><b>Nombre: </b>{{nombre}}</h3>
+
+    <h3 class="gris"><b>Datos del ejemplar</b></h3>
+
+    <p><b>Registro: </b>{{idlibro}}</p>
+    <p><b>Título: </b>{{titulo}}</p>
+    <p><b>Autor: </b>{{autor}}</p>
+
+    <h3 class="gris"><b>Datos de transación</b></h3>
+
+    <h3><b>Fecha Préstamo: </b>{{fechapres}}</h3>
+    <h3><b>Fecha Devolución: </b>{{fechadev}}</h3>
+
+    <h2 class="gris">GUARDELO PARA SU ARCHIVO</h2>
+</body>
+</html>
