@@ -101,7 +101,7 @@ class MainWindow(QMainWindow):
         user=str(self.stacked_widget.widget(1).TFUser.text())   
         claveU=str(self.stacked_widget.widget(1).TFClave.text(),)
         #se hace la consulta a la bdd
-        consul="SELECT Clave FROM Empleados WHERE Username=?"
+        consul="SELECT Clave FROM Usuarios WHERE Username=?"
         param=(user,)
         Clave=consulta(consul,param).fetchone()
         #Esto elimina caracteres que da la bdd
