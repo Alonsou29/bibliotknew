@@ -49,7 +49,7 @@ class PanelControl(QMainWindow):
 
     def clientesIr(self):
         self.panel.stackedWidget.setCurrentIndex(2)
-
+        
     def librosIr(self):
         self.panel.stackedWidget.setCurrentIndex(3)
 
