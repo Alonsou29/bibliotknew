@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
 
     def verificarUser(self): #Esta funcion verifica el usuario
         user=str(self.stacked_widget.widget(1).TFUser.text())#Asi se extrae los datos del texfield
-        consulta2='Select Nombre From empleados where username= ?'
+        consulta2='Select Nombre From Usuarios where username= ?'
         parametros=(user,)
         row=consulta(consulta2,parametros).fetchall() #asi se haran las consultas a la bdd
         print(row)
