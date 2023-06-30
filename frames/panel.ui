@@ -63,7 +63,7 @@ background-color: rgb(163, 3, 47); /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -150,8 +150,8 @@ border: none;
       <widget class="QTextBrowser" name="Descripcion">
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>210</y>
+         <x>190</x>
+         <y>100</y>
          <width>421</width>
          <height>401</height>
         </rect>
@@ -691,12 +691,7 @@ color: white;
        </property>
        <column>
         <property name="text">
-         <string>Nombre</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Apellido</string>
+         <string>IdClientes</string>
         </property>
        </column>
        <column>
@@ -706,7 +701,12 @@ color: white;
        </column>
        <column>
         <property name="text">
-         <string>Dirección</string>
+         <string>Nombre</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Apellido</string>
         </property>
        </column>
        <column>
@@ -721,7 +721,7 @@ color: white;
        </column>
        <column>
         <property name="text">
-         <string>Email</string>
+         <string>Estatus</string>
         </property>
        </column>
       </widget>
@@ -1304,11 +1304,6 @@ color: white;
          <string>Ejemplares</string>
         </property>
        </column>
-       <column>
-        <property name="text">
-         <string>Activo</string>
-        </property>
-       </column>
       </widget>
      </widget>
     </widget>
@@ -1572,17 +1567,17 @@ color: white;
        </attribute>
        <column>
         <property name="text">
+         <string>Id</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>Nombre</string>
         </property>
        </column>
        <column>
         <property name="text">
          <string>Apellido</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Activo</string>
         </property>
        </column>
       </widget>

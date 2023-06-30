@@ -1,7 +1,9 @@
 import sys
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog
+from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView)
+from PyQt5.QtSql import *
 from conexion import consulta
+from PyQt5.QtSql import *
 import re
 import shutil
 import webbrowser
@@ -39,6 +41,8 @@ class PanelControl(QMainWindow):
         self.panel.actionAcerca_de.triggered.connect(self.acercaDe) # Ayuda: Acerca de
         self.panel.actionManual_de_Usuario.triggered.connect(self.abrirManual) # Ayuda: Manual de usuario
 
+        self.panel.EliminarA.clicked.connect(lambda:self.eliminarFila())
+
     # Funciones del menubar
     def inicioIr(self):
         # Camabia la pantalla a la seleccionada
@@ -49,12 +53,106 @@ class PanelControl(QMainWindow):
 
     def clientesIr(self):
         self.panel.stackedWidget.setCurrentIndex(2)
+        self.datosClientes()
         
     def librosIr(self):
         self.panel.stackedWidget.setCurrentIndex(3)
+        self.datosLibros()
+   
 
+   #Muestra los datos de cliente
+    def datosClientes(self):
+        self.tabla=self.panel.tabla_Clientes
+        sql="SELECT idClientes,Cedula,Nombre,Apellido,Genero,FechaNa,EstatusCliente FROM Clientes"
+        res= consulta(sql).fetchall()
+        colum=len(res[0])
+        self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget = self.panel.tabla_Clientes
+        self.tableWidget.setRowCount(colum)
+        tablerow=0
+
+        for row in res:
+            self.id= row[0]
+            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+            tablerow+=1
+
+
+    #Muestra los datos de usuarios
+    def datosUsuarios(self):
+        self.tabla=self.panel.tabla_Clientes
+        sql2="SELECT idEmpleados,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios"
+        res= consulta(sql2).fetchall()
+        colum=len(res[0])
+        self.tableWidget.setRowCount(colum)
+        tablerow=0
+
+        for row in res:
+            self.id= row[0]
+            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+            tablerow+=1
+
+    #Muestra los datos de Autores
+    def datosAutores(self):
+        self.tabla=self.panel.tabla_Autores
+        sql2="SELECT idAutores,Nombre,Apellido FROM Autores"
+        res= consulta(sql2).fetchall()
+        print(res)
+        colum=len(res)
+        self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget = self.panel.tabla_Autores
+        self.tableWidget.setRowCount(colum)
+        tablerow=0
+
+        for row in res:
+            self.id= row[0]
+            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            tablerow+=1
+
+
+    #Muestra los datos de libros
+    def datosLibros(self):
+        self.tabla=self.panel.tabla_Libros
+        sql2="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Genero,Ejemplares FROM Libros"
+        res= consulta(sql2).fetchall()
+        colum=len(res[0])
+        self.tableWidget = self.panel.tabla_Libros
+        self.tableWidget.setRowCount(colum)
+        tablerow=0
+
+        for row in res:
+            self.id= row[0]
+            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+            tablerow+=1
+  
+    #Elimina las filas (aun no esta completo)
+    def eliminarFila(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        fila = (filaSeleccionada[0].row())+1
+
+            
     def autoresIr(self):
         self.panel.stackedWidget.setCurrentIndex(4)
+        self.datosAutores()
 
     def prestamosIr(self):
         self.panel.stackedWidget.setCurrentIndex(5)
@@ -82,6 +180,7 @@ class PanelControl(QMainWindow):
 
     def usuariosIr(self):
         self.panel.stackedWidget.setCurrentIndex(9)
+        self.datosUsuarios()
 
     def acercaDe(self):
         msgAbout = QMessageBox()
@@ -96,3 +195,16 @@ class PanelControl(QMainWindow):
         # Abre el manual de usuario en una pestaña del navegador predeterminado
         path = "manual_usuario.pdf"
         webbrowser.open_new_tab(path)
+
+if __name__ == "__main__":
+    # Crea la app de Pyqt5
+    app = QApplication([])
+
+    # Crea la instancia de nuestra ventana
+    window = PanelControl()
+
+    # Muestra la ventana
+    window.show()
+
+    # Ejecuta la app
+    app.exec_()

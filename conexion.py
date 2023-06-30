@@ -1,5 +1,7 @@
 from ast import Global
 import sqlite3
+from PyQt5.QtWidgets import QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem
+from PyQt5.QtSql import *
 
 BDDbliotk='Bibliotkmdb.db'
 
@@ -9,12 +11,3 @@ def consulta(Consul, parametros=()):
         resultado=cursor.execute(Consul,parametros)
         cone.commit()
     return resultado
-
-consul='SELECT Apellido2 FROM Clientes where idClientes=?'
-
-param=(1,)
-#print(consulta(consul).fetchall())
-
-print(consulta(consul,param).fetchone())
-print(consulta(consul,param).fetchmany())
-print(consulta(consul,param).fetchall())
