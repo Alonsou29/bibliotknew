@@ -7,7 +7,7 @@ from PyQt5.QtSql import *
 import re
 import shutil
 import webbrowser
-import prestamo
+
 
 class PanelControl(QMainWindow):
 
@@ -108,19 +108,33 @@ class PanelControl(QMainWindow):
         self.tabla=self.panel.tabla_Autores
         sql2="SELECT idAutores,Nombre,Apellido FROM Autores"
         res= consulta(sql2).fetchall()
-        print(res)
         colum=len(res)
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Autores
         self.tableWidget.setRowCount(colum)
         tablerow=0
-
-        for row in res:
-            self.id= row[0]
-            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-            tablerow+=1
+        sql3="SELECT Activo FROM Autores"
+        eliminar=consulta(sql3).fetchall()
+        count=0
+        for i in eliminar:
+            Verf=i
+            Eliminar1=str(Verf)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(i)
+            print(vddfi)
+            if vddfi!="ACTIVO":
+                self.tabla.setRowHidden(count, True)
+            else:
+                for row in res:
+                    self.id= row[0]
+                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                    tablerow+=1
+            count+=1
 
 
     #Muestra los datos de libros
@@ -144,12 +158,28 @@ class PanelControl(QMainWindow):
             self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
             tablerow+=1
   
-    #Elimina las filas (aun no esta completo)
+    #Elimina las filas 
     def eliminarFila(self):
         filaSeleccionada = self.tabla.selectedItems()
-        fila = (filaSeleccionada[0].row())+1
-
-            
+        
+        if filaSeleccionada:
+            ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Seguro que desea eliminar esta fila?" , QMessageBox.Yes | QMessageBox.No)
+            print(ret)
+            if ret!=16384:
+                fila = filaSeleccionada[0].text()
+                fila2 = filaSeleccionada[0].row()
+            else:
+                if filaSeleccionada:
+                        fila = filaSeleccionada[0].text()
+                        fila2 = filaSeleccionada[0].row()
+                        sql2="UPDATE Autores SET Activo = 'DESACTIVO' WHERE idAutores=?"
+                        param2=(fila,)
+                        consulta(sql2,param2)
+                        self.tabla.setRowHidden(fila2, True)
+                        self.tabla.clearSelection()
+        else:
+            QMessageBox.critical(self, "Eliminar fila", "Seleccione una fila.   ", QMessageBox.Ok)
+               
     def autoresIr(self):
         self.panel.stackedWidget.setCurrentIndex(4)
         self.datosAutores()
