@@ -270,8 +270,10 @@ class PanelControl(QMainWindow):
         rutadestino = QFileDialog.getOpenFileName(self, caption="Selecciona el archivo")
         
         # Inserte validaciones aqui xdxdxd
+        
+        # Hay que enviar un mensaje indicando que el programa se cerrara despues de seleccionar la bdd
         # Copia la bdd en la ruta destino
-        # shutil.copy2("Bibliotkmdb.db", rutadestino)
+        shutil.copy2(rutadestino, "Bibliotkmdb.db")
 
     def usuariosIr(self):
         self.panel.stackedWidget.setCurrentIndex(9)
