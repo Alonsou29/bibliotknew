@@ -3,6 +3,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView)
 from PyQt5.QtSql import *
 from conexion import consulta
+from BDDActions import Metodosbdd
 from PyQt5.QtSql import *
 import re
 import shutil
@@ -41,7 +42,19 @@ class PanelControl(QMainWindow):
         self.panel.actionAcerca_de.triggered.connect(self.acercaDe) # Ayuda: Acerca de
         self.panel.actionManual_de_Usuario.triggered.connect(self.abrirManual) # Ayuda: Manual de usuario
 
-        self.panel.EliminarA.clicked.connect(lambda:self.eliminarFila())
+        #FUNCIONES DE LOS BOTONES
+
+            #Eliminar Autores
+        EliminarAsql="UPDATE Autores SET Activo = 'INACTIVO' WHERE idAutores=?"
+        self.panel.EliminarA.clicked.connect(lambda:self.eliminarFila(EliminarAsql))
+
+            #Eliminar Libros
+        EliminarLsql="UPDATE Libros SET Activo = 'INACTIVO' WHERE ISBM=?"
+        self.panel.EliminarL.clicked.connect(lambda:self.eliminarFila(EliminarLsql))
+
+            #Eliminar Usuarios
+        EliminarUsql="UPDATE Clientes SET Activo = 'INACTIVO' WHERE idClientes=?"
+        self.panel.EliminarC.clicked.connect(lambda:self.eliminarFila(EliminarUsql))
 
     # Funciones del menubar
     def inicioIr(self):
@@ -69,39 +82,71 @@ class PanelControl(QMainWindow):
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Clientes
         self.tableWidget.setRowCount(colum)
+        sql3="SELECT Activo FROM Clientes"
+        eliminar=consulta(sql3).fetchall()
+        count=0
         tablerow=0
-
-        for row in res:
-            self.id= row[0]
-            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-            tablerow+=1
+        
+        for i in eliminar:
+            Verf=i
+            Eliminar1=str(Verf)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(i)
+            print(vddfi)
+            if vddfi!="ACTIVO":
+                self.tabla.setRowHidden(count, True)
+            else:
+                for row in res:
+                    self.id= row[0]
+                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                    self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                    tablerow+=1
+            count+=1
 
 
     #Muestra los datos de usuarios
-    def datosUsuarios(self):
+    ''' def datosUsuarios(self):
         self.tabla=self.panel.tabla_Clientes
         sql2="SELECT idEmpleados,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios"
         res= consulta(sql2).fetchall()
         colum=len(res[0])
         self.tableWidget.setRowCount(colum)
         tablerow=0
-
-        for row in res:
-            self.id= row[0]
-            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-            tablerow+=1
+        sql3="SELECT Activo FROM Usuarios"
+        eliminar=consulta(sql3).fetchall()
+        count=0
+        
+        for i in eliminar:
+            Verf=i
+            Eliminar1=str(Verf)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(i)
+            print(vddfi)
+            if vddfi!="ACTIVO":
+                self.tabla.setRowHidden(count, True)
+            else:
+                for row in res:
+                    self.id= row[0]
+                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                    self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                    tablerow+=1
+            count+=1'''
 
     #Muestra los datos de Autores
     def datosAutores(self):
@@ -116,6 +161,7 @@ class PanelControl(QMainWindow):
         sql3="SELECT Activo FROM Autores"
         eliminar=consulta(sql3).fetchall()
         count=0
+        
         for i in eliminar:
             Verf=i
             Eliminar1=str(Verf)
@@ -142,26 +188,42 @@ class PanelControl(QMainWindow):
         self.tabla=self.panel.tabla_Libros
         sql2="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Genero,Ejemplares FROM Libros"
         res= consulta(sql2).fetchall()
+        self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         colum=len(res[0])
+        sql3="SELECT Activo FROM Libros"
+        eliminar=consulta(sql3).fetchall()
         self.tableWidget = self.panel.tabla_Libros
         self.tableWidget.setRowCount(colum)
         tablerow=0
+        count=0
 
-        for row in res:
-            self.id= row[0]
-            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-            tablerow+=1
+        for i in eliminar:
+            Verf=i
+            Eliminar1=str(Verf)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(i)
+            print(vddfi)
+            for row in res:
+                if vddfi!="ACTIVO":
+                    self.tabla.setRowHidden(count, True)
+                else:
+                    self.id= row[0]
+                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                    self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                tablerow+=1
   
     #Elimina las filas 
-    def eliminarFila(self):
+    def eliminarFila(self,sql):
         filaSeleccionada = self.tabla.selectedItems()
-        
+
         if filaSeleccionada:
             ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Seguro que desea eliminar esta fila?" , QMessageBox.Yes | QMessageBox.No)
             print(ret)
@@ -172,13 +234,16 @@ class PanelControl(QMainWindow):
                 if filaSeleccionada:
                         fila = filaSeleccionada[0].text()
                         fila2 = filaSeleccionada[0].row()
-                        sql2="UPDATE Autores SET Activo = 'DESACTIVO' WHERE idAutores=?"
                         param2=(fila,)
-                        consulta(sql2,param2)
+                        consulta(sql,param2)
                         self.tabla.setRowHidden(fila2, True)
                         self.tabla.clearSelection()
         else:
             QMessageBox.critical(self, "Eliminar fila", "Seleccione una fila.   ", QMessageBox.Ok)
+
+    #def Modificar(self,sql):
+    
+
                
     def autoresIr(self):
         self.panel.stackedWidget.setCurrentIndex(4)
