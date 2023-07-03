@@ -56,6 +56,11 @@ class PanelControl(QMainWindow):
         EliminarUsql="UPDATE Clientes SET Activo = 'INACTIVO' WHERE idClientes=?"
         self.panel.EliminarC.clicked.connect(lambda:self.eliminarFila(EliminarUsql))
 
+            #Modifica Autores
+        sql=""
+        self.panel.tabla_Autores.clicked.connect(lambda:self.verdato())
+        self.panel.ModificarA.clicked.connect(lambda:self.Modificar(sql))
+
     # Funciones del menubar
     def inicioIr(self):
         # Camabia la pantalla a la seleccionada
@@ -114,7 +119,7 @@ class PanelControl(QMainWindow):
 
     #Muestra los datos de usuarios
     ''' def datosUsuarios(self):
-        self.tabla=self.panel.tabla_Clientes
+        self.tabla=self.panel.tabla_Usuarios
         sql2="SELECT idEmpleados,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios"
         res= consulta(sql2).fetchall()
         colum=len(res[0])
@@ -157,6 +162,7 @@ class PanelControl(QMainWindow):
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Autores
         self.tableWidget.setRowCount(colum)
+        filaSeleccionada = self.tabla.selectedItems()
         tablerow=0
         sql3="SELECT Activo FROM Autores"
         eliminar=consulta(sql3).fetchall()
@@ -179,8 +185,10 @@ class PanelControl(QMainWindow):
                     self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
                     self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
                     self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                    tablerow+=1
+                    tablerow+=1 
             count+=1
+
+
 
 
     #Muestra los datos de libros
@@ -219,6 +227,7 @@ class PanelControl(QMainWindow):
                     self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
                     self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
                 tablerow+=1
+        
   
     #Elimina las filas 
     def eliminarFila(self,sql):
@@ -241,13 +250,24 @@ class PanelControl(QMainWindow):
         else:
             QMessageBox.critical(self, "Eliminar fila", "Seleccione una fila.   ", QMessageBox.Ok)
 
-    #def Modificar(self,sql):
+    def verdato(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        self.panel.NombreA.setText(filaSeleccionada[1].text())
+        self.panel.ApellidoA.setText(filaSeleccionada[2].text())
+
+    def Modificar(self,sql):
+        filaSeleccionada = self.tabla.selectedItems()
+        filaSeleccionada[0].text()
+        Nombre=self.panel.NombreA.text()
+        apellido=self.panel.ApellidoA.text()
+        print(Nombre)
     
 
                
     def autoresIr(self):
         self.panel.stackedWidget.setCurrentIndex(4)
         self.datosAutores()
+
 
     def prestamosIr(self):
         self.panel.stackedWidget.setCurrentIndex(5)
