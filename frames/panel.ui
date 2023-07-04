@@ -796,7 +796,7 @@ border-radius: 5px;</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>280</y>
+         <y>240</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -832,7 +832,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>210</y>
+         <y>180</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -865,7 +865,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>590</x>
-         <y>350</y>
+         <y>310</y>
          <width>131</width>
          <height>22</height>
         </rect>
@@ -899,7 +899,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>140</y>
+         <y>130</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -931,7 +931,7 @@ color: white;
       <widget class="QPushButton" name="NuevoC">
        <property name="geometry">
         <rect>
-         <x>610</x>
+         <x>600</x>
          <y>470</y>
          <width>101</width>
          <height>31</height>
@@ -970,7 +970,7 @@ color: white;
         </rect>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed</set>
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
        <column>
         <property name="text">
@@ -979,7 +979,7 @@ color: white;
        </column>
        <column>
         <property name="text">
-         <string>Nombre</string>
+         <string>Estatus</string>
         </property>
        </column>
        <column>
@@ -1010,7 +1010,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>400</y>
+         <y>360</y>
          <width>201</width>
          <height>28</height>
         </rect>
@@ -1066,6 +1066,42 @@ color: white;
          <width>32</width>
          <height>32</height>
         </size>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_6">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>410</y>
+         <width>201</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">#placeholderText{
+color: white;
+}</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="maxLength">
+        <number>30</number>
+       </property>
+       <property name="placeholderText">
+        <string>Estatus</string>
+       </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -1268,8 +1304,8 @@ border-radius: 5px;</string>
       <widget class="QPushButton" name="EliminarL">
        <property name="geometry">
         <rect>
-         <x>550</x>
-         <y>530</y>
+         <x>540</x>
+         <y>520</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -1464,9 +1500,9 @@ color: white;
       <widget class="QPushButton" name="NuevoL">
        <property name="geometry">
         <rect>
-         <x>610</x>
-         <y>480</y>
-         <width>111</width>
+         <x>600</x>
+         <y>470</y>
+         <width>101</width>
          <height>31</height>
         </rect>
        </property>
@@ -1480,8 +1516,8 @@ color: white;
       <widget class="QPushButton" name="ModificarL">
        <property name="geometry">
         <rect>
-         <x>670</x>
-         <y>530</y>
+         <x>660</x>
+         <y>520</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -1575,7 +1611,7 @@ color: white;
         </rect>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed</set>
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>108</number>
@@ -1867,7 +1903,7 @@ border-radius: 5px;</string>
         <string>Modificar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="ApellidoA">
+      <widget class="QLineEdit" name="lineEdit_24">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1913,16 +1949,11 @@ color: white;
         </rect>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>249</number>
        </attribute>
-       <column>
-        <property name="text">
-         <string>ID</string>
-        </property>
-       </column>
        <column>
         <property name="text">
          <string>Nombre</string>
@@ -1934,7 +1965,7 @@ color: white;
         </property>
        </column>
       </widget>
-      <widget class="QLineEdit" name="NombreA">
+      <widget class="QLineEdit" name="lineEdit_25">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1973,7 +2004,7 @@ color: white;
       <widget class="QPushButton" name="NuevoA">
        <property name="geometry">
         <rect>
-         <x>610</x>
+         <x>600</x>
          <y>470</y>
          <width>101</width>
          <height>31</height>
@@ -2210,6 +2241,9 @@ border: 1px solid white ;</string>
           <height>31</height>
          </rect>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="text">
          <string>Buscar</string>
         </property>
@@ -2270,8 +2304,8 @@ border-radius: 5px;</string>
       <widget class="QPushButton" name="EliminarP">
        <property name="geometry">
         <rect>
-         <x>550</x>
-         <y>530</y>
+         <x>540</x>
+         <y>520</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -2430,9 +2464,9 @@ color: white;
       <widget class="QPushButton" name="NuevoP">
        <property name="geometry">
         <rect>
-         <x>610</x>
-         <y>480</y>
-         <width>111</width>
+         <x>600</x>
+         <y>470</y>
+         <width>101</width>
          <height>31</height>
         </rect>
        </property>
@@ -2446,8 +2480,8 @@ color: white;
       <widget class="QPushButton" name="ModificarP">
        <property name="geometry">
         <rect>
-         <x>670</x>
-         <y>530</y>
+         <x>660</x>
+         <y>520</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -2505,7 +2539,7 @@ color: white;
         </rect>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed</set>
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>108</number>
@@ -3495,11 +3529,6 @@ border-radius: 5px;</string>
        <attribute name="horizontalHeaderMinimumSectionSize">
         <number>39</number>
        </attribute>
-       <column>
-        <property name="text">
-         <string>ID</string>
-        </property>
-       </column>
        <column>
         <property name="text">
          <string>Nombre</string>
