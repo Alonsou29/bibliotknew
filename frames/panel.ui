@@ -63,7 +63,7 @@ background-color: #4b0081; /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -997,6 +997,11 @@ color: white;
          <string>Fecha de N.</string>
         </property>
        </column>
+       <column>
+        <property name="text">
+         <string>Estatus</string>
+        </property>
+       </column>
       </widget>
       <widget class="QLineEdit" name="lineEdit_4">
        <property name="enabled">
@@ -1862,7 +1867,7 @@ border-radius: 5px;</string>
         <string>Modificar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_24">
+      <widget class="QLineEdit" name="ApellidoA">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1915,6 +1920,11 @@ color: white;
        </attribute>
        <column>
         <property name="text">
+         <string>ID</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>Nombre</string>
         </property>
        </column>
@@ -1924,7 +1934,7 @@ color: white;
         </property>
        </column>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_25">
+      <widget class="QLineEdit" name="NombreA">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -3485,6 +3495,11 @@ border-radius: 5px;</string>
        <attribute name="horizontalHeaderMinimumSectionSize">
         <number>39</number>
        </attribute>
+       <column>
+        <property name="text">
+         <string>ID</string>
+        </property>
+       </column>
        <column>
         <property name="text">
          <string>Nombre</string>

@@ -33,12 +33,12 @@ class PanelControl(QMainWindow):
         self.panel.actionRegistrosC.triggered.connect(self.clientesIr) # Clientes
         self.panel.actionRegistrosL.triggered.connect(self.librosIr) # Libros
         self.panel.actionRegistrosA.triggered.connect(self.autoresIr) # Autores
-        self.panel.actionRegistrosP.triggered.connect(self.prestamosIr) # Prestamos
+        self.panel.actionResgistrosP.triggered.connect(self.prestamosIr) # Prestamos
         self.panel.actionMostrarE.triggered.connect(self.estadisticasIr) # Estadisticas
         self.panel.actionMostrarR.triggered.connect(self.reportesIr) # Reportes
         self.panel.actionRespaldar.triggered.connect(self.respaldarBDD) # Mantenimiento: Respaldar BDD
         self.panel.actionRestaurar.triggered.connect(self.restaurarBDD) # Mantenimiento: Restaurar BDD
-        self.panel.actionRegistrosU.triggered.connect(self.usuariosIr) # Usuarios
+        self.panel.actionResgistrosU.triggered.connect(self.usuariosIr) # Usuarios
         self.panel.actionAcerca_de.triggered.connect(self.acercaDe) # Ayuda: Acerca de
         self.panel.actionManual_de_Usuario.triggered.connect(self.abrirManual) # Ayuda: Manual de usuario
 
@@ -57,9 +57,8 @@ class PanelControl(QMainWindow):
         self.panel.EliminarC.clicked.connect(lambda:self.eliminarFila(EliminarUsql))
 
             #Modifica Autores
-        sql=""
-        self.panel.tabla_Autores.clicked.connect(lambda:self.verdato())
-        self.panel.ModificarA.clicked.connect(lambda:self.Modificar(sql))
+        self.panel.tabla_Autores.clicked.connect(lambda:self.verdatoAutores())
+        self.panel.ModificarA.clicked.connect(lambda:self.ModificarAutores())
 
     # Funciones del menubar
     def inicioIr(self):
@@ -81,7 +80,7 @@ class PanelControl(QMainWindow):
    #Muestra los datos de cliente
     def datosClientes(self):
         self.tabla=self.panel.tabla_Clientes
-        sql="SELECT idClientes,Cedula,Nombre,Apellido,Genero,FechaNa,EstatusCliente FROM Clientes"
+        sql="SELECT Cedula,Nombre,Apellido,Genero,FechaNa,EstatusCliente FROM Clientes"
         res= consulta(sql).fetchall()
         colum=len(res[0])
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -112,23 +111,22 @@ class PanelControl(QMainWindow):
                     self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
                     self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
                     self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
                     tablerow+=1
             count+=1
 
-
     #Muestra los datos de usuarios
-    ''' def datosUsuarios(self):
+    def datosUsuarios(self):
         self.tabla=self.panel.tabla_Usuarios
-        sql2="SELECT idEmpleados,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios"
+        sql2="SELECT idUsuario,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios"
         res= consulta(sql2).fetchall()
         colum=len(res[0])
+        self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget = self.panel.tabla_Usuarios
         self.tableWidget.setRowCount(colum)
-        tablerow=0
         sql3="SELECT Activo FROM Usuarios"
-        eliminar=consulta(sql3).fetchall()
+        eliminar=consulta(sql3).fetchone()
         count=0
-        
+        tablerow=0
         for i in eliminar:
             Verf=i
             Eliminar1=str(Verf)
@@ -151,7 +149,7 @@ class PanelControl(QMainWindow):
                     self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
                     self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
                     tablerow+=1
-            count+=1'''
+            count+=1
 
     #Muestra los datos de Autores
     def datosAutores(self):
@@ -162,7 +160,6 @@ class PanelControl(QMainWindow):
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Autores
         self.tableWidget.setRowCount(colum)
-        filaSeleccionada = self.tabla.selectedItems()
         tablerow=0
         sql3="SELECT Activo FROM Autores"
         eliminar=consulta(sql3).fetchall()
@@ -175,8 +172,7 @@ class PanelControl(QMainWindow):
             Eliminar3=re.sub("'","",Eliminar2)
             Eliminar4=re.sub("()","",Eliminar3)
             vddfi =re.sub("[()]","",Eliminar4)
-            print(i)
-            print(vddfi)
+
             if vddfi!="ACTIVO":
                 self.tabla.setRowHidden(count, True)
             else:
@@ -187,9 +183,6 @@ class PanelControl(QMainWindow):
                     self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
                     tablerow+=1 
             count+=1
-
-
-
 
     #Muestra los datos de libros
     def datosLibros(self):
@@ -226,9 +219,9 @@ class PanelControl(QMainWindow):
                     self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
                     self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
                     self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-                tablerow+=1
-        
-  
+                    tablerow+=1
+                count+=1
+                
     #Elimina las filas 
     def eliminarFila(self,sql):
         filaSeleccionada = self.tabla.selectedItems()
@@ -250,17 +243,41 @@ class PanelControl(QMainWindow):
         else:
             QMessageBox.critical(self, "Eliminar fila", "Seleccione una fila.   ", QMessageBox.Ok)
 
-    def verdato(self):
+    def verdatoAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
         self.panel.NombreA.setText(filaSeleccionada[1].text())
         self.panel.ApellidoA.setText(filaSeleccionada[2].text())
-
-    def Modificar(self,sql):
+        
+    def ModificarAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
-        filaSeleccionada[0].text()
+        sql="SELECT Nombre,Apellido FROM Autores WHERE idAutores=?"
+        fila=filaSeleccionada[0].text()
+        dato=consulta(sql,fila).fetchone()
         Nombre=self.panel.NombreA.text()
         apellido=self.panel.ApellidoA.text()
-        print(Nombre)
+        Eliminar1=str(dato)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        vddfi =re.sub("[()]","",Eliminar4)
+            
+        if filaSeleccionada:
+            if Nombre.isalpha() and apellido.isalpha():
+                if vddfi!=Nombre+" "+apellido:
+                    ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
+                    if ret!=16384:
+                        fila = filaSeleccionada[0].text()
+                        fila2 = filaSeleccionada[0].row()
+                    else:
+                        sql="UPDATE Autores SET Nombre=?,Apellido=? WHERE idAutores=?"
+                        param=(Nombre,apellido,fila,)
+                        consulta(sql,param)
+                        self.datosAutores()
+                else:
+                    QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
+            else:
+                QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+
     
 
                
