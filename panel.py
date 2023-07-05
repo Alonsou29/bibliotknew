@@ -3,7 +3,6 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView)
 from PyQt5.QtSql import *
 from conexion import consulta
-from BDDActions import Metodosbdd
 from PyQt5.QtSql import *
 import re
 import shutil

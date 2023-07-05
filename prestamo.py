@@ -20,7 +20,7 @@ def generarPrestamo(numpres, cedula, nombre, idlibro, titulo, autor, fechapres, 
     # Carga la plantilla HTML
     templateLoader = jinja2.FileSystemLoader("./")
     templateEnv = jinja2.Environment(loader=templateLoader)
-    template = templateEnv.get_template("prestamo.html")
+    template = templateEnv.get_template("reportes/prestamo.html")
 
     # Reemplaza las {{variables}} usando el diccionario
     outpuText = template.render(context)
@@ -36,4 +36,4 @@ def generarPrestamo(numpres, cedula, nombre, idlibro, titulo, autor, fechapres, 
     pdfkit.from_string(outpuText, outputPDF, configuration=config)
 
 # Prueba de ejemplo
-# generarPrestamo("5234523", "123412", "Mariana Duqeu", "12345125", "librrrro", "alonsou", "12/123/12341", "1234/2345/23")
+generarPrestamo("5234523", "123412", "Mariana Duqeu", "12345125", "librrrro", "alonsou", "12/123/12341", "1234/2345/23")
