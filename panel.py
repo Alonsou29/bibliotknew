@@ -3,7 +3,6 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView)
 from PyQt5.QtSql import *
 from conexion import consulta
-from BDDActions import Metodosbdd
 from PyQt5.QtSql import *
 import re
 import shutil
@@ -51,14 +50,19 @@ class PanelControl(QMainWindow):
             #Eliminar Libros
         EliminarLsql="UPDATE Libros SET Activo = 'INACTIVO' WHERE ISBM=?"
         self.panel.EliminarL.clicked.connect(lambda:self.eliminarFila(EliminarLsql))
+        self.panel.RefrescarL.clicked.connect(lambda:self.datosLibros())
 
-            #Eliminar Usuarios
+            #Eliminar Clientes
         EliminarUsql="UPDATE Clientes SET Activo = 'INACTIVO' WHERE idClientes=?"
         self.panel.EliminarC.clicked.connect(lambda:self.eliminarFila(EliminarUsql))
 
             #Modifica Autores
         self.panel.tabla_Autores.clicked.connect(lambda:self.verdatoAutores())
         self.panel.ModificarA.clicked.connect(lambda:self.ModificarAutores())
+
+            #Modificar Libros
+        self.panel.tabla_Libros.clicked.connect(lambda:self.verdatoLibros())
+        self.panel.ModificarL.clicked.connect(lambda:self.ModificarLibros())
 
     # Funciones del menubar
     def inicioIr(self):
@@ -245,9 +249,21 @@ class PanelControl(QMainWindow):
 
     def verdatoAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
-        self.panel.NombreA.setText(filaSeleccionada[1].text())
-        self.panel.ApellidoA.setText(filaSeleccionada[2].text())
-        
+        if filaSeleccionada:
+            self.panel.NombreA.setText(filaSeleccionada[1].text())
+            self.panel.ApellidoA.setText(filaSeleccionada[2].text())
+
+    def verdatoLibros(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            self.panel.ISBML.setText(filaSeleccionada[0].text())
+            self.panel.TituloL.setText(filaSeleccionada[1].text())
+            self.panel.FechaPL.setText(filaSeleccionada[2].text())
+            self.panel.NroPags.setText(filaSeleccionada[3].text())
+            self.panel.EditorialL.setText(filaSeleccionada[4].text())
+            self.panel.EjemplaresL.setText(filaSeleccionada[6].text())
+            self.panel.GeneroL.setText(filaSeleccionada[5].text())
+    
     def ModificarAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
         sql="SELECT Nombre,Apellido FROM Autores WHERE idAutores=?"
@@ -260,7 +276,7 @@ class PanelControl(QMainWindow):
         Eliminar3=re.sub("'","",Eliminar2)
         Eliminar4=re.sub("()","",Eliminar3)
         vddfi =re.sub("[()]","",Eliminar4)
-            
+        print(vddfi)
         if filaSeleccionada:
             if Nombre.isalpha() and apellido.isalpha():
                 if vddfi!=Nombre+" "+apellido:
@@ -279,7 +295,40 @@ class PanelControl(QMainWindow):
                 QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
 
     
+    def ModificarLibros(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        sql="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Ejemplares,Genero FROM Libros WHERE ISBM=?"
+        fila=(filaSeleccionada[0].text(),)
+        dato=consulta(sql,fila).fetchone()
+        print(dato)
+        ISBMn=self.panel.ISBML.text()
+        Titulo=self.panel.TituloL.text()
+        FechaP=self.panel.FechaPL.text()
+        Nropags=self.panel.NroPags.text()
+        Editorial=self.panel.EditorialL.text()
+        Ejemplares=self.panel.EjemplaresL.text()
+        Genero=self.panel.GeneroL.text()
+        Eliminar1=str(dato)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        vddfi =re.sub("[()]","",Eliminar4)
+        print(vddfi)
 
+        if filaSeleccionada:
+            if Editorial.isalpha() and Genero.isalpha():
+                if vddfi!= ISBMn+" "+Titulo+" "+FechaP+" "+Nropags+" "+Editorial+" "+Ejemplares+" "+Genero:
+                    ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
+                    if ret!=16384:
+                        fila = filaSeleccionada[0].text()
+                    else:
+                        sql="UPDATE Libros SET Editorial=?,Genero=? WHERE ISBM=?"
+                        param=(Editorial,Genero,ISBMn)
+                        consulta(sql,param)
+                else:
+                    QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
+            else:
+                QMessageBox.question(self, '¡Aviso!' , "Campos mal escritos" , QMessageBox.Ok)
                
     def autoresIr(self):
         self.panel.stackedWidget.setCurrentIndex(4)
