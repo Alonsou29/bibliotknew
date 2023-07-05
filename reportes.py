@@ -30,8 +30,10 @@ def generarReporteEst(ruta, fecha, users, clientes, libros, prestamos, librosPre
     # Indica el nombre que tendrá el archivo pdf
     outputPDF = ruta + "Estadísticas" + fecha + ".pdf"
 
+    options = {'enable-local-file-access': None}
+
     # Crea el pdf a partir del archivo html
-    pdfkit.from_string(outpuText, outputPDF, configuration=config)
+    pdfkit.from_string(outpuText, outputPDF, configuration=config, options=options)
 
 
 # Crea un png del grafico de barras
