@@ -7,6 +7,8 @@ from PyQt5.QtSql import *
 import re
 import shutil
 import webbrowser
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib.pyplot as plt
 
 
 class PanelControl(QMainWindow):
@@ -58,6 +60,10 @@ class PanelControl(QMainWindow):
             #Modifica Autores
         self.panel.tabla_Autores.clicked.connect(lambda:self.verdatoAutores())
         self.panel.ModificarA.clicked.connect(lambda:self.ModificarAutores())
+
+            # Generar Reportes
+        self.panel.Generar_Reportes_E.clicked.connect(self.generarReporteEst()) # Estadisticas
+        self.panel.Generar_Reportes_P.clicked.connect(self.generarReportePres()) # Prestamos
 
     # Funciones del menubar
     def inicioIr(self):
