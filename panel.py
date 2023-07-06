@@ -7,8 +7,8 @@ from PyQt5.QtSql import *
 import re
 import shutil
 import webbrowser
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import matplotlib.pyplot as plt
+#from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+#import matplotlib.pyplot as plt
 
 
 class PanelControl(QMainWindow):
@@ -48,6 +48,7 @@ class PanelControl(QMainWindow):
             #Eliminar Autores
         EliminarAsql="UPDATE Autores SET Activo = 'INACTIVO' WHERE idAutores=?"
         self.panel.EliminarA.clicked.connect(lambda:self.eliminarFila(EliminarAsql))
+        self.panel.RefrescarA.clicked.connect(lambda:self.datosAutores())
 
             #Eliminar Libros
         EliminarLsql="UPDATE Libros SET Activo = 'INACTIVO' WHERE ISBM=?"
@@ -65,6 +66,9 @@ class PanelControl(QMainWindow):
             #Modificar Libros
         self.panel.tabla_Libros.clicked.connect(lambda:self.verdatoLibros())
         self.panel.ModificarL.clicked.connect(lambda:self.ModificarLibros())
+
+            #Modificar Clientes
+        self.panel.tabla_Clientes.clicked.connect(lambda:self.verdatoClientes())
             # Generar Reportes
         # self.panel.Generar_Reportes_E.clicked.connect(self.generarReporteEst()) # Estadisticas
         # self.panel.Generar_Reportes_P.clicked.connect(self.generarReportePres()) # Prestamos
@@ -264,11 +268,20 @@ class PanelControl(QMainWindow):
             self.panel.ISBML.setText(filaSeleccionada[0].text())
             self.panel.TituloL.setText(filaSeleccionada[1].text())
             self.panel.FechaPL.setText(filaSeleccionada[2].text())
-            self.panel.NroPags.setText(filaSeleccionada[3].text())
+            self.panel.Nropags.setText(filaSeleccionada[3].text())
             self.panel.EditorialL.setText(filaSeleccionada[4].text())
             self.panel.EjemplaresL.setText(filaSeleccionada[6].text())
             self.panel.GeneroL.setText(filaSeleccionada[5].text())
-    
+
+    def verdatoClientes(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            self.panel.CedulaC.setText(filaSeleccionada[0].text())
+            self.panel.NombreC.setText(filaSeleccionada[1].text())
+            self.panel.ApellidoC.setText(filaSeleccionada[2].text())
+            self.panel.FechaC.setText(filaSeleccionada[4].text())
+            self.panel.CoboGC.setCurrentIndex(2)
+ 
     def ModificarAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
         sql="SELECT Nombre,Apellido FROM Autores WHERE idAutores=?"
@@ -309,7 +322,7 @@ class PanelControl(QMainWindow):
         ISBMn=self.panel.ISBML.text()
         Titulo=self.panel.TituloL.text()
         FechaP=self.panel.FechaPL.text()
-        Nropags=self.panel.NroPags.text()
+        Nropags=self.panel.Nropags.text()
         Editorial=self.panel.EditorialL.text()
         Ejemplares=self.panel.EjemplaresL.text()
         Genero=self.panel.GeneroL.text()
@@ -319,21 +332,27 @@ class PanelControl(QMainWindow):
         Eliminar4=re.sub("()","",Eliminar3)
         vddfi =re.sub("[()]","",Eliminar4)
         print(vddfi)
+        print(dato[0])
 
         if filaSeleccionada:
-            if Editorial.isalpha() and Genero.isalpha():
-                if vddfi!= ISBMn+" "+Titulo+" "+FechaP+" "+Nropags+" "+Editorial+" "+Ejemplares+" "+Genero:
-                    ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
-                    if ret!=16384:
-                        fila = filaSeleccionada[0].text()
+            if ISBMn==dato[0]:
+                if Editorial.isalpha() and Genero.isalpha() and Ejemplares.isnumeric() and Nropags.isnumeric():
+                    if vddfi!= ISBMn+" "+Titulo+" "+FechaP+" "+Nropags+" "+Editorial+" "+Ejemplares+" "+Genero:
+                        ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
+                        if ret!=16384:
+                            fila = filaSeleccionada[0].text()
+                        else:
+                            sql="UPDATE Libros SET Titulo=?,F_Publicacion=?,num_pags=?,Editorial=?,Ejemplares=?,Genero=? WHERE ISBM=?"
+                            param=(Titulo,FechaP,Nropags,Editorial,Ejemplares,Genero,ISBMn)
+                            consulta(sql,param)
+                            self.datosLibros()
                     else:
-                        sql="UPDATE Libros SET Editorial=?,Genero=? WHERE ISBM=?"
-                        param=(Editorial,Genero,ISBMn)
-                        consulta(sql,param)
+                        QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
                 else:
-                    QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
+                    QMessageBox.question(self, '¡Aviso!' , "Campos mal escritos" , QMessageBox.Ok)
             else:
-                QMessageBox.question(self, '¡Aviso!' , "Campos mal escritos" , QMessageBox.Ok)
+                QMessageBox.question(self, '¡Aviso!' , "El ISBM no puede ser modificado" , QMessageBox.Ok)
+
                
     def autoresIr(self):
         self.panel.stackedWidget.setCurrentIndex(4)

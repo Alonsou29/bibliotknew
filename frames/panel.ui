@@ -789,7 +789,7 @@ border-radius: 5px;</string>
         <string>Eliminar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_3">
+      <widget class="QLineEdit" name="ApellidoC">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -825,7 +825,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_5">
+      <widget class="QLineEdit" name="NombreC">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -861,7 +861,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="CoboGC">
        <property name="geometry">
         <rect>
          <x>590</x>
@@ -883,16 +883,16 @@ color: white;
        </item>
        <item>
         <property name="text">
-         <string>F</string>
+         <string>Femenino</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>M</string>
+         <string>Masculino</string>
         </property>
        </item>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_7">
+      <widget class="QLineEdit" name="CedulaC">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1003,7 +1003,7 @@ color: white;
         </property>
        </column>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_4">
+      <widget class="QLineEdit" name="FechaC">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1281,7 +1281,7 @@ border-radius: 5px;</string>
         <string>Eliminar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_9">
+      <widget class="QLineEdit" name="Nropags">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1317,7 +1317,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_10">
+      <widget class="QLineEdit" name="FechaPL">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1353,7 +1353,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_11">
+      <widget class="QLineEdit" name="TituloL">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1389,7 +1389,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_12">
+      <widget class="QLineEdit" name="GeneroL">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1425,7 +1425,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_13">
+      <widget class="QLineEdit" name="ISBML">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1493,7 +1493,7 @@ color: white;
         <string>Modificar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_14">
+      <widget class="QLineEdit" name="EditorialL">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1529,7 +1529,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_15">
+      <widget class="QLineEdit" name="EjemplaresL">
        <property name="enabled">
         <bool>true</bool>
        </property>
