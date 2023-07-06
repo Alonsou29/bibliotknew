@@ -100,7 +100,7 @@ class PanelControl(QMainWindow):
         self.tableWidget = self.panel.tabla_Clientes
         self.tableWidget.setRowCount(colum)
         sql3="SELECT Activo FROM Clientes"
-        eliminar=consulta(sql3).fetchall()
+        eliminar=consulta(sql3).fetchone()
         count=0
         tablerow=0
         
@@ -276,11 +276,30 @@ class PanelControl(QMainWindow):
     def verdatoClientes(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
-            self.panel.CedulaC.setText(filaSeleccionada[0].text())
-            self.panel.NombreC.setText(filaSeleccionada[1].text())
-            self.panel.ApellidoC.setText(filaSeleccionada[2].text())
-            self.panel.FechaC.setText(filaSeleccionada[4].text())
-            self.panel.CoboGC.setCurrentIndex(2)
+            Masculino=self.panel.CoboGC.itemText(2)
+            if Masculino == filaSeleccionada[3].text():
+                self.panel.CedulaC.setText(filaSeleccionada[0].text())
+                self.panel.NombreC.setText(filaSeleccionada[1].text())
+                self.panel.ApellidoC.setText(filaSeleccionada[2].text())
+                self.panel.FechaC.setText(filaSeleccionada[4].text())
+                self.panel.CoboGC.setCurrentIndex(2)
+            else:
+                self.panel.CedulaC.setText(filaSeleccionada[0].text())
+                self.panel.NombreC.setText(filaSeleccionada[1].text())
+                self.panel.ApellidoC.setText(filaSeleccionada[2].text())
+                self.panel.FechaC.setText(filaSeleccionada[4].text())
+                self.panel.CoboGC.setCurrentIndex(1)
+    
+    def verdatoUsuarios(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            self.panel.ISBML.setText(filaSeleccionada[0].text())
+            self.panel.TituloL.setText(filaSeleccionada[1].text())
+            self.panel.FechaPL.setText(filaSeleccionada[2].text())
+            self.panel.Nropags.setText(filaSeleccionada[3].text())
+            self.panel.EditorialL.setText(filaSeleccionada[4].text())
+            self.panel.EjemplaresL.setText(filaSeleccionada[6].text())
+            self.panel.GeneroL.setText(filaSeleccionada[5].text())
  
     def ModificarAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
