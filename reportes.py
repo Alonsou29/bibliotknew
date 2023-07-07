@@ -1,13 +1,24 @@
 import matplotlib.pyplot as plt
 import pdfkit
 import jinja2
+import os
+import datetime
 
 # Función para generar reportes de estadisticas
-def generarReporteEst(ruta, fecha, users, clientes, libros, prestamos, librosPrestados):
+def generarReporteEst(ruta, users, clientes, libros, prestamos, librosPrestados):
+
+    # Obtiene la ubicacion absoluta de las imagenes
+    pathBarras = os.path.abspath(r"reportes\barras.png")
+    pathDona = os.path.abspath(r"reportes\dona.png")
+
+    dt = datetime.datetime.now()
+    fecha = "{}-{}-{}".format(dt.day, dt.month, dt.year)
 
     # Diccionario para cambiar las {{variables}} por sus valores correspondientes
     context = {
         "fecha": fecha,
+        "pathBarras": pathBarras,
+        "pathDona": pathDona,
         "users": users,
         "clientes": clientes,
         "libros": libros,
@@ -24,8 +35,8 @@ def generarReporteEst(ruta, fecha, users, clientes, libros, prestamos, librosPre
     outpuText = template.render(context)
 
     #Hace que pdfkit detecte wkhtmltopdf
-    path = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe" #reemplaza esto por el directorio que tengas, pero no quites la r al inicio
-    config = pdfkit.configuration(wkhtmltopdf=path)
+    pathPDF = os.path.abspath(r"wkhtmltopdf\bin\wkhtmltopdf.exe") 
+    config = pdfkit.configuration(wkhtmltopdf=pathPDF)
 
     # Indica el nombre que tendrá el archivo pdf
     outputPDF = ruta + "Estadísticas" + fecha + ".pdf"
@@ -117,8 +128,8 @@ def generarReportePres(ruta, numpres, cedula, nombre, idlibro, titulo, autor, fe
     outpuText = template.render(context)
 
     #Hace que pdfkit detecte wkhtmltopdf
-    path = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe" #reemplaza esto por el directorio que tengas, pero no quites la r al inicio
-    config = pdfkit.configuration(wkhtmltopdf=path)
+    pathPDF = os.path.abspath(r"wkhtmltopdf\bin\wkhtmltopdf.exe") 
+    config = pdfkit.configuration(wkhtmltopdf=pathPDF)
 
     # Indica el nombre que tendrá el archivo pdf
     outputPDF = ruta + "Préstamo" + numpres + ".pdf"
@@ -128,7 +139,7 @@ def generarReportePres(ruta, numpres, cedula, nombre, idlibro, titulo, autor, fe
 
 # Prueba de ejemplo
 # generarReportePres("", "5234523", "123412", "Mariana Duqeu", "12345125", "librrrro", "alonsou", "12/123/12341", "1234/2345/23")
-generarReporteEst("", "5-12-2020", "2342", "1234", "233", "1231", "12")
+generarReporteEst("", "2342", "1234", "233", "1231", "12")
 
 # Generamos png nuevos de los graficos
 # guardarDona(dona1, dona2)
