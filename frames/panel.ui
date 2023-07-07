@@ -720,7 +720,7 @@ border: 1px solid white ;</string>
          <string>Buscar</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_2">
+       <widget class="QLineEdit" name="CCBuscar">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -1212,7 +1212,7 @@ border: 1px solid white ;</string>
          <string>Buscar</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_8">
+       <widget class="QLineEdit" name="LiBuscar">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -1795,7 +1795,7 @@ border: 1px solid white ;</string>
          <string>Buscar</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_23">
+       <widget class="QLineEdit" name="CdBuscar">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -3372,7 +3372,7 @@ border: 1px solid  rgb(0, 206, 151);
         <string>Eliminar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_20">
+      <widget class="QLineEdit" name="UsernameU">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -3531,7 +3531,7 @@ border-radius: 5px;</string>
         </property>
        </column>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_27">
+      <widget class="QLineEdit" name="NombreU">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -3567,7 +3567,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_28">
+      <widget class="QLineEdit" name="ApellidoU">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -3603,7 +3603,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_29">
+      <widget class="QLineEdit" name="ClaveU">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -3639,7 +3639,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_30">
+      <widget class="QLineEdit" name="EmailU">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -3675,7 +3675,7 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_31">
+      <widget class="QLineEdit" name="PrivilegiosU">
        <property name="enabled">
         <bool>true</bool>
        </property>
