@@ -148,13 +148,13 @@ class PanelControl(QMainWindow):
     def datosUsuarios(self):
         self.tabla=self.panel.tabla_Usuarios
         sql2="SELECT idUsuario,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios"
-        res= consulta(sql2).fetchone()
-        colum=len(res[0])
+        res= consulta(sql2).fetchall()
+        colum=len(res)
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Usuarios
         self.tableWidget.setRowCount(colum)
         sql3="SELECT Activo FROM Usuarios"
-        eliminar=consulta(sql3).fetchall()
+        eliminar=consulta(sql3).fetchone()
         count=0
         tablerow=0
         for i in eliminar:
