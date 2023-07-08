@@ -63,7 +63,7 @@ background-color: #4b0081; /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>9</number>
+     <number>5</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -131,7 +131,7 @@ border: none;
         <rect>
          <x>140</x>
          <y>80</y>
-         <width>531</width>
+         <width>521</width>
          <height>20</height>
         </rect>
        </property>
@@ -188,7 +188,23 @@ p, li { white-space: pre-wrap; }
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../bibliotk-main/logo1.png</pixmap>
+        <pixmap>logo1.png</pixmap>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_20">
+       <property name="geometry">
+        <rect>
+         <x>660</x>
+         <y>30</y>
+         <width>101</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>logo1.png</pixmap>
        </property>
       </widget>
      </widget>
@@ -750,7 +766,7 @@ border-radius: 5px;</string>
          <enum>QLineEdit::Normal</enum>
         </property>
         <property name="placeholderText">
-         <string>Búsqueda por cedula  </string>
+         <string>Búsqueda por cédula  </string>
         </property>
         <property name="cursorMoveStyle">
          <enum>Qt::LogicalMoveStyle</enum>
@@ -764,7 +780,7 @@ border-radius: 5px;</string>
        <property name="geometry">
         <rect>
          <x>570</x>
-         <y>60</y>
+         <y>40</y>
          <width>191</width>
          <height>41</height>
         </rect>
@@ -777,7 +793,7 @@ border-radius: 5px;</string>
        <property name="geometry">
         <rect>
          <x>540</x>
-         <y>520</y>
+         <y>530</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -796,7 +812,7 @@ border-radius: 5px;</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>280</y>
+         <y>260</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -832,7 +848,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>210</y>
+         <y>160</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -861,14 +877,17 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QComboBox" name="CoboGC">
+      <widget class="QComboBox" name="ComboGC">
        <property name="geometry">
         <rect>
          <x>590</x>
-         <y>350</y>
+         <y>360</y>
          <width>131</width>
          <height>22</height>
         </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="editable">
         <bool>false</bool>
@@ -899,7 +918,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>140</y>
+         <y>110</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -931,8 +950,8 @@ color: white;
       <widget class="QPushButton" name="NuevoC">
        <property name="geometry">
         <rect>
-         <x>610</x>
-         <y>470</y>
+         <x>600</x>
+         <y>490</y>
          <width>101</width>
          <height>31</height>
         </rect>
@@ -948,7 +967,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>660</x>
-         <y>520</y>
+         <y>530</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -984,7 +1003,17 @@ color: white;
        </column>
        <column>
         <property name="text">
+         <string>Nombre2</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>Apellido</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Apellido2</string>
         </property>
        </column>
        <column>
@@ -1010,7 +1039,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>400</y>
+         <y>390</y>
          <width>201</width>
          <height>28</height>
         </rect>
@@ -1067,6 +1096,112 @@ color: white;
          <height>32</height>
         </size>
        </property>
+      </widget>
+      <widget class="QLineEdit" name="Nombre2C">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>210</y>
+         <width>187</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">#placeholderText{
+color: white;
+}</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="maxLength">
+        <number>30</number>
+       </property>
+       <property name="placeholderText">
+        <string>Segundo Nombre</string>
+       </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="Apellido2C">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>310</y>
+         <width>187</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">#placeholderText{
+color: white;
+}</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="maxLength">
+        <number>30</number>
+       </property>
+       <property name="placeholderText">
+        <string>Segundo Apellido</string>
+       </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="ComboEC">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>430</y>
+         <width>131</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="currentText">
+        <string extracomment="Genero">Seleccione Estatus:</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Seleccione Estatus:</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>LIBRE</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>BLOQUEADO</string>
+        </property>
+       </item>
       </widget>
      </widget>
     </widget>
@@ -1129,6 +1264,22 @@ font-family: Tahoma;
 color: white;
 font-size: 24px;
 border-radius: 10px;
+}
+
+#Busca_autores_libros{
+background-color:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #5D58D7, stop:1 #000000);
+font-family: Tahoma;
+color: white;
+font-size: 14px;
+border-radius: 10px;
+border: 1px solid white;
+}
+
+#Busca_autores_libros:pressed{
+ background: white;
+border-radius: 10px;
+color: black;
+border: 1px solid purple;
 }
 
 QLineEdit{
@@ -1208,6 +1359,9 @@ border: 1px solid white ;</string>
           <height>31</height>
          </rect>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="text">
          <string>Buscar</string>
         </property>
@@ -1242,7 +1396,7 @@ border-radius: 5px;</string>
          <enum>QLineEdit::Normal</enum>
         </property>
         <property name="placeholderText">
-         <string>Búsqueda por Título</string>
+         <string>Búsqueda por título</string>
         </property>
         <property name="cursorMoveStyle">
          <enum>Qt::LogicalMoveStyle</enum>
@@ -1268,7 +1422,7 @@ border-radius: 5px;</string>
       <widget class="QPushButton" name="EliminarL">
        <property name="geometry">
         <rect>
-         <x>550</x>
+         <x>540</x>
          <y>530</y>
          <width>111</width>
          <height>31</height>
@@ -1288,7 +1442,7 @@ border-radius: 5px;</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>250</y>
+         <y>240</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1324,7 +1478,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>200</y>
+         <y>190</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1360,7 +1514,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>150</y>
+         <y>140</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1396,7 +1550,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>350</y>
+         <y>340</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1432,7 +1586,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>110</y>
+         <y>100</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1464,8 +1618,8 @@ color: white;
       <widget class="QPushButton" name="NuevoL">
        <property name="geometry">
         <rect>
-         <x>610</x>
-         <y>480</y>
+         <x>600</x>
+         <y>490</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -1480,7 +1634,7 @@ color: white;
       <widget class="QPushButton" name="ModificarL">
        <property name="geometry">
         <rect>
-         <x>670</x>
+         <x>660</x>
          <y>530</y>
          <width>111</width>
          <height>31</height>
@@ -1500,7 +1654,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>300</y>
+         <y>290</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1536,7 +1690,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>400</y>
+         <y>390</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1646,6 +1800,22 @@ color: white;
          <width>32</width>
          <height>32</height>
         </size>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="Busca_autores_libros">
+       <property name="geometry">
+        <rect>
+         <x>640</x>
+         <y>440</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string>Buscar Autores</string>
        </property>
       </widget>
      </widget>
@@ -1839,7 +2009,7 @@ border-radius: 5px;</string>
        <property name="geometry">
         <rect>
          <x>540</x>
-         <y>520</y>
+         <y>530</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -1855,7 +2025,7 @@ border-radius: 5px;</string>
        <property name="geometry">
         <rect>
          <x>660</x>
-         <y>520</y>
+         <y>530</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -1916,7 +2086,7 @@ color: white;
         <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>249</number>
+        <number>166</number>
        </attribute>
        <column>
         <property name="text">
@@ -1930,7 +2100,17 @@ color: white;
        </column>
        <column>
         <property name="text">
+         <string>Nombre2</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>Apellido</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Apellido2</string>
         </property>
        </column>
       </widget>
@@ -1941,7 +2121,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>230</y>
+         <y>200</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1973,8 +2153,8 @@ color: white;
       <widget class="QPushButton" name="NuevoA">
        <property name="geometry">
         <rect>
-         <x>610</x>
-         <y>470</y>
+         <x>600</x>
+         <y>490</y>
          <width>101</width>
          <height>31</height>
         </rect>
@@ -1990,7 +2170,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>570</x>
-         <y>60</y>
+         <y>40</y>
          <width>191</width>
          <height>41</height>
         </rect>
@@ -2026,6 +2206,78 @@ color: white;
          <width>32</width>
          <height>32</height>
         </size>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="Nombre2A">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>250</y>
+         <width>187</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">#placeholderText{
+color: white;
+}</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="maxLength">
+        <number>30</number>
+       </property>
+       <property name="placeholderText">
+        <string>Segundo Nombre </string>
+       </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="Apellido2A">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>350</y>
+         <width>187</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">#placeholderText{
+color: white;
+}</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="maxLength">
+        <number>30</number>
+       </property>
+       <property name="placeholderText">
+        <string>Segundo Apellido </string>
+       </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -2108,6 +2360,13 @@ border-radius: 10px;
 border: 1px solid white;
 }
 
+#Busca_cliente_prestamo:pressed{
+ background: white;
+border-radius: 10px;
+color: black;
+border: 1px solid purple;
+}
+
 #Busca_libro_prestamo {
 background-color:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #5D58D7, stop:1 #000000);
 font-family: Tahoma;
@@ -2117,6 +2376,13 @@ border-radius: 10px;
 border: 1px solid white;
 }
 
+#Busca_libro_prestamo:pressed{
+ background: white;
+border-radius: 10px;
+color: black;
+border: 1px solid purple;
+}
+
 #Busca_usuario_prestamo {
 background-color:  qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #5D58D7, stop:1 #000000);
 font-family: Tahoma;
@@ -2124,6 +2390,13 @@ color: white;
 font-size: 14px;
 border-radius: 10px;
 border: 1px solid white;
+}
+
+#Busca_usuario_prestamo:pressed{
+ background: white;
+border-radius: 10px;
+color: black;
+border: 1px solid purple;
 }
 
 QTableWidget{
@@ -2159,19 +2432,7 @@ color: black;
 border: 1px solid purple;
 }
 
-QPushButton{
-background: transparent;
-color: rgb(255, 255, 255);
-font-family: Tahoma;
-font-size: 15px;
- }
 
-QPushButton:pressed {
- background: white;
-border-radius: 10px;
-color: black;
-border: 1px solid purple;
-}
 
 
 </string>
@@ -2210,6 +2471,9 @@ border: 1px solid white ;</string>
           <height>31</height>
          </rect>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="text">
          <string>Buscar</string>
         </property>
@@ -2244,7 +2508,7 @@ border-radius: 5px;</string>
          <enum>QLineEdit::Normal</enum>
         </property>
         <property name="placeholderText">
-         <string>Búsqueda por Cliente</string>
+         <string>Búsqueda por cliente</string>
         </property>
         <property name="cursorMoveStyle">
          <enum>Qt::LogicalMoveStyle</enum>
@@ -2270,7 +2534,7 @@ border-radius: 5px;</string>
       <widget class="QPushButton" name="EliminarP">
        <property name="geometry">
         <rect>
-         <x>550</x>
+         <x>540</x>
          <y>530</y>
          <width>111</width>
          <height>31</height>
@@ -2283,14 +2547,14 @@ border-radius: 5px;</string>
         <string>Eliminar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_17">
+      <widget class="QLineEdit" name="fecha_S">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>350</y>
+         <y>290</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -2319,50 +2583,14 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_18">
+      <widget class="QLineEdit" name="buscar_Libro">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>270</y>
-         <width>187</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="maxLength">
-        <number>10</number>
-       </property>
-       <property name="placeholderText">
-        <string>Identificar Usuario</string>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="lineEdit_19">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>190</y>
+         <y>200</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -2391,14 +2619,14 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_21">
+      <widget class="QLineEdit" name="buscar_Cleinte">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>110</y>
+         <y>120</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -2430,8 +2658,8 @@ color: white;
       <widget class="QPushButton" name="NuevoP">
        <property name="geometry">
         <rect>
-         <x>610</x>
-         <y>480</y>
+         <x>600</x>
+         <y>490</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -2446,7 +2674,7 @@ color: white;
       <widget class="QPushButton" name="ModificarP">
        <property name="geometry">
         <rect>
-         <x>670</x>
+         <x>660</x>
          <y>530</y>
          <width>111</width>
          <height>31</height>
@@ -2459,14 +2687,14 @@ color: white;
         <string>Modificar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_22">
+      <widget class="QLineEdit" name="fecha_E">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>400</y>
+         <y>340</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -2538,12 +2766,17 @@ color: white;
          <string>Fecha E.</string>
         </property>
        </column>
+       <column>
+        <property name="text">
+         <string>Fecha E.Real</string>
+        </property>
+       </column>
       </widget>
       <widget class="QPushButton" name="Busca_cliente_prestamo">
        <property name="geometry">
         <rect>
          <x>640</x>
-         <y>150</y>
+         <y>160</y>
          <width>111</width>
          <height>21</height>
         </rect>
@@ -2559,7 +2792,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>640</x>
-         <y>230</y>
+         <y>240</y>
          <width>111</width>
          <height>21</height>
         </rect>
@@ -2569,22 +2802,6 @@ color: white;
        </property>
        <property name="text">
         <string>Buscar Libro</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="Busca_usuario_prestamo">
-       <property name="geometry">
-        <rect>
-         <x>640</x>
-         <y>310</y>
-         <width>111</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="cursor">
-        <cursorShape>PointingHandCursor</cursorShape>
-       </property>
-       <property name="text">
-        <string>Buscar Usuario</string>
        </property>
       </widget>
       <widget class="QPushButton" name="RefrescarP">
@@ -2614,6 +2831,42 @@ color: white;
          <width>32</width>
          <height>32</height>
         </size>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="fecha_ER">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>390</y>
+         <width>187</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">#placeholderText{
+color: white;
+}</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="maxLength">
+        <number>10</number>
+       </property>
+       <property name="placeholderText">
+        <string>Fecha Entrega Real</string>
+       </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -3217,6 +3470,19 @@ background-color: rgb(0, 0, 0);
 border: 1px solid  rgb(0, 206, 151);
 }
 
+QPushButton{
+background: transparent;
+color: rgb(255, 255, 255);
+font-family: Tahoma;
+font-size: 15px;
+ }
+
+QPushButton:pressed {
+ background: white;
+border-radius: 10px;
+color: black;
+border: 1px solid purple;
+}
 
 </string>
       </property>
@@ -3229,8 +3495,8 @@ border: 1px solid  rgb(0, 206, 151);
       <widget class="QPushButton" name="NuevoU">
        <property name="geometry">
         <rect>
-         <x>610</x>
-         <y>480</y>
+         <x>600</x>
+         <y>490</y>
          <width>111</width>
          <height>31</height>
         </rect>
@@ -3258,7 +3524,7 @@ border: 1px solid  rgb(0, 206, 151);
       <widget class="QPushButton" name="ModificarU">
        <property name="geometry">
         <rect>
-         <x>670</x>
+         <x>660</x>
          <y>530</y>
          <width>111</width>
          <height>31</height>
@@ -3274,7 +3540,7 @@ border: 1px solid  rgb(0, 206, 151);
       <widget class="QPushButton" name="EliminarU">
        <property name="geometry">
         <rect>
-         <x>550</x>
+         <x>540</x>
          <y>530</y>
          <width>111</width>
          <height>31</height>
@@ -3294,7 +3560,7 @@ border: 1px solid  rgb(0, 206, 151);
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>220</y>
+         <y>230</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -3350,6 +3616,9 @@ border: 1px solid white ;</string>
           <width>141</width>
           <height>31</height>
          </rect>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="text">
          <string>Buscar</string>
@@ -3453,7 +3722,7 @@ border-radius: 5px;</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>130</y>
+         <y>140</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -3489,7 +3758,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>170</y>
+         <y>180</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -3525,7 +3794,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>270</y>
+         <y>280</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -3561,7 +3830,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>320</y>
+         <y>330</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -3582,42 +3851,6 @@ color: white;
        </property>
        <property name="placeholderText">
         <string>Email</string>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="PrivilegiosU">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>370</y>
-         <width>187</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="maxLength">
-        <number>30</number>
-       </property>
-       <property name="placeholderText">
-        <string>Privilegios</string>
        </property>
        <property name="cursorMoveStyle">
         <enum>Qt::LogicalMoveStyle</enum>
@@ -3654,6 +3887,40 @@ color: white;
          <height>32</height>
         </size>
        </property>
+      </widget>
+      <widget class="QComboBox" name="ComboGC_2">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>380</y>
+         <width>131</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="currentText">
+        <string extracomment="Genero">Seleccione Privilegios:</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Seleccione Privilegios:</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Usuario</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Admin</string>
+        </property>
+       </item>
       </widget>
      </widget>
     </widget>
