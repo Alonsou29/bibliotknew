@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt5 import uic
 from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView)
 from PyQt5.QtSql import *
@@ -7,9 +8,10 @@ from PyQt5.QtSql import *
 import re
 import shutil
 import webbrowser
-#from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-#import matplotlib.pyplot as plt
-
+import matplotlib.pyplot as plt
+import pdfkit
+import jinja2
+import datetime
 
 class PanelControl(QMainWindow):
 
@@ -50,8 +52,6 @@ class PanelControl(QMainWindow):
         self.panel.BuscarL.clicked.connect(lambda:self.buscarLibros())
         self.panel.BuscarC.clicked.connect(lambda:self.buscarClientes())
 
-
-
             #Eliminar Autores
         EliminarAsql="UPDATE Autores SET Activo = 'INACTIVO' WHERE idAutores=?"
         self.panel.EliminarA.clicked.connect(lambda:self.eliminarFila(EliminarAsql))
@@ -82,14 +82,13 @@ class PanelControl(QMainWindow):
             #Modificar Clientes
         self.panel.tabla_Clientes.clicked.connect(lambda:self.verdatoClientes())
 
-        
-
             #Modificar Usuarios
         self.panel.tabla_Usuarios.clicked.connect(lambda:self.verdatoUsuarios())
         self.panel.ModificarU.clicked.connect(lambda:self.ModificarUsuarios())
+
             # Generar Reportes
-        # self.panel.Generar_Reportes_E.clicked.connect(self.generarReporteEst()) # Estadisticas
-        # self.panel.Generar_Reportes_P.clicked.connect(self.generarReportePres()) # Prestamos
+        self.panel.Generar_Reportes_E.clicked.connect(lambda:self.reporteEst()) # Estadisticas
+        self.panel.Generar_Reportes_P.clicked.connect(lambda:self.reportePres()) # Prestamos
 
     # Funciones del menubar
     def inicioIr(self):
@@ -529,26 +528,223 @@ class PanelControl(QMainWindow):
 
     def estadisticasIr(self):
         self.panel.stackedWidget.setCurrentIndex(6)
+        self.cargarEstadisticas()
+        
+
+    def cargarEstadisticas(self):
+        # Estos datos deben ser cambiados por los de la bdd
+
+        # Numero de usuarios registrados
+        self.panel.userNumLabel.setText("22")
+
+        # Numero de clientes registrados
+        self.panel.clientesNumLabel.setText("12")
+
+        # Numero de libros en la biblioteca
+        self.panel.librosNumLabel.setText("1100")
+
+        # Numero de prestamos totales
+        self.panel.prestNumLabel.setText("144")
+
+        # Numero de libros prestados actualmente
+        self.panel.librosPrestLabel.setText("10")
+
+
+        self.creaDona(30, 70)
+        self.creaBarras("Libro1", 120, "Libro2", 80, "Libro3", 50)
+
+    # Crea un png del grafico de barras
+    def creaBarras(self, libro1, numero1, libro2, numero2, libro3, numero3):
+
+        # Datos del grafico
+        numLibros = [0, 0, 0]
+        titulos = ["", "", ""]
+
+        titulos[0] = libro1
+        titulos[1] = libro2
+        titulos[2] = libro3
+
+        numLibros[0] = numero1
+        numLibros[1] = numero2
+        numLibros[2] = numero3
+
+        # Cantidad de posiciones en el gráfico
+        positions = range(len(numLibros))
+
+        # Limpia figuras previas
+        plt.clf()
+
+        # Estilo del grafico
+        plt.style.use("ggplot")
+
+        # Grafico de barras
+        plt.bar(positions, numLibros)
+
+        # Remplaza los labels
+        plt.xticks(positions, titulos)
+
+        # Guarda el grafico como un png
+        plt.savefig("reportes/barras.png", dpi=100)
+
+
+    # Crea un png del grafico de Dona
+    def creaDona(self, aTiempo, tarde):
+
+        # Datos del grafico
+        labels = ["A tiempo", "Tarde"]
+        datos = [0, 0]
+        datos[0] = aTiempo
+        datos[1] = tarde
+
+        # Limpia figuras previas
+        plt.clf()
+
+        # Estilo del grafico
+        plt.style.use("ggplot")
+
+        # Grafico de pie (datos, titulos, porcentajes, donde comienza el primer angulo)
+        plt.pie(x=datos, labels=labels, autopct="%.2f%%", startangle=90)
+
+        # Mantiene una relacion 1:1 con respecto a la altura y la anchura del grafico
+        plt.axis("equal")
+
+        # Pone un circulo blanco para hacer el grafico una dona
+        circle = plt.Circle(xy=(0,0), radius=.70, facecolor="white")
+        plt.gca().add_artist(circle)
+
+        # Guarda el grafico como un png
+        plt.savefig("reportes/dona.png")
+
 
     def reportesIr(self):
         self.panel.stackedWidget.setCurrentIndex(7)
+
+    def reporteEst(self):
+        # Cambiar datos por los de la bdd
+        self.creaDona(30, 70)
+        self.creaBarras("Libro1", 120, "Libro2", 80, "Libro3", 50)
+
+        # Abre File Dialog
+        rutadestino = QFileDialog.getExistingDirectory(self, caption="Selecciona Ubicación")
+
+        # si se cancela la accion no se procede con el prestamo
+        if not rutadestino:
+            return
+        else:
+            # Cambiar datos por los de la bdd
+            self.generarReporteEst(rutadestino, "12", "124", "1201", "121", "12")
+
+    def reportePres(self):
+        idPrest = self.panel.idPresReporte.text()
+        if idPrest.isdigit():
+            # aqui se toman los datos de la bdd
+            # Abre File Dialog
+            rutadestino = QFileDialog.getExistingDirectory(self, caption="Selecciona Ubicación")
+
+            if not rutadestino:
+                return
+            else:
+                # Cambiar datos por los de la bdd
+                self.generarReportePres(rutadestino, idPrest, "cedula", "nombre", "ISBN del libro", "titulo del libro", "autor del libro", "fecha del prestamo", "fecha de devolucion")
+        else:
+            # Si el id ingresado no es un numero valido se envia este mensaje
+            QMessageBox.question(self, 'Error' , "El número ingresado no es válido" , QMessageBox.Ok)
+
+    # Función para generar reportes de estadisticas
+    def generarReporteEst(self, ruta, users, clientes, libros, prestamos, librosPrestados):
+
+        # Obtiene la ubicacion absoluta de las imagenes
+        pathBarras = os.path.abspath(r"reportes\barras.png")
+        pathDona = os.path.abspath(r"reportes\dona.png")
+
+        dt = datetime.datetime.now()
+        fecha = "{}-{}-{}".format(dt.day, dt.month, dt.year)
+
+        # Diccionario para cambiar las {{variables}} por sus valores correspondientes
+        context = {
+            "fecha": fecha,
+            "pathBarras": pathBarras,
+            "pathDona": pathDona,
+            "users": users,
+            "clientes": clientes,
+            "libros": libros,
+            "prestamos": prestamos,
+            "librosPrestados": librosPrestados
+        }
+
+        # Carga la plantilla HTML
+        templateLoader = jinja2.FileSystemLoader("./")
+        templateEnv = jinja2.Environment(loader=templateLoader)
+        template = templateEnv.get_template("reportes/estadisticas.html")
+
+        # Reemplaza las {{variables}} usando el diccionario
+        outpuText = template.render(context)
+
+        #Hace que pdfkit detecte wkhtmltopdf
+        pathPDF = os.path.abspath(r"wkhtmltopdf\bin\wkhtmltopdf.exe") 
+        config = pdfkit.configuration(wkhtmltopdf=pathPDF)
+
+        # Indica el nombre que tendrá el archivo pdf
+        outputPDF = ruta + "/Estadísticas" + fecha + ".pdf"
+
+        options = {'enable-local-file-access': None}
+
+        # Crea el pdf a partir del archivo html
+        pdfkit.from_string(outpuText, outputPDF, configuration=config, options=options)
+
+    # Función para generar reportes de prestamos
+    def generarReportePres(self, ruta, numpres, cedula, nombre, idlibro, titulo, autor, fechapres, fechadev):
+
+        # Diccionario para cambiar las {{variables}} por sus valores correspondientes
+        context = {
+            "numpres": numpres, 
+            "cedula": cedula, 
+            "nombre": nombre, 
+            "idlibro": idlibro, 
+            "titulo": titulo, 
+            "autor": autor, 
+            "fechapres": fechapres, 
+            "fechadev": fechadev
+        }
+
+        # Carga la plantilla HTML
+        templateLoader = jinja2.FileSystemLoader("./")
+        templateEnv = jinja2.Environment(loader=templateLoader)
+        template = templateEnv.get_template("reportes/prestamo.html")
+
+        outpuText = template.render(context)
+
+        #Hace que pdfkit detecte wkhtmltopdf
+        pathPDF = os.path.abspath(r"wkhtmltopdf\bin\wkhtmltopdf.exe") 
+        config = pdfkit.configuration(wkhtmltopdf=pathPDF)
+
+        # Indica el nombre que tendrá el archivo pdf
+        outputPDF = ruta + "/Préstamo" + numpres + ".pdf"
+
+        # Crea el pdf a partir del archivo html
+        pdfkit.from_string(outpuText, outputPDF, configuration=config)
 
     def respaldarBDD(self):
         # Abre File Dialog
         rutadestino = QFileDialog.getExistingDirectory(self, caption="Selecciona Ubicación")
         
-        # Copia la bdd en la ruta destino
-        shutil.copy2("Bibliotkmdb.db", rutadestino)
+        if not rutadestino:
+            return
+        else:
+            # Copia la bdd en la ruta destino
+            shutil.copy2("Bibliotkmdb.db", rutadestino)
 
     def restaurarBDD(self):
         # Abre File Dialog
         rutadestino = QFileDialog.getOpenFileName(self, caption="Selecciona el archivo")
         
         # Inserte validaciones aqui xdxdxd
-        
-        # Hay que enviar un mensaje indicando que el programa se cerrara despues de seleccionar la bdd
-        # Copia la bdd en la ruta destino
-        shutil.copy2(rutadestino, "Bibliotkmdb.db")
+        if rutadestino[0] == "":
+            return
+        else:
+            # Hay que enviar un mensaje indicando que el programa se cerrara despues de seleccionar la bdd
+            # Copia la bdd en la ruta destino
+            shutil.copy2(rutadestino, "Bibliotkmdb.db")
 
     def usuariosIr(self):
         self.panel.stackedWidget.setCurrentIndex(9)

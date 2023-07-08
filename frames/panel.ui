@@ -63,7 +63,7 @@ background-color: #4b0081; /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>7</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -2654,6 +2654,14 @@ background: transparent;
 border-bottom: 1px solid white;
 }
 
+#userNumLabel, #clientesNumLabel, #librosNumLabel, #prestNumLabel, #librosPrestLabel {
+background: transparent;
+border: none;
+color: white;
+font-family: Tahoma;
+font-size: 28pt;
+}
+
 QLineEdit{
 background: transparent;
 border: none; 
@@ -2673,7 +2681,7 @@ font-size: 50px;
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>40</y>
+         <y>30</y>
          <width>411</width>
          <height>61</height>
         </rect>
@@ -2691,9 +2699,9 @@ font-size: 50px;
       <widget class="QLabel" name="label_13">
        <property name="geometry">
         <rect>
-         <x>70</x>
-         <y>130</y>
-         <width>201</width>
+         <x>100</x>
+         <y>90</y>
+         <width>191</width>
          <height>31</height>
         </rect>
        </property>
@@ -2701,34 +2709,17 @@ font-size: 50px;
         <string>Libros más prestados</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_14">
-       <property name="geometry">
-        <rect>
-         <x>490</x>
-         <y>120</y>
-         <width>191</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Libros devueltos  
- a tiempo</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_15">
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>370</y>
+         <x>10</x>
+         <y>470</y>
          <width>191</width>
          <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>Usuarios registrados</string>
+        <string>Usuarios registrados:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -2737,14 +2728,14 @@ font-size: 50px;
       <widget class="QLabel" name="label_16">
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>490</y>
+         <x>20</x>
+         <y>530</y>
          <width>181</width>
          <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>Clientes registrados</string>
+        <string>Clientes registrados:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -2753,14 +2744,14 @@ font-size: 50px;
       <widget class="QLabel" name="label_17">
        <property name="geometry">
         <rect>
-         <x>330</x>
-         <y>370</y>
+         <x>300</x>
+         <y>470</y>
          <width>201</width>
          <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>Libros en la biblioteca</string>
+        <string>Libros en la biblioteca:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -2769,14 +2760,14 @@ font-size: 50px;
       <widget class="QLabel" name="label_18">
        <property name="geometry">
         <rect>
-         <x>350</x>
-         <y>490</y>
-         <width>161</width>
+         <x>330</x>
+         <y>530</y>
+         <width>171</width>
          <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>Prestamos totales</string>
+        <string>Prestamos totales:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -2785,213 +2776,137 @@ font-size: 50px;
       <widget class="QLabel" name="label_19">
        <property name="geometry">
         <rect>
-         <x>610</x>
-         <y>400</y>
+         <x>630</x>
+         <y>450</y>
          <width>151</width>
          <height>61</height>
         </rect>
        </property>
        <property name="text">
         <string>Libros prestados 
- actualmente</string>
+ actualmente:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_39">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QLabel" name="label_14">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>510</y>
-         <width>41</width>
-         <height>81</height>
+         <x>540</x>
+         <y>90</y>
+         <width>151</width>
+         <height>31</height>
         </rect>
        </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="inputMask">
-        <string/>
-       </property>
        <property name="text">
-        <string>0</string>
-       </property>
-       <property name="maxLength">
-        <number>32767</number>
-       </property>
-       <property name="placeholderText">
-        <string/>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>false</bool>
+        <string>Libros devueltos</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_40">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QLabel" name="barrasLabel">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>390</y>
-         <width>41</width>
-         <height>81</height>
+         <x>10</x>
+         <y>130</y>
+         <width>371</width>
+         <height>311</height>
         </rect>
        </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="inputMask">
-        <string/>
-       </property>
        <property name="text">
-        <string>0</string>
-       </property>
-       <property name="maxLength">
-        <number>32767</number>
-       </property>
-       <property name="placeholderText">
         <string/>
        </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
+       <property name="pixmap">
+        <pixmap>../reportes/barras.png</pixmap>
        </property>
-       <property name="clearButtonEnabled">
-        <bool>false</bool>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_41">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QLabel" name="donaLabel">
        <property name="geometry">
         <rect>
-         <x>410</x>
-         <y>390</y>
-         <width>41</width>
-         <height>81</height>
+         <x>400</x>
+         <y>130</y>
+         <width>391</width>
+         <height>311</height>
         </rect>
        </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="inputMask">
-        <string/>
-       </property>
        <property name="text">
-        <string>0</string>
-       </property>
-       <property name="maxLength">
-        <number>32767</number>
-       </property>
-       <property name="placeholderText">
         <string/>
        </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
+       <property name="pixmap">
+        <pixmap>../reportes/dona.png</pixmap>
        </property>
-       <property name="clearButtonEnabled">
-        <bool>false</bool>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_42">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QLabel" name="userNumLabel">
        <property name="geometry">
         <rect>
-         <x>420</x>
-         <y>510</y>
-         <width>41</width>
-         <height>81</height>
+         <x>210</x>
+         <y>470</y>
+         <width>81</width>
+         <height>41</height>
         </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="inputMask">
-        <string/>
        </property>
        <property name="text">
         <string>0</string>
-       </property>
-       <property name="maxLength">
-        <number>32767</number>
-       </property>
-       <property name="placeholderText">
-        <string/>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>false</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_43">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QLabel" name="clientesNumLabel">
        <property name="geometry">
         <rect>
-         <x>670</x>
-         <y>450</y>
-         <width>41</width>
-         <height>81</height>
+         <x>210</x>
+         <y>530</y>
+         <width>101</width>
+         <height>41</height>
         </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="inputMask">
-        <string/>
        </property>
        <property name="text">
         <string>0</string>
        </property>
-       <property name="maxLength">
-        <number>32767</number>
+      </widget>
+      <widget class="QLabel" name="librosNumLabel">
+       <property name="geometry">
+        <rect>
+         <x>510</x>
+         <y>470</y>
+         <width>101</width>
+         <height>41</height>
+        </rect>
        </property>
-       <property name="placeholderText">
-        <string/>
+       <property name="text">
+        <string>0</string>
        </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
+      </widget>
+      <widget class="QLabel" name="prestNumLabel">
+       <property name="geometry">
+        <rect>
+         <x>510</x>
+         <y>530</y>
+         <width>101</width>
+         <height>41</height>
+        </rect>
        </property>
-       <property name="clearButtonEnabled">
-        <bool>false</bool>
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="librosPrestLabel">
+       <property name="geometry">
+        <rect>
+         <x>630</x>
+         <y>520</y>
+         <width>151</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </widget>
@@ -3137,7 +3052,7 @@ font-size: 18px;
         <string>Generar reporte de un préstamo</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_32">
+      <widget class="QLineEdit" name="idPresReporte">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -3711,6 +3626,35 @@ color: white;
         <bool>true</bool>
        </property>
       </widget>
+      <widget class="QPushButton" name="RefrescarU">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>530</y>
+         <width>111</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>Refrescar</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>imagen4.png</normaloff>imagen4.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="Ayuda">
@@ -3896,6 +3840,9 @@ background-color:#000034
    </property>
   </action>
   <action name="actionRespaldar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Respaldar datos</string>
    </property>
