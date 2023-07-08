@@ -564,22 +564,31 @@ class PanelControl(QMainWindow):
         Eliminar3=re.sub("'","",Eliminar2)
         Eliminar4=re.sub("()","",Eliminar3)
         vddfi =re.sub("[()]","",Eliminar4)
+        validacion=True
         
+        if not re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,15}$',email.lower()):
+            validacion = False
+    
+
         if filaSeleccionada:
             if Nombre.isalpha() and apellido.isalpha():
-                if vddfi!=Nombre+" "+apellido:
-                    ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
-                    if ret!=16384:
-                        fila = filaSeleccionada[0].text()
+                if validacion == True:
+                    if vddfi!=Nombre+" "+apellido:
+                        ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
+                        if ret!=16384:
+                            fila = filaSeleccionada[0].text()
+                        else:
+                            sql="UPDATE Usuarios SET Nombre=?,Apellido=?,Username=?,Clave=?,email=?,Privilegios=? WHERE idUsuario=?"
+                            param=(Nombre,apellido,Username,Clave,email,Privilegios,fila)
+                            consulta(sql,param)
+                            self.datosUsuarios()
                     else:
-                        sql="UPDATE Usuarios SET Nombre=?,Apellido=?,Username=?,Clave=?,email=?,Privilegios=? WHERE idUsuario=?"
-                        param=(Nombre,apellido,Username,Clave,email,Privilegios,fila)
-                        consulta(sql,param)
-                        self.datosUsuarios()
+                        QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
                 else:
-                    QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
+                     QMessageBox.question(self, '¡Aviso!' , "Correo no valido" , QMessageBox.Ok)
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+                
 
     def ModificarClientes(self):
         filaSeleccionada = self.tabla.selectedItems()
