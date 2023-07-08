@@ -63,7 +63,7 @@ background-color: #4b0081; /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -991,6 +991,11 @@ color: white;
        <property name="editTriggers">
         <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed</set>
        </property>
+       <column>
+        <property name="text">
+         <string>ID</string>
+        </property>
+       </column>
        <column>
         <property name="text">
          <string>Cédula</string>
@@ -3913,12 +3918,12 @@ color: white;
        </item>
        <item>
         <property name="text">
-         <string>Usuario</string>
+         <string>USUARIO</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Admin</string>
+         <string>ADMIN</string>
         </property>
        </item>
       </widget>

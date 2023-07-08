@@ -64,12 +64,12 @@ class PanelControl(QMainWindow):
         self.panel.RefrescarL.clicked.connect(lambda:self.datosLibros())
 
             #Eliminar Clientes
-        EliminarCsql="UPDATE Clientes SET Activo = 'INACTIVO' WHERE idClientes=?"
+        EliminarCsql="UPDATE Clientes SET Activo = 'INACTIVO' WHERE Cedula=?"
         self.panel.EliminarC.clicked.connect(lambda:self.eliminarFila(EliminarCsql))
         self.panel.RefrescarC.clicked.connect(lambda:self.datosClientes())
 
             #Eliminar Usuarios
-        EliminarUsql="UPDATE Usuarios SET Activo = 'INACTIVO' WHERE idUsuario=?"
+        EliminarUsql="UPDATE Usuarios SET Activo = 'INACTIVO' WHERE idUsuarios=?"
         self.panel.EliminarU.clicked.connect(lambda:self.eliminarFila(EliminarUsql))
         self.panel.RefrescarU.clicked.connect(lambda:self.datosUsuarios())
 
@@ -83,6 +83,7 @@ class PanelControl(QMainWindow):
 
             #Modificar Clientes
         self.panel.tabla_Clientes.clicked.connect(lambda:self.verdatoClientes())
+        self.panel.ModificarC.clicked.connect(lambda:self.ModificarClientes())
 
             #Modificar Usuarios
         self.panel.tabla_Usuarios.clicked.connect(lambda:self.verdatoUsuarios())
@@ -112,25 +113,26 @@ class PanelControl(QMainWindow):
    #Muestra los datos de cliente
     def datosClientes(self):
         self.tabla=self.panel.tabla_Clientes
-        sql="SELECT Cedula,Nombre,Apellido,Genero,FechaNa,EstatusCliente FROM Clientes"
+        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,FechaNa,EstatusCliente FROM Clientes"
         res= consulta(sql).fetchall()
         colum=len(res)
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Clientes
         self.tableWidget.setRowCount(colum)
         sql3="SELECT Activo FROM Clientes"
-        eliminar=consulta(sql3).fetchone()
+        eliminar=consulta(sql3).fetchall()
         count=0
         tablerow=0
         
         for i in eliminar:
+            print(i)
             Verf=i
             Eliminar1=str(Verf)
             Eliminar2=re.sub(",","",Eliminar1)
             Eliminar3=re.sub("'","",Eliminar2)
             Eliminar4=re.sub("()","",Eliminar3)
             vddfi =re.sub("[()]","",Eliminar4)
-
+            print(vddfi)
             if vddfi!="ACTIVO":
                 self.tabla.setRowHidden(count, True)
             else:
@@ -142,6 +144,9 @@ class PanelControl(QMainWindow):
                     self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
                     self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
                     self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                    self.tabla.setItem(tablerow,7,QTableWidgetItem(str(row[7])))
+                    self.tabla.setItem(tablerow,8,QTableWidgetItem(str(row[8])))
                     tablerow+=1
             count+=1
 
@@ -185,7 +190,7 @@ class PanelControl(QMainWindow):
     #Muestra los datos de Autores
     def datosAutores(self):
         self.tabla=self.panel.tabla_Autores
-        sql2="SELECT idAutores,Nombre,Apellido FROM Autores"
+        sql2="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores"
         res= consulta(sql2).fetchall()
         colum=len(res)
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -212,6 +217,8 @@ class PanelControl(QMainWindow):
                     self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
                     self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
                     self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
                     tablerow+=1 
             count+=1
 
@@ -338,7 +345,7 @@ class PanelControl(QMainWindow):
 
     def buscarClientes(self):
         name=(self.panel.CCBuscar.text(),)
-        sql="SELECT Cedula,Nombre,Apellido,Genero,FechaNa,EstatusCliente FROM Clientes WHERE Nombre=?"
+        sql="SELECT Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,FechaNa,EstatusCliente FROM Clientes WHERE Nombre=?"
         datos=consulta(sql,name).fetchall()
 
         sql2="SELECT Activo FROM Clientes WHERE Nombre=?"
@@ -363,6 +370,8 @@ class PanelControl(QMainWindow):
                                 self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
                                 self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
                                 self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                                self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                                self.tabla.setItem(tablerow,7,QTableWidgetItem(str(row[7])))
                                 tablerow+=1
                 else:QMessageBox.critical(self, "Error", "Cliente no existente en el sistema ", QMessageBox.Ok)
             else:QMessageBox.critical(self, "Error", "Cliente no existente en el sistema ", QMessageBox.Ok)
@@ -406,7 +415,9 @@ class PanelControl(QMainWindow):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
             self.panel.NombreA.setText(filaSeleccionada[1].text())
-            self.panel.ApellidoA.setText(filaSeleccionada[2].text())
+            self.panel.Nombre2A.setText(filaSeleccionada[2].text())
+            self.panel.ApellidoA.setText(filaSeleccionada[3].text())
+            self.panel.Apellido2A.setText(filaSeleccionada[4].text())
 
     def verdatoLibros(self):
         filaSeleccionada = self.tabla.selectedItems()
@@ -422,37 +433,56 @@ class PanelControl(QMainWindow):
     def verdatoClientes(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
-            Masculino=self.panel.CoboGC.itemText(2)
-            if Masculino == filaSeleccionada[3].text():
-                self.panel.CedulaC.setText(filaSeleccionada[0].text())
-                self.panel.NombreC.setText(filaSeleccionada[1].text())
-                self.panel.ApellidoC.setText(filaSeleccionada[2].text())
-                self.panel.FechaC.setText(filaSeleccionada[4].text())
-                self.panel.CoboGC.setCurrentIndex(2)
+            Masculino=self.panel.ComboGC.itemText(2)
+            Libre=self.panel.ComboEC.itemText(1)
+            if Masculino == filaSeleccionada[6].text():
+                self.panel.CedulaC.setText(filaSeleccionada[1].text())
+                self.panel.NombreC.setText(filaSeleccionada[2].text())
+                self.panel.Nombre2C.setText(filaSeleccionada[3].text())
+                self.panel.ApellidoC.setText(filaSeleccionada[4].text())
+                self.panel.Apellido2C.setText(filaSeleccionada[5].text())
+                self.panel.FechaC.setText(filaSeleccionada[7].text())
+                self.panel.ComboGC.setCurrentIndex(2)
+                if Libre == filaSeleccionada[8].text():
+                    self.panel.ComboEC.setCurrentIndex(1)
+                else:
+                    self.panel.ComboEC.setCurrentIndex(2)
             else:
-                self.panel.CedulaC.setText(filaSeleccionada[0].text())
-                self.panel.NombreC.setText(filaSeleccionada[1].text())
-                self.panel.ApellidoC.setText(filaSeleccionada[2].text())
-                self.panel.FechaC.setText(filaSeleccionada[4].text())
-                self.panel.CoboGC.setCurrentIndex(1)
+                self.panel.CedulaC.setText(filaSeleccionada[1].text())
+                self.panel.NombreC.setText(filaSeleccionada[2].text())
+                self.panel.Nombre2C.setText(filaSeleccionada[3].text())
+                self.panel.ApellidoC.setText(filaSeleccionada[4].text())
+                self.panel.Apellido2C.setText(filaSeleccionada[5].text())
+                self.panel.FechaC.setText(filaSeleccionada[7].text())
+                self.panel.ComboGC.setCurrentIndex(1)
+                if Libre == filaSeleccionada[8].text():
+                    self.panel.ComboEC.setCurrentIndex(1)
+                else:
+                    self.panel.ComboEC.setCurrentIndex(2)
     
     def verdatoUsuarios(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
+            ma=self.panel.ComboGC_2.itemText(2)
             self.panel.NombreU.setText(filaSeleccionada[1].text())
             self.panel.ApellidoU.setText(filaSeleccionada[2].text())
             self.panel.UsernameU.setText(filaSeleccionada[3].text())
             self.panel.ClaveU.setText(filaSeleccionada[4].text())
             self.panel.EmailU.setText(filaSeleccionada[5].text())
-            self.panel.PrivilegiosU.setText(filaSeleccionada[6].text())
+            if ma==filaSeleccionada[6].text():
+                self.panel.ComboGC_2.setCurrentIndex(2)
+            else:
+                self.panel.ComboGC_2.setCurrentIndex(1)
  
     def ModificarAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
-        sql="SELECT Nombre,Apellido FROM Autores WHERE idAutores=?"
+        sql="SELECT Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE idAutores=?"
         fila=filaSeleccionada[0].text()
         dato=consulta(sql,fila).fetchone()
         Nombre=self.panel.NombreA.text()
+        Nombre2=self.panel.Nombre2A.text()
         apellido=self.panel.ApellidoA.text()
+        apellido2=self.panel.Apellido2A.text()
         Eliminar1=str(dato)
         Eliminar2=re.sub(",","",Eliminar1)
         Eliminar3=re.sub("'","",Eliminar2)
@@ -460,15 +490,15 @@ class PanelControl(QMainWindow):
         vddfi =re.sub("[()]","",Eliminar4)
         print(vddfi)
         if filaSeleccionada:
-            if Nombre.isalpha() and apellido.isalpha():
-                if vddfi!=Nombre+" "+apellido:
+            if Nombre.isalpha() and apellido.isalpha() and Nombre2.isalpha() and apellido2.isalpha():
+                if vddfi!=Nombre+" "+Nombre2+" "+apellido+" "+apellido2:
                     ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
                     if ret!=16384:
                         fila = filaSeleccionada[0].text()
                         fila2 = filaSeleccionada[0].row()
                     else:
-                        sql="UPDATE Autores SET Nombre=?,Apellido=? WHERE idAutores=?"
-                        param=(Nombre,apellido,fila,)
+                        sql="UPDATE Autores SET Nombre=?,Nombre2=?,Apellido=?,Apellido2=? WHERE idAutores=?"
+                        param=(Nombre,Nombre2,apellido,apellido2,fila)
                         consulta(sql,param)
                         self.datosAutores()
                 else:
@@ -528,7 +558,7 @@ class PanelControl(QMainWindow):
         Username=self.panel.UsernameU.text()
         Clave=self.panel.ClaveU.text()
         email=self.panel.EmailU.text()
-        Privi=self.panel.PrivilegiosU.text()
+        Privilegios=self.panel.ComboGC_2.currentText()
         Eliminar1=str(dato)
         Eliminar2=re.sub(",","",Eliminar1)
         Eliminar3=re.sub("'","",Eliminar2)
@@ -543,15 +573,61 @@ class PanelControl(QMainWindow):
                         fila = filaSeleccionada[0].text()
                     else:
                         sql="UPDATE Usuarios SET Nombre=?,Apellido=?,Username=?,Clave=?,email=?,Privilegios=? WHERE idUsuario=?"
-                        param=(Nombre,apellido,Username,Clave,email,Privi,fila)
+                        param=(Nombre,apellido,Username,Clave,email,Privilegios,fila)
                         consulta(sql,param)
-                        self.datosAutores()
+                        self.datosUsuarios()
                 else:
                     QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
 
-               
+    def ModificarClientes(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            sql="SELECT Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,FechaNa,EstatusCliente FROM Clientes WHERE idClientes=?"
+            fila=filaSeleccionada[0].text()
+            print(filaSeleccionada[0].text())
+            dato=consulta(sql,fila).fetchone()
+            Cedula=self.panel.CedulaC.text()
+            Nombre=self.panel.NombreC.text()
+            Nombre2=self.panel.Nombre2C.text()
+            apellido=self.panel.ApellidoC.text()
+            apellido2=self.panel.Apellido2C.text()
+            Genero=self.panel.ComboGC.currentText()
+            fecha=self.panel.FechaC.text()
+            Estatus=self.panel.ComboEC.currentText()
+            Eliminar1=str(dato)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(vddfi)
+            print(Cedula+" "+Nombre+" "+Nombre2+" "+apellido+" "+apellido2+" "+Genero+" "+fecha+" "+Estatus)
+            if filaSeleccionada:
+                if Nombre.isalpha() and apellido.isalpha() and Nombre2.isalpha() and apellido2.isalpha() and Cedula.isnumeric():
+                    if vddfi!=Cedula+" "+Nombre+" "+Nombre2+" "+apellido+" "+apellido2+" "+Genero+" "+fecha+" "+Estatus:
+                        ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
+                        if ret!=16384:
+                            fila = filaSeleccionada[0].text()
+                        else:
+                            sql="UPDATE Clientes SET Cedula=?,Nombre=?,Nombre2=?,Apellido=?,Apellido2=?,Genero=?,FechaNa=?,EstatusCliente=? WHERE idClientes=?"
+                            param=(Cedula,Nombre,Nombre2,apellido,apellido2,Genero,fecha,Estatus,fila,)
+                            consulta(sql,param)
+                            self.datosClientes()
+                    else:
+                        QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
+                else:
+                    QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+        else:
+            QMessageBox.question(self, '¡Aviso!' , "Seleccione un campo para modificar" , QMessageBox.Ok)
+
+
+
+
+
+
+
+
     def autoresIr(self):
         self.panel.stackedWidget.setCurrentIndex(4)
         self.datosAutores()
