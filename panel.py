@@ -51,6 +51,7 @@ class PanelControl(QMainWindow):
         self.panel.BuscarA.clicked.connect(lambda:self.buscarAutores())
         self.panel.BuscarL.clicked.connect(lambda:self.buscarLibros())
         self.panel.BuscarC.clicked.connect(lambda:self.buscarClientes())
+        self.panel.BuscarU.clicked.connect(lambda:self.buscarUsuarios())
 
             #Eliminar Autores
         EliminarAsql="UPDATE Autores SET Activo = 'INACTIVO' WHERE idAutores=?"
@@ -70,6 +71,7 @@ class PanelControl(QMainWindow):
             #Eliminar Usuarios
         EliminarUsql="UPDATE Usuarios SET Activo = 'INACTIVO' WHERE idUsuario=?"
         self.panel.EliminarU.clicked.connect(lambda:self.eliminarFila(EliminarUsql))
+        self.panel.RefrescarU.clicked.connect(lambda:self.datosUsuarios())
 
             #Modifica Autores
         self.panel.tabla_Autores.clicked.connect(lambda:self.verdatoAutores())
@@ -366,7 +368,39 @@ class PanelControl(QMainWindow):
             else:QMessageBox.critical(self, "Error", "Cliente no existente en el sistema ", QMessageBox.Ok)
         else:QMessageBox.critical(self, "Error", "Escriba el nombre de un Cliente ", QMessageBox.Ok)
         
+    def buscarUsuarios(self):
+        name=(self.panel.CUBuscar.text(),)
+        sql="SELECT idUsuario,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios WHERE Nombre=?"
+        datos=consulta(sql,name).fetchall()
+
+        sql2="SELECT Activo FROM Usuarios WHERE Nombre=?"
+        eliminar=consulta(sql2,name).fetchone()
+        Eliminar1=str(eliminar)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        vddfi =re.sub("[()]","",Eliminar4)
         
+        print(vddfi)
+        if name!=('',):
+            if datos!=[]:
+                if vddfi=='ACTIVO':
+                    for row in datos:
+                                i=len(datos)
+                                self.panel.tabla_Usuarios.setRowCount(i)
+                                tablerow=0
+                                self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                                self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                                self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                                self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                                self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                                self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                                tablerow+=1
+                else:QMessageBox.critical(self, "Error", "Usuario no existente en el sistema ", QMessageBox.Ok)
+            else:QMessageBox.critical(self, "Error", "Usuario no existente en el sistema ", QMessageBox.Ok)
+        else:QMessageBox.critical(self, "Error", "Escriba el nombre de un Usuario ", QMessageBox.Ok) 
+
+
 
     def verdatoAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
