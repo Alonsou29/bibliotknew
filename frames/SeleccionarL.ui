@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QFrame" name="frame">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>801</width>
+      <height>601</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+#frame
+{
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #000000, stop:0.5 #000232, stop:1 #220054);
+}
+
+QLabel{
+font-family: Aharoni;
+font-weight: bold;
+color: white;
+font-size: 36px;
+background: transparent;
+}
+
+
+#seleccionar
+{
+background-color: #088ADA;
+font-family: Tahoma;
+color: white;
+font-size: 24px;
+border-radius: 10px;
+}
+
+
+QTableWidget{
+background-color: rgb(255, 255, 255);
+	color: rgb(0, 0, 0);
+gridline-color:#72c8f1;
+font-size:12pt;
+
+}
+
+QHeaderView::section{
+background-color:#72c8f1;
+border: 1px solid black;
+font-size:12pt;
+}
+
+QTableWidget QTableCornerButton::section{
+background-color: rgb(0, 0, 0);
+border: 1px solid #72c8f1;
+}
+
+
+QPushButton:pressed {
+ background: white;
+border-radius: 10px;
+color: black;
+border: 1px solid purple;
+}
+</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="seleccionar">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>540</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>Seleccionar</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>40</y>
+       <width>311</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Seleccionar Libro</string>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="tabla_Libros2">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>150</y>
+       <width>741</width>
+       <height>361</height>
+      </rect>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>108</number>
+     </attribute>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>39</number>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>ISBN</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Título</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>F. Publicación</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Núm. de Pags</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Editorial</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Género</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Ejemplares</string>
+      </property>
+     </column>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

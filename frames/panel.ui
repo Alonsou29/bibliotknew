@@ -63,7 +63,7 @@ background-color: #4b0081; /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>5</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -621,6 +621,13 @@ font-size: 36px;
 background: transparent;
 }
 
+#label_23{
+font-family: Aharoni;
+color: white;
+font-size: 16px;
+}
+
+
 #BuscarC{
 background-color: #088ADA;
 font-family: Tahoma;
@@ -812,7 +819,7 @@ border-radius: 5px;</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>260</y>
+         <y>250</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -829,7 +836,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>20</number>
        </property>
        <property name="placeholderText">
         <string>Apellido</string>
@@ -848,7 +855,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>160</y>
+         <y>150</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -865,7 +872,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>20</number>
        </property>
        <property name="placeholderText">
         <string>Nombre</string>
@@ -881,7 +888,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>590</x>
-         <y>360</y>
+         <y>350</y>
          <width>131</width>
          <height>22</height>
         </rect>
@@ -918,7 +925,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>110</y>
+         <y>100</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -935,7 +942,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>15</number>
        </property>
        <property name="placeholderText">
         <string>Cédula</string>
@@ -989,7 +996,7 @@ color: white;
         </rect>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed</set>
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
        <column>
         <property name="text">
@@ -1036,42 +1043,11 @@ color: white;
          <string>Estatus</string>
         </property>
        </column>
-      </widget>
-      <widget class="QLineEdit" name="FechaC">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>390</y>
-         <width>201</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="maxLength">
-        <number>30</number>
-       </property>
-       <property name="placeholderText">
-        <string>Fecha de Nacimiento</string>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
+       <column>
+        <property name="text">
+         <string>Activo</string>
+        </property>
+       </column>
       </widget>
       <widget class="QPushButton" name="RefrescarC">
        <property name="geometry">
@@ -1109,7 +1085,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>210</y>
+         <y>200</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1126,7 +1102,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>20</number>
        </property>
        <property name="placeholderText">
         <string>Segundo Nombre</string>
@@ -1145,7 +1121,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>310</y>
+         <y>300</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -1162,7 +1138,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>20</number>
        </property>
        <property name="placeholderText">
         <string>Segundo Apellido</string>
@@ -1178,7 +1154,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>590</x>
-         <y>430</y>
+         <y>440</y>
          <width>131</width>
          <height>22</height>
         </rect>
@@ -1207,6 +1183,39 @@ color: white;
          <string>BLOQUEADO</string>
         </property>
        </item>
+      </widget>
+      <widget class="QDateEdit" name="dateEdit">
+       <property name="geometry">
+        <rect>
+         <x>600</x>
+         <y>400</y>
+         <width>110</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+       <property name="date">
+        <date>
+         <year>2023</year>
+         <month>7</month>
+         <day>8</day>
+        </date>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_23">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>380</y>
+         <width>151</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Fecha Nacimiento</string>
+       </property>
       </widget>
      </widget>
     </widget>
@@ -1572,7 +1581,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>45</number>
        </property>
        <property name="placeholderText">
         <string>Género</string>
@@ -1676,7 +1685,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>10</number>
+        <number>35</number>
        </property>
        <property name="placeholderText">
         <string>Editorial</string>
@@ -1712,7 +1721,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>5</number>
        </property>
        <property name="placeholderText">
         <string>Ejemplares</string>
@@ -1734,7 +1743,7 @@ color: white;
         </rect>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed</set>
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>108</number>
@@ -1775,6 +1784,11 @@ color: white;
        <column>
         <property name="text">
          <string>Ejemplares</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Activo</string>
         </property>
        </column>
       </widget>
@@ -2066,7 +2080,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>20</number>
        </property>
        <property name="placeholderText">
         <string>Apellido</string>
@@ -2088,7 +2102,7 @@ color: white;
         </rect>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>166</number>
@@ -2118,6 +2132,11 @@ color: white;
          <string>Apellido2</string>
         </property>
        </column>
+       <column>
+        <property name="text">
+         <string>Activo</string>
+        </property>
+       </column>
       </widget>
       <widget class="QLineEdit" name="NombreA">
        <property name="enabled">
@@ -2143,7 +2162,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>20</number>
        </property>
        <property name="placeholderText">
         <string>Nombre</string>
@@ -2237,7 +2256,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>20</number>
        </property>
        <property name="placeholderText">
         <string>Segundo Nombre </string>
@@ -2273,7 +2292,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>30</number>
+        <number>20</number>
        </property>
        <property name="placeholderText">
         <string>Segundo Apellido </string>
@@ -2314,6 +2333,13 @@ color: white;
 font-size: 36px;
 background: transparent;
 }
+
+#label_21,  #label_22{
+font-family: Aharoni;
+color: white;
+font-size: 16px;
+}
+
 
 #BuscarP{
 background-color: #088ADA;
@@ -2552,42 +2578,6 @@ border-radius: 5px;</string>
         <string>Eliminar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="fecha_S">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>290</y>
-         <width>187</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="maxLength">
-        <number>10</number>
-       </property>
-       <property name="placeholderText">
-        <string>Fecha Salida</string>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="buscar_Libro">
        <property name="enabled">
         <bool>true</bool>
@@ -2692,42 +2682,6 @@ color: white;
         <string>Modificar</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="fecha_E">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>340</y>
-         <width>187</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="maxLength">
-        <number>10</number>
-       </property>
-       <property name="placeholderText">
-        <string>Fecha Entrega</string>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
       <widget class="QTableWidget" name="tabla_Prestamos">
        <property name="geometry">
         <rect>
@@ -2738,7 +2692,7 @@ color: white;
         </rect>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed</set>
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>108</number>
@@ -2774,6 +2728,11 @@ color: white;
        <column>
         <property name="text">
          <string>Fecha E.Real</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Activo</string>
         </property>
        </column>
       </widget>
@@ -2845,7 +2804,7 @@ color: white;
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>390</y>
+         <y>400</y>
          <width>187</width>
          <height>28</height>
         </rect>
@@ -2872,6 +2831,78 @@ color: white;
        </property>
        <property name="clearButtonEnabled">
         <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QDateEdit" name="dateEdit_2">
+       <property name="geometry">
+        <rect>
+         <x>589</x>
+         <y>300</y>
+         <width>121</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+       <property name="date">
+        <date>
+         <year>2023</year>
+         <month>7</month>
+         <day>8</day>
+        </date>
+       </property>
+      </widget>
+      <widget class="QDateEdit" name="dateEdit_3">
+       <property name="geometry">
+        <rect>
+         <x>589</x>
+         <y>360</y>
+         <width>121</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+       <property name="date">
+        <date>
+         <year>2023</year>
+         <month>7</month>
+         <day>8</day>
+        </date>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_21">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>280</y>
+         <width>101</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Fecha Salida</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_22">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>340</y>
+         <width>121</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Fecha Entrada</string>
        </property>
       </widget>
      </widget>
@@ -3582,7 +3613,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>10</number>
+        <number>16</number>
        </property>
        <property name="placeholderText">
         <string>Username</string>
@@ -3678,6 +3709,9 @@ border-radius: 5px;</string>
          <height>361</height>
         </rect>
        </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>108</number>
        </attribute>
@@ -3717,6 +3751,11 @@ border-radius: 5px;</string>
        <column>
         <property name="text">
          <string>Privilegios</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Activo</string>
         </property>
        </column>
       </widget>
@@ -3780,7 +3819,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>45</number>
+        <number>20</number>
        </property>
        <property name="placeholderText">
         <string>Apellido</string>
@@ -3816,7 +3855,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>10</number>
+        <number>50</number>
        </property>
        <property name="placeholderText">
         <string>Clave</string>
@@ -3852,7 +3891,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>10</number>
+        <number>60</number>
        </property>
        <property name="placeholderText">
         <string>Email</string>
@@ -3909,7 +3948,7 @@ color: white;
         <bool>false</bool>
        </property>
        <property name="currentText">
-        <string extracomment="Genero">Seleccione Privilegios:</string>
+        <string>Seleccione Privilegios:</string>
        </property>
        <item>
         <property name="text">
