@@ -6,7 +6,10 @@ from conexion import consulta
 import sys
 import sqlite3
 import re
-
+from email.message import EmailMessage
+import ssl
+import smtplib
+import random
 
 
 # Clase de la ventana principal
@@ -29,14 +32,39 @@ class MainWindow(QMainWindow):
         # Crea y agrega frames al stacked widget
         self.addFrame("frames\main.ui")
         self.addFrame("frames\login.ui")
+        self.addFrame(r"frames\restablecer1.ui")
+        self.addFrame(r"frames\restablecer2.ui")
+        self.addFrame(r"frames\restablecer3.ui")
 
         # Te lleva al login al presionar el boton de inicio
         self.stacked_widget.widget(0).Inicio.clicked.connect(self.loginIr)
 
+        # Te lleva al panel de control despues de ingresar el username y la clave
         self.stacked_widget.widget(1).Seguir.clicked.connect(self.panelIr)
+
+        # Te lleva a la primera pantalla de restablecer contraseña cuando se te ha olvidado
+        self.stacked_widget.widget(1).Restablecer.clicked.connect(self.restablecer1Ir)
+
+        # Te lleva a la segunda pantalla de restablecer contraseña despues de ingresar correo
+        self.stacked_widget.widget(2).Seguir.clicked.connect(self.restablecer2Ir)
+
+        # Te lleva a la tercera pantalla de restablecer contraseña despues de ingresar el codigo de verificacion
+        self.stacked_widget.widget(3).Seguir.clicked.connect(self.restablecer3Ir)
+
+        # Vuelve a enviar el codigo de verificacion en caso de que no haya llegado el correo
+        self.stacked_widget.widget(3).Reenviar.clicked.connect(self.restablecerCorreo)
+
+        # Te lleva al incio despues de poner una nueva clave
+        self.stacked_widget.widget(4).Seguir.clicked.connect(self.restablecerClave)
 
         # Contador de veces que se escribio la clave de usuario incorrectamente
         self.contClave = 0
+
+        # Variable que usaremos para codigos de verificacion en correos
+        self.verifCode = 0
+
+        # Variable para almacenar correo en caso de olvidar contraseña
+        self.correoR = ""
     
 
     # Funcion para agregar los frames al stacked widget
@@ -55,7 +83,115 @@ class MainWindow(QMainWindow):
     def loginIr(self):
         self.stacked_widget.setCurrentIndex(1)
 
+    def restablecer1Ir(self):
+        self.stacked_widget.widget(1).TFClave.setText("")
+        self.stacked_widget.widget(1).TFUser.setText("")
+        self.stacked_widget.setCurrentIndex(2)
 
+    def restablecer2Ir(self):
+        self.correoR = self.stacked_widget.widget(2).TFCorreo.text()
+        # Verificar que correo esta en la bdd
+        # Si esta hacer lo siguiente
+
+        self.restablecerCorreo()
+        self.stacked_widget.setCurrentIndex(3)
+
+    # Funcion para comprobar que el codigo de verificacion de recuperar contraseña sea correcto
+    def restablecer3Ir(self):
+        codigo = self.stacked_widget.widget(3).TFCode.text()
+
+        if codigo == str(self.verifCode):
+            self.stacked_widget.setCurrentIndex(4)
+        else:
+            QMessageBox.critical(self, "Código Incorrecto", "Asegurese de ingresar el código correcto", QMessageBox.Ok)
+
+    # Funcion para enviar correo con codigo de verificacion para recuperar contraseña
+    def restablecerCorreo(self):
+        # Creamos codigo de verificacion
+        self.verifCode = random.randint(100000, 999999)
+
+        # Mensaje del correo
+        asuntoCorreo = "Restablecer contraseña"
+        cuerpoCorreo = """Estimado usuario, se ha detectado un intento de restablecer contraseña. Para reestablecer su contraseña debe ingresar el código de verificación.
+
+        Código de verificación:""" + str(self.verifCode) + """
+
+        Si usted no ha intentado reestablecer su contraseña, puede ignorar este mensaje.
+
+        Bibliotk Software"""
+        # print(str(self.verifCode))
+        self.enviarCorreo(self.correoR, asuntoCorreo, cuerpoCorreo)
+
+    def restablecerClave(self):
+        clave1 = self.stacked_widget.widget(4).TFClave.text()
+        clave2 = self.stacked_widget.widget(4).TFClave_2.text()
+        # Poner ojitos
+        if clave1 == clave2:
+            validado = self.validarClave(clave1)
+            if validado:
+                # cambia clave del usario con el correo self.correoR en la bdd
+                asuntoCorreo = "Contaseña Reestablecida"
+                cuerpoCorreo = """Estimado usuario, se le notifica que su contraseña ha sido restablecida exitosamente.
+                Si usted no ha solicitado estos cambios por favor comuniquese con un administrador.
+
+                Bibliotk Software"""
+                self.enviarCorreo(self.correoR, asuntoCorreo, cuerpoCorreo)
+                QMessageBox.question(self, 'Aviso' , "Cambios realizados exitosamente" , QMessageBox.Ok)
+                self.mainIr()
+            else:
+                self.stacked_widget.widget(4).TFClave.setText("")
+                self.stacked_widget.widget(4).TFClave_2.setText("")
+        else:
+            QMessageBox.critical(self, "Error", "Las contraseñas no coinciden", QMessageBox.Ok)
+
+    # Funcion para validar la clave
+    def validarClave(self, clave):
+        if len(clave) > 7 and len(clave) <= 25:
+
+            minuscula = False
+            mayuscula = False
+            numero = False
+            especial = False
+
+            for char in clave:
+                if (char.isdigit()):
+                    numero = True
+                if (char.islower()):
+                    minuscula = True
+                if (char.isupper()):
+                    mayuscula = True
+                if (not char.isalnum()):
+                    especial = True
+
+            if minuscula and mayuscula and numero and especial:
+                return True
+            else:
+                QMessageBox.critical(self, "Aviso", "La contraseña debe tener letras mayusculas, minusculas, numeros y caracteres especiales", QMessageBox.Ok)
+                return False
+        else:
+            QMessageBox.critical(self, "Aviso", "La contraseña debe tener entre 8 y 25 caracteres", QMessageBox.Ok)
+            return False
+
+    # Funcion para enviar correos
+    def enviarCorreo(self, email_receptor, asunto, cuerpo):
+        email_emisor = "bibliotksoftware@gmail.com"
+        email_clave = "lhztgqvmlivfklkt"
+
+        # Preparamos el correo que enviaremos
+        em = EmailMessage()
+        em["From"] = email_emisor
+        em["To"] = email_receptor
+        em["Subject"] = asunto
+        em.set_content(cuerpo)
+        contexto = ssl.create_default_context()
+
+        # "smtp.gmail.com" es el tipo de correo del emisor
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=contexto) as smtp:
+            # Iniciamos sesion en bibliotksoftware@gmail.com
+            smtp.login(email_emisor, email_clave)
+
+            # Enviamos email
+            smtp.sendmail(email_emisor, email_receptor, em.as_string())
 
     # Funciones para validar antes de pasar al panel
     def panelIr(self):
