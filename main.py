@@ -216,7 +216,6 @@ class MainWindow(QMainWindow):
     def panelIr(self):
         if self.stacked_widget.widget(1).TFUser.text()!='' and self.stacked_widget.widget(1).TFClave.text()!='':
             if  self.verificarClave() != False:
-                    self.panel = PanelControl()
                     sql="SELECT idUsuario FROM Usuarios WHERE username=?"
                     user=str(self.stacked_widget.widget(1).TFUser.text())
                     param=(user,) 
@@ -226,7 +225,7 @@ class MainWindow(QMainWindow):
                     Eliminar3=re.sub("'","",Eliminar2)
                     Eliminar4=re.sub("()","",Eliminar3)
                     vddfi =re.sub("[()]","",Eliminar4)
-                    self.panel.usuario=vddfi
+                    self.panel = PanelControl(vddfi)
                     self.panel.privilegios()
                     self.panel.show()
                     self.hide()

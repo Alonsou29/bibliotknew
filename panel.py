@@ -21,14 +21,14 @@ import random
 class PanelControl(QMainWindow):
 
     # Constructor del frame
-    def __init__(self):
+    def __init__(self,userid):
         super().__init__()
         # Carga Panel de cotrol
         self.panel = uic.loadUi("frames\panel.ui",self)
-        
+ 
         # Establece titulo de la ventana
         self.panel.setWindowTitle("Bibliotk")
-
+        
         # Establece el tamaño de la ventana y hace que no puedas cambiar su tamaño
         self.panel.setFixedSize(800, 600) # (Ancho, Alto)
 
@@ -36,8 +36,8 @@ class PanelControl(QMainWindow):
         self.verifCode = 0
 
         # Variable que usaremos para almacenar el id del usuario
-        self.usuario = ""
-
+        self.usuario = userid
+        self.perfilDatos(self.usuario)
 
         # Visualiza pantalla de inicio
         self.panel.stackedWidget.setCurrentIndex(0)
@@ -87,6 +87,10 @@ class PanelControl(QMainWindow):
         self.panel.EliminarU.clicked.connect(lambda:self.eliminarFila(EliminarUsql))
         self.panel.RefrescarU.clicked.connect(lambda:self.datosUsuarios())
 
+            #Eliminar Prestamos
+        EliminarPsql="UPDATE Prestamo SET Activo = 'INACTIVO' WHERE idPrestamo=?"
+        self.panel.EliminarP.clicked.connect(lambda:self.eliminarFila(EliminarPsql))
+        self.panel.RefrescarP.clicked.connect(lambda:self.datosPrestamo)
             #Modifica Autores
         self.panel.tabla_Autores.clicked.connect(lambda:self.verdatoAutores())
         self.panel.ModificarA.clicked.connect(lambda:self.ModificarAutores())
@@ -107,10 +111,22 @@ class PanelControl(QMainWindow):
         self.panel.NuevoA.clicked.connect(lambda:self.InsertarAutores())
         self.panel.NuevoU.clicked.connect(lambda:self.InsertarUsuarios())
         self.panel.NuevoC.clicked.connect(lambda:self.InsertarClientes())
+        self.panel.NuevoL.clicked.connect(lambda:self.InsertarLibros())
 
             # Generar Reportes
         self.panel.Generar_Reportes_E.clicked.connect(lambda:self.reporteEst()) # Estadisticas
         self.panel.Generar_Reportes_P.clicked.connect(lambda:self.reportePres()) # Prestamos
+
+
+    def perfilDatos(self,userid):
+        sql="SELECT Nombre,Apellido,Username,Clave,email FROM Usuarios WHERE idUsuario=?"
+        param=(userid,)
+        dato=consulta(sql,param).fetchall()
+        for i in dato:
+            self.panel.NombrePerfil.setText(i[0])
+            self.panel.ApellidoPerfil.setText(i[1])
+            self.panel.UsernamePerfil.setText(i[2])
+            self.panel.EmailPerfil.setText(i[4])
 
 
     def privilegios(self):
@@ -362,6 +378,43 @@ class PanelControl(QMainWindow):
         sql3="SELECT Activo FROM Libros"
         eliminar=consulta(sql3).fetchone()
         self.tableWidget = self.panel.tabla_Libros
+        self.tableWidget.setRowCount(colum)
+        tablerow=0
+        count=0
+
+        for i in eliminar:
+            Verf=i
+            Eliminar1=str(Verf)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(i)
+            print(vddfi)
+            for row in res:
+                if vddfi!="ACTIVO":
+                    self.tabla.setRowHidden(count, True)
+                else:
+                    self.id= row[0]
+                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                    self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                    tablerow+=1
+                count+=1
+
+    def datosPrestamo(self):
+        self.tabla=self.panel.tabla_Prestamos
+        sql2="SELECT idPrestamo,idClientes,idUsuario,ISBM,F_d_sal,F_d_ent,F_d_enReal FROM Prestamo"
+        res= consulta(sql2).fetchall()
+        self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
+        colum=len(res[0])
+        sql3="SELECT Activo FROM Prestamo"
+        eliminar=consulta(sql3).fetchone()
+        self.tableWidget = self.panel.tabla_Prestamos
         self.tableWidget.setRowCount(colum)
         tablerow=0
         count=0
@@ -883,19 +936,31 @@ class PanelControl(QMainWindow):
             Editorial=self.panel.EditorialL.text()
             Ejemplares=self.panel.EjemplaresL.text()
             Genero=self.panel.GeneroL.text()
+            sql1="SELECT ISBM FROM Libros WHERE ISBM=?"
+            param=(ISBMn,)
+            verfi=consulta(sql1,param).fetchone()
+            Eliminar1=str(verfi)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(vddfi)
 
             param=(ISBMn,Titulo,FechaP,Nropags,Editorial,Ejemplares,Genero)
             if ISBMn!="" and Titulo!="" and FechaP!="" and Nropags!="" and Editorial!=""and Ejemplares!="" and Genero!="":
                 if Ejemplares.isnumeric() and Nropags.isnumeric() and Genero.isalpha():
-                    consulta(sql,param)
-                    self.panel.ISBML.clear()
-                    self.panel.TituloL.clear()
-                    self.panel.FechaP.clear()
-                    self.panel.Nropags.clear()
-                    self.panel.EditorialL.clear()
-                    self.panel.Ejemplares.clear()
-                    self.panel.GeneroL.clear()
-                    QMessageBox.question(self, '¡EXITO!' , "Autores registrado exitosamente" , QMessageBox.Ok)
+                    if ISBMn!= vddfi:
+                        consulta(sql,param)
+                        self.panel.ISBML.clear()
+                        self.panel.TituloL.clear()
+                        self.panel.FechaPL.clear()
+                        self.panel.Nropags.clear()
+                        self.panel.EditorialL.clear()
+                        self.panel.EjemplaresL.clear()
+                        self.panel.GeneroL.clear()
+                        QMessageBox.question(self, '¡EXITO!' , "Libro registrado exitosamente" , QMessageBox.Ok)
+                    else:
+                        QMessageBox.question(self, '¡Aviso!' , "ISBM no puede estar previamente registrado" , QMessageBox.Ok)
                 else:
                     QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
             else:
@@ -937,6 +1002,7 @@ class PanelControl(QMainWindow):
 
     def prestamosIr(self):
         self.panel.stackedWidget.setCurrentIndex(5)
+        self.datosPrestamo()
 
     def estadisticasIr(self):
         self.panel.stackedWidget.setCurrentIndex(6)
