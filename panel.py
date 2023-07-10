@@ -32,6 +32,13 @@ class PanelControl(QMainWindow):
         # Establece el tamaño de la ventana y hace que no puedas cambiar su tamaño
         self.panel.setFixedSize(800, 600) # (Ancho, Alto)
 
+        # Variable que usaremos para codigos de verificacion en correos
+        self.verifCode = 0
+
+        # Variable que usaremos para almacenar el id del usuario
+        self.usuario = ""
+
+
         # Visualiza pantalla de inicio
         self.panel.stackedWidget.setCurrentIndex(0)
 
@@ -50,8 +57,7 @@ class PanelControl(QMainWindow):
         self.panel.actionAcerca_de.triggered.connect(self.acercaDe) # Ayuda: Acerca de
         self.panel.actionManual_de_Usuario.triggered.connect(self.abrirManual) # Ayuda: Manual de usuario
 
-        # Variable que usaremos para codigos de verificacion en correos
-        self.verifCode = 0
+
 
         #FUNCIONES DE LOS BOTONES
 
@@ -106,6 +112,28 @@ class PanelControl(QMainWindow):
         self.panel.Generar_Reportes_E.clicked.connect(lambda:self.reporteEst()) # Estadisticas
         self.panel.Generar_Reportes_P.clicked.connect(lambda:self.reportePres()) # Prestamos
 
+
+    def privilegios(self):
+        # Verificamos si el usuario es admin o no
+        sql="SELECT Privilegios FROM Usuarios WHERE idUsuario=? AND Activo=?"
+        param=(self.usuario,"ACTIVO") 
+        dato=consulta(sql,param).fetchone()
+        Eliminar1=str(dato)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        privilegio =re.sub("[()]","",Eliminar4)
+
+        if privilegio !="ADMIN":
+            # Oculta Mantenimiento
+            self.panel.actionRespaldar.setVisible(False)
+            self.panel.actionRestaurar.setVisible(False)
+            self.panel.menuMantenimiento.setTitle("")
+
+            # Oculta Usuarios
+            self.panel.actionResgistrosU.setVisible(False)
+            self.panel.menuUsuarios.setTitle("")
+
     # Funciones del menubar
     def inicioIr(self):
         # Camabia la pantalla a la seleccionada
@@ -113,17 +141,33 @@ class PanelControl(QMainWindow):
 
     def perfilIr(self):
         self.panel.stackedWidget.setCurrentIndex(1)
-        # Este dato hay que cambiarlo de acuerdo a la bdd
-        verificado = False
-        if not verificado:
+        # Comprobamos si el usuario está ferificado o no
+        sql = "SELECT Verificado FROM Usuarios WHERE idUsuario=?"
+        param=(self.usuario,)
+        dato = consulta(sql,param).fetchone()
+        Eliminar1=str(dato)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        verificacion =re.sub("[()]","",Eliminar4)
+
+        # Si el usuario no esta verificado hacemos la verificacion
+        if verificacion == "NO":
             self.verificarCorreo()
 
     def verificarCorreo(self):
 
         self.verifCode = random.randint(100000, 999999)
 
-        # tomar email con bdd
-        email = "mariana.duque.uni@gmail.com"
+
+        sql = "SELECT email FROM Usuarios WHERE idUsuario=?"
+        param=(self.usuario,)
+        dato = consulta(sql,param).fetchone()
+        Eliminar1=str(dato)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        emailUser =re.sub("[()]","",Eliminar4)
 
         # Enviamos codigo de verificacion por correo
         # El asunto y el cuerpo del correo
@@ -136,7 +180,7 @@ class PanelControl(QMainWindow):
 
         Bibliotk Software"""
         # print(str(self.verifCode))
-        self.enviarCorreo(email, asuntoCorreo, cuerpoCorreo)
+        self.enviarCorreo(emailUser, asuntoCorreo, cuerpoCorreo)
         
         numeroCorrecto = False
 
@@ -145,7 +189,11 @@ class PanelControl(QMainWindow):
             if estado:
                 if numero.isdigit():
                     if numero == str(self.verifCode):
-                        # En bdd cambiar verificado a true
+                        # En bdd cambiar verificado a SI
+                        sql="UPDATE Usuarios SET Verificado=? WHERE email=?"
+                        param=("SI", emailUser)
+                        consulta(sql,param)
+
                         QMessageBox.information(self, "Aviso", "Correo verificado", QMessageBox.Ok)
                         numeroCorrecto = True
                     else:
@@ -1002,14 +1050,29 @@ class PanelControl(QMainWindow):
         idPrest = self.panel.idPresReporte.text()
         if idPrest.isdigit():
             # aqui se toman los datos de la bdd
-            # Abre File Dialog
-            rutadestino = QFileDialog.getExistingDirectory(self, caption="Selecciona Ubicación")
 
-            if not rutadestino:
-                return
+            # Verifica que el correo ingresado este en la bdd
+            sql="SELECT Activo FROM Usuarios WHERE idPrestamo=?"
+            param=(idPrest,) 
+            dato=consulta(sql,param).fetchone()
+            Eliminar1=str(dato)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            presid =re.sub("[()]","",Eliminar4)
+
+            if presid != "None":
+                # Abre File Dialog
+                rutadestino = QFileDialog.getExistingDirectory(self, caption="Selecciona Ubicación")
+
+                if not rutadestino:
+                    return
+                else:
+                    # select datos del prestamo aqui
+                    # Cambiar datos por los de la bdd
+                    self.generarReportePres(rutadestino, idPrest, "cedula", "nombre", "ISBN del libro", "titulo del libro", "autor del libro", "fecha del prestamo", "fecha de devolucion")
             else:
-                # Cambiar datos por los de la bdd
-                self.generarReportePres(rutadestino, idPrest, "cedula", "nombre", "ISBN del libro", "titulo del libro", "autor del libro", "fecha del prestamo", "fecha de devolucion")
+                QMessageBox.critical(self, "Aviso", "ID de préstamo inválido")
         else:
             # Si el id ingresado no es un numero valido se envia este mensaje
             QMessageBox.question(self, 'Error' , "El número ingresado no es válido" , QMessageBox.Ok)
@@ -1101,14 +1164,24 @@ class PanelControl(QMainWindow):
     def restaurarBDD(self):
         # Abre File Dialog
         rutadestino = QFileDialog.getOpenFileName(self, caption="Selecciona el archivo")
-        
-        # Inserte validaciones aqui xdxdxd
+
         if rutadestino[0] == "":
             return
         else:
-            # Hay que enviar un mensaje indicando que el programa se cerrara despues de seleccionar la bdd
-            # Copia la bdd en la ruta destino
-            shutil.copy2(rutadestino, "Bibliotkmdb.db")
+            # Inserte validaciones aqui xdxdxd
+
+            # Verifica que el nombre del archivo sea el mismo
+            ruta = os.path.normpath(rutadestino[0])
+            nombreArchivo = ruta.split(os.sep)[-1]
+
+            print(nombreArchivo)
+            if nombreArchivo == "Bibliotkmdb.db":
+                # Copia la bdd en la ruta destino
+                QMessageBox.information(self, "Aviso", "El programa se cerrará para efectuar los cambios", QMessageBox.Ok)
+                shutil.copy2(rutadestino, "Bibliotkmdb.db")
+                pass
+            else:
+                QMessageBox.critical(self, "Aviso", "Archivo inválido")
 
     def usuariosIr(self):
         self.panel.stackedWidget.setCurrentIndex(9)
@@ -1125,8 +1198,12 @@ class PanelControl(QMainWindow):
 
     def abrirManual(self):
         # Abre el manual de usuario en una pestaña del navegador predeterminado
-        path = "manual_usuario.pdf"
-        webbrowser.open_new_tab(path)
+        path = "Manual de Usuario.pdf"
+        rutaCompleta = os.path.abspath(path)
+        if os.path.exists(rutaCompleta):
+            webbrowser.open_new_tab(path)
+        else:
+            QMessageBox.critical(self, "No se puede abrir el archivo", "Es posible que el archivo haya sido eliminado o se haya movido de lugar", QMessageBox.Ok)
 
 if __name__ == "__main__":
     # Crea la app de Pyqt5
@@ -1134,6 +1211,8 @@ if __name__ == "__main__":
 
     # Crea la instancia de nuestra ventana
     window = PanelControl()
+    window.usuario = "1"
+    window.privilegios()
 
     # Muestra la ventana
     window.show()

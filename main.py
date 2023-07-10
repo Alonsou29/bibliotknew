@@ -95,11 +95,22 @@ class MainWindow(QMainWindow):
 
     def restablecer2Ir(self):
         self.correoR = self.stacked_widget.widget(2).TFCorreo.text()
-        # Verificar que correo esta en la bdd
-        # Si esta hacer lo siguiente
 
-        self.restablecerCorreo()
-        self.stacked_widget.setCurrentIndex(3)
+        # Verifica que el correo ingresado este en la bdd
+        sql="SELECT idUsuario FROM Usuarios WHERE email=? AND Activo=?"
+        param=(self.correoR, "ACTIVO") 
+        dato=consulta(sql,param).fetchone()
+        Eliminar1=str(dato)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        idUser =re.sub("[()]","",Eliminar4)
+
+        if idUser != "None":
+            self.restablecerCorreo()
+            self.stacked_widget.setCurrentIndex(3)
+        else:
+            QMessageBox.critical(self, "Aviso", "Este correo no pertenece a ningún usuario", QMessageBox.Ok)
 
     # Funcion para comprobar que el codigo de verificacion de recuperar contraseña sea correcto
     def restablecer3Ir(self):
@@ -134,7 +145,10 @@ class MainWindow(QMainWindow):
         if clave1 == clave2:
             validado = self.validarClave(clave1)
             if validado:
-                # cambia clave del usario con el correo self.correoR en la bdd
+                # Cambia clave del usario con el correo self.correoR en la bdd
+                sql="UPDATE Usuarios SET Clave=? WHERE email=?"
+                param=(clave1, self.correoR)
+                consulta(sql,param)
                 asuntoCorreo = "Contaseña Reestablecida"
                 cuerpoCorreo = """Estimado usuario, se le notifica que su contraseña ha sido restablecida exitosamente.
                 Si usted no ha solicitado estos cambios por favor comuniquese con un administrador.
@@ -171,7 +185,7 @@ class MainWindow(QMainWindow):
             if minuscula and mayuscula and numero and especial:
                 return True
             else:
-                QMessageBox.critical(self, "Aviso", "La contraseña debe tener letras mayusculas, minusculas, numeros y caracteres especiales", QMessageBox.Ok)
+                QMessageBox.critical(self, "Aviso", "La contraseña debe tener letras mayusculas, minusculas, números y caracteres especiales", QMessageBox.Ok)
                 return False
         else:
             QMessageBox.critical(self, "Aviso", "La contraseña debe tener entre 8 y 25 caracteres", QMessageBox.Ok)
@@ -213,6 +227,7 @@ class MainWindow(QMainWindow):
                     Eliminar4=re.sub("()","",Eliminar3)
                     vddfi =re.sub("[()]","",Eliminar4)
                     self.panel.usuario=vddfi
+                    self.panel.privilegios()
                     self.panel.show()
                     self.hide()
             else:
