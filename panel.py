@@ -11,7 +11,7 @@ import webbrowser
 import matplotlib.pyplot as plt
 import pdfkit
 import jinja2
-import datetime
+from datetime import *
 
 class PanelControl(QMainWindow):
 
@@ -89,6 +89,9 @@ class PanelControl(QMainWindow):
         self.panel.tabla_Usuarios.clicked.connect(lambda:self.verdatoUsuarios())
         self.panel.ModificarU.clicked.connect(lambda:self.ModificarUsuarios())
 
+            #Insertar datos
+        self.panel.NuevoA.clicked.connect(lambda:self.Insertar())
+
             # Generar Reportes
         self.panel.Generar_Reportes_E.clicked.connect(lambda:self.reporteEst()) # Estadisticas
         self.panel.Generar_Reportes_P.clicked.connect(lambda:self.reportePres()) # Prestamos
@@ -113,13 +116,16 @@ class PanelControl(QMainWindow):
    #Muestra los datos de cliente
     def datosClientes(self):
         self.tabla=self.panel.tabla_Clientes
-        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,FechaNa,EstatusCliente FROM Clientes"
+        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente FROM Clientes"
         res= consulta(sql).fetchall()
         colum=len(res)
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Clientes
         self.tableWidget.setRowCount(colum)
         sql3="SELECT Activo FROM Clientes"
+        now=self.panel.FechaNC.date()
+        fecha=now.toPyDate()
+        f1_str = fecha.strftime('%d/%m/%Y')
         eliminar=consulta(sql3).fetchall()
         count=0
         tablerow=0
@@ -432,6 +438,8 @@ class PanelControl(QMainWindow):
 
     def verdatoClientes(self):
         filaSeleccionada = self.tabla.selectedItems()
+        now=filaSeleccionada[7].text()
+        fecha_dt = datetime.strptime(now, '%d/%m/%Y')
         if filaSeleccionada:
             Masculino=self.panel.ComboGC.itemText(2)
             Libre=self.panel.ComboEC.itemText(1)
@@ -441,7 +449,7 @@ class PanelControl(QMainWindow):
                 self.panel.Nombre2C.setText(filaSeleccionada[3].text())
                 self.panel.ApellidoC.setText(filaSeleccionada[4].text())
                 self.panel.Apellido2C.setText(filaSeleccionada[5].text())
-                self.panel.FechaC.setText(filaSeleccionada[7].text())
+                self.panel.FechaNC.setDate(fecha_dt)
                 self.panel.ComboGC.setCurrentIndex(2)
                 if Libre == filaSeleccionada[8].text():
                     self.panel.ComboEC.setCurrentIndex(1)
@@ -453,7 +461,7 @@ class PanelControl(QMainWindow):
                 self.panel.Nombre2C.setText(filaSeleccionada[3].text())
                 self.panel.ApellidoC.setText(filaSeleccionada[4].text())
                 self.panel.Apellido2C.setText(filaSeleccionada[5].text())
-                self.panel.FechaC.setText(filaSeleccionada[7].text())
+                self.panel.FechaNC.setDate(fecha_dt)
                 self.panel.ComboGC.setCurrentIndex(1)
                 if Libre == filaSeleccionada[8].text():
                     self.panel.ComboEC.setCurrentIndex(1)
@@ -603,7 +611,9 @@ class PanelControl(QMainWindow):
             apellido=self.panel.ApellidoC.text()
             apellido2=self.panel.Apellido2C.text()
             Genero=self.panel.ComboGC.currentText()
-            fecha=self.panel.FechaC.text()
+            now=self.panel.FechaNC.date()
+            fecha=now.toPyDate()
+            f1_str = fecha.strftime('%d/%m/%Y')
             Estatus=self.panel.ComboEC.currentText()
             Eliminar1=str(dato)
             Eliminar2=re.sub(",","",Eliminar1)
@@ -611,16 +621,16 @@ class PanelControl(QMainWindow):
             Eliminar4=re.sub("()","",Eliminar3)
             vddfi =re.sub("[()]","",Eliminar4)
             print(vddfi)
-            print(Cedula+" "+Nombre+" "+Nombre2+" "+apellido+" "+apellido2+" "+Genero+" "+fecha+" "+Estatus)
+            print(Cedula+" "+Nombre+" "+Nombre2+" "+apellido+" "+apellido2+" "+Genero+" "+f1_str+" "+Estatus)
             if filaSeleccionada:
                 if Nombre.isalpha() and apellido.isalpha() and Nombre2.isalpha() and apellido2.isalpha() and Cedula.isnumeric():
-                    if vddfi!=Cedula+" "+Nombre+" "+Nombre2+" "+apellido+" "+apellido2+" "+Genero+" "+fecha+" "+Estatus:
+                    if vddfi!=Cedula+" "+Nombre+" "+Nombre2+" "+apellido+" "+apellido2+" "+Genero+" "+f1_str+" "+Estatus:
                         ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
                         if ret!=16384:
                             fila = filaSeleccionada[0].text()
                         else:
                             sql="UPDATE Clientes SET Cedula=?,Nombre=?,Nombre2=?,Apellido=?,Apellido2=?,Genero=?,FechaNa=?,EstatusCliente=? WHERE idClientes=?"
-                            param=(Cedula,Nombre,Nombre2,apellido,apellido2,Genero,fecha,Estatus,fila,)
+                            param=(Cedula,Nombre,Nombre2,apellido,apellido2,Genero,f1_str,Estatus,fila,)
                             consulta(sql,param)
                             self.datosClientes()
                     else:
@@ -631,6 +641,16 @@ class PanelControl(QMainWindow):
             QMessageBox.question(self, '¡Aviso!' , "Seleccione un campo para modificar" , QMessageBox.Ok)
 
 
+    def Insertar(self):
+        
+        sql="INSERT INTO Autores(Nombre,Nombre2,Apellido,Apellido2) VALUES (?,?,?,?)"
+        Nombre=self.panel.NombreA.text()
+        Nombre2=self.panel.Nombre2A.text()
+        Apellido=self.panel.ApellidoA.text()
+        Apellido2=self.panel.Apellido2A.text()
+        param=(Nombre,Nombre2,Apellido,Apellido2)
+        if Nombre!="" and Nombre2!="" and Apellido!="" and Apellido2!="":
+            consulta(sql,param)
 
 
 
