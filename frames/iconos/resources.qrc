@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="imagenes">
+    <file>ver.png</file>
+    <file>ocultar.png</file>
+  </qresource>
+</RCC>
