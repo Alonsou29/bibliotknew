@@ -90,7 +90,8 @@ class PanelControl(QMainWindow):
             #Eliminar Prestamos
         EliminarPsql="UPDATE Prestamo SET Activo = 'INACTIVO' WHERE idPrestamo=?"
         self.panel.EliminarP.clicked.connect(lambda:self.eliminarFila(EliminarPsql))
-        self.panel.RefrescarP.clicked.connect(lambda:self.datosPrestamo)
+        self.panel.RefrescarP.clicked.connect(lambda:self.datosPrestamo())
+
             #Modifica Autores
         self.panel.tabla_Autores.clicked.connect(lambda:self.verdatoAutores())
         self.panel.ModificarA.clicked.connect(lambda:self.ModificarAutores())
@@ -106,6 +107,9 @@ class PanelControl(QMainWindow):
             #Modificar Usuarios
         self.panel.tabla_Usuarios.clicked.connect(lambda:self.verdatoUsuarios())
         self.panel.ModificarU.clicked.connect(lambda:self.ModificarUsuarios())
+
+            #Modificar Prestamos
+        self.panel.tabla_Prestamos.clicked.connect(lambda:self.verdatoPrestamos())
 
             #Insertar datos
         self.panel.NuevoA.clicked.connect(lambda:self.InsertarAutores())
@@ -650,6 +654,20 @@ class PanelControl(QMainWindow):
                 else:
                     self.panel.ComboEC.setCurrentIndex(2)
     
+    def verdatoPrestamos(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        now=filaSeleccionada[4].text()
+        now1=filaSeleccionada[5].text()
+        fecha_sal = datetime.strptime(now,'%d/%m/%Y')
+        fecha_ent = datetime.strptime(now1,'%d/%m/%Y')
+        if filaSeleccionada:
+            self.panel.CedulaC.setText(filaSeleccionada[1].text())
+            self.panel.dateEdit_2.setDate(fecha_sal)
+            self.panel.dateEdit_1.setDate(fecha_ent)
+
+
+
+
     def verdatoUsuarios(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
