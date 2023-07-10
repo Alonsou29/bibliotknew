@@ -54,7 +54,7 @@ color: white;
 font-size: 24px;
 }
 
-#Restablecer{
+#Reenviar{
 background-color:white;
 font-family: Tahoma;
 color: black;
@@ -117,10 +117,10 @@ border-radius: 10px;
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>90</y>
-       <width>262</width>
-       <height>41</height>
+       <x>170</x>
+       <y>100</y>
+       <width>451</width>
+       <height>91</height>
       </rect>
      </property>
      <property name="font">
@@ -133,18 +133,17 @@ border-radius: 10px;
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>INICIAR SESIÓN
-</string>
+      <string>Recuperación de contraseña</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="TFUser">
+    <widget class="QLineEdit" name="TFCode">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>180</y>
+       <y>300</y>
        <width>281</width>
        <height>51</height>
       </rect>
@@ -170,7 +169,7 @@ color: white;
       <number>30</number>
      </property>
      <property name="placeholderText">
-      <string extracomment="Nombre de usuario">Nombre de usuario</string>
+      <string extracomment="Nombre de usuario">Código de Verificación</string>
      </property>
      <property name="cursorMoveStyle">
       <enum>Qt::LogicalMoveStyle</enum>
@@ -179,56 +178,13 @@ color: white;
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="TFClave">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>260</x>
-       <y>280</y>
-       <width>281</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Tahoma</family>
-       <pointsize>-1</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="maxLength">
-      <number>32767</number>
-     </property>
-     <property name="echoMode">
-      <enum>QLineEdit::Password</enum>
-     </property>
-     <property name="dragEnabled">
-      <bool>true</bool>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-     <property name="placeholderText">
-      <string extracomment="cc">Contraseña</string>
-     </property>
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_4">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>500</y>
-       <width>211</width>
-       <height>21</height>
+       <x>200</x>
+       <y>200</y>
+       <width>401</width>
+       <height>61</height>
       </rect>
      </property>
      <property name="font">
@@ -238,14 +194,18 @@ color: white;
       </font>
      </property>
      <property name="text">
-      <string>¿Olvidaste tu contraseña? </string>
+      <string>Ingrese el código que le hemos enviado
+para poder restablecer su contraseña</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QPushButton" name="Restablecer">
+    <widget class="QPushButton" name="Reenviar">
      <property name="geometry">
       <rect>
-       <x>420</x>
-       <y>500</y>
+       <x>340</x>
+       <y>460</y>
        <width>131</width>
        <height>21</height>
       </rect>
@@ -262,15 +222,14 @@ color: white;
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="text">
-      <string>Haz click aqui</string>
+      <string>Reenviar Código</string>
      </property>
     </widget>
     <zorder>label</zorder>
     <zorder>Seguir</zorder>
-    <zorder>TFUser</zorder>
-    <zorder>TFClave</zorder>
+    <zorder>TFCode</zorder>
     <zorder>label_4</zorder>
-    <zorder>Restablecer</zorder>
+    <zorder>Reenviar</zorder>
    </widget>
   </widget>
  </widget>

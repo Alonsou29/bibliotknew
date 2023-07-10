@@ -54,7 +54,7 @@ color: white;
 font-size: 24px;
 }
 
-#Restablecer{
+#Registrate{
 background-color:white;
 font-family: Tahoma;
 color: black;
@@ -93,7 +93,7 @@ border-radius: 10px;
      <property name="geometry">
       <rect>
        <x>310</x>
-       <y>390</y>
+       <y>420</y>
        <width>191</width>
        <height>51</height>
       </rect>
@@ -117,10 +117,10 @@ border-radius: 10px;
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>90</y>
-       <width>262</width>
-       <height>41</height>
+       <x>170</x>
+       <y>100</y>
+       <width>451</width>
+       <height>91</height>
       </rect>
      </property>
      <property name="font">
@@ -133,19 +133,15 @@ border-radius: 10px;
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>INICIAR SESIÓN
-</string>
+      <string>Recuperación de contraseña</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="TFUser">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QLabel" name="label_4">
      <property name="geometry">
       <rect>
-       <x>260</x>
+       <x>280</x>
        <y>180</y>
-       <width>281</width>
+       <width>241</width>
        <height>51</height>
       </rect>
      </property>
@@ -155,28 +151,11 @@ border-radius: 10px;
        <pointsize>-1</pointsize>
       </font>
      </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">#placeholderText{
-color: white;
-}</string>
-     </property>
      <property name="text">
-      <string/>
+      <string>Cambiar Contraseña</string>
      </property>
-     <property name="maxLength">
-      <number>30</number>
-     </property>
-     <property name="placeholderText">
-      <string extracomment="Nombre de usuario">Nombre de usuario</string>
-     </property>
-     <property name="cursorMoveStyle">
-      <enum>Qt::LogicalMoveStyle</enum>
-     </property>
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLineEdit" name="TFClave">
@@ -186,7 +165,7 @@ color: white;
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>280</y>
+       <y>230</y>
        <width>281</width>
        <height>51</height>
       </rect>
@@ -216,19 +195,22 @@ color: white;
       <bool>false</bool>
      </property>
      <property name="placeholderText">
-      <string extracomment="cc">Contraseña</string>
+      <string extracomment="cc">Contraseña Nueva</string>
      </property>
      <property name="clearButtonEnabled">
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="label_4">
+    <widget class="QLineEdit" name="TFClave_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>500</y>
-       <width>211</width>
-       <height>21</height>
+       <x>260</x>
+       <y>310</y>
+       <width>281</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="font">
@@ -237,40 +219,36 @@ color: white;
        <pointsize>-1</pointsize>
       </font>
      </property>
-     <property name="text">
-      <string>¿Olvidaste tu contraseña? </string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="Restablecer">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>500</y>
-       <width>131</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Tahoma</family>
-       <pointsize>-1</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="text">
-      <string>Haz click aqui</string>
+      <string/>
+     </property>
+     <property name="maxLength">
+      <number>32767</number>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+     <property name="placeholderText">
+      <string extracomment="cc">Confirmar Contraseña Nueva</string>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
      </property>
     </widget>
     <zorder>label</zorder>
     <zorder>Seguir</zorder>
-    <zorder>TFUser</zorder>
-    <zorder>TFClave</zorder>
     <zorder>label_4</zorder>
-    <zorder>Restablecer</zorder>
+    <zorder>TFClave</zorder>
+    <zorder>TFClave_2</zorder>
    </widget>
   </widget>
  </widget>

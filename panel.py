@@ -1,7 +1,7 @@
 import sys
 import os
 from PyQt5 import uic
-from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView)
+from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView, QInputDialog)
 from PyQt5.QtSql import *
 from conexion import consulta
 from PyQt5.QtSql import *
@@ -11,7 +11,15 @@ import webbrowser
 import matplotlib.pyplot as plt
 import pdfkit
 import jinja2
+<<<<<<< HEAD
 from datetime import *
+=======
+import datetime
+from email.message import EmailMessage
+import ssl
+import smtplib
+import random
+>>>>>>> b94cf923af152335ca4e8edcb018cee0d7e582d1
 
 class PanelControl(QMainWindow):
 
@@ -44,6 +52,9 @@ class PanelControl(QMainWindow):
         self.panel.actionResgistrosU.triggered.connect(self.usuariosIr) # Usuarios
         self.panel.actionAcerca_de.triggered.connect(self.acercaDe) # Ayuda: Acerca de
         self.panel.actionManual_de_Usuario.triggered.connect(self.abrirManual) # Ayuda: Manual de usuario
+
+        # Variable que usaremos para codigos de verificacion en correos
+        self.verifCode = 0
 
         #FUNCIONES DE LOS BOTONES
 
@@ -103,6 +114,68 @@ class PanelControl(QMainWindow):
 
     def perfilIr(self):
         self.panel.stackedWidget.setCurrentIndex(1)
+        # Este dato hay que cambiarlo de acuerdo a la bdd
+        verificado = False
+        if not verificado:
+            self.verificarCorreo()
+
+    def verificarCorreo(self):
+
+        self.verifCode = random.randint(100000, 999999)
+
+        # tomar email con bdd
+        email = "mariana.duque.uni@gmail.com"
+
+        # Enviamos codigo de verificacion por correo
+        # El asunto y el cuerpo del correo
+        asuntoCorreo = "Verificación de Email"
+        cuerpoCorreo = """Estimado usuario, gracias por usar nuestros servicios. 
+        
+        Para verificar su correo ingrese en su perfil el siguiente código: 
+        
+        Código de verificación: """ + str(self.verifCode) + """
+
+        Bibliotk Software"""
+        # print(str(self.verifCode))
+        self.enviarCorreo(email, asuntoCorreo, cuerpoCorreo)
+        
+        numeroCorrecto = False
+
+        while not numeroCorrecto:
+            numero, estado = QInputDialog().getText(self, "Verificar Correo", "Para verificar su correo electrónico le hemos enviado\nun código de verificación, ingrese el código aquí: ")
+            if estado:
+                if numero.isdigit():
+                    if numero == str(self.verifCode):
+                        # En bdd cambiar verificado a true
+                        QMessageBox.information(self, "Aviso", "Correo verificado", QMessageBox.Ok)
+                        numeroCorrecto = True
+                    else:
+                        QMessageBox.critical(self, "Error", "Código incorrecto")
+                else:
+                    QMessageBox.critical(self, "Error", "Código inválido")
+            else:
+                numeroCorrecto = True
+    
+
+    def enviarCorreo(self, email_receptor, asunto, cuerpo):
+        email_emisor = "bibliotksoftware@gmail.com"
+        email_clave = "lhztgqvmlivfklkt"
+
+        # Preparamos el correo que enviaremos
+        em = EmailMessage()
+        em["From"] = email_emisor
+        em["To"] = email_receptor
+        em["Subject"] = asunto
+        em.set_content(cuerpo)
+        contexto = ssl.create_default_context()
+
+        # "smtp.gmail.com" es el tipo de correo del emisor
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=contexto) as smtp:
+            # Iniciamos sesion en bibliotksoftware@gmail.com
+            smtp.login(email_emisor, email_clave)
+
+            # Enviamos email
+            smtp.sendmail(email_emisor, email_receptor, em.as_string())
 
     def clientesIr(self):
         self.panel.stackedWidget.setCurrentIndex(2)
