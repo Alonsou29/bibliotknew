@@ -63,7 +63,7 @@ background-color: #4b0081; /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -1043,11 +1043,6 @@ color: white;
          <string>Estatus</string>
         </property>
        </column>
-       <column>
-        <property name="text">
-         <string>Activo</string>
-        </property>
-       </column>
       </widget>
       <widget class="QPushButton" name="RefrescarC">
        <property name="geometry">
@@ -1184,7 +1179,7 @@ color: white;
         </property>
        </item>
       </widget>
-      <widget class="QDateEdit" name="dateEdit">
+      <widget class="QDateEdit" name="FechaNC">
        <property name="geometry">
         <rect>
          <x>600</x>
@@ -2130,11 +2125,6 @@ color: white;
        <column>
         <property name="text">
          <string>Apellido2</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Activo</string>
         </property>
        </column>
       </widget>

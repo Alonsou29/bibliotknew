@@ -11,15 +11,12 @@ import webbrowser
 import matplotlib.pyplot as plt
 import pdfkit
 import jinja2
-<<<<<<< HEAD
 from datetime import *
-=======
-import datetime
 from email.message import EmailMessage
 import ssl
 import smtplib
 import random
->>>>>>> b94cf923af152335ca4e8edcb018cee0d7e582d1
+
 
 class PanelControl(QMainWindow):
 
@@ -512,7 +509,7 @@ class PanelControl(QMainWindow):
     def verdatoClientes(self):
         filaSeleccionada = self.tabla.selectedItems()
         now=filaSeleccionada[7].text()
-        fecha_dt = datetime.strptime(now, '%d/%m/%Y')
+        fecha_dt = datetime.strptime(now,'%d/%m/%Y')
         if filaSeleccionada:
             Masculino=self.panel.ComboGC.itemText(2)
             Libre=self.panel.ComboEC.itemText(1)
