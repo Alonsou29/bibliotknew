@@ -265,12 +265,26 @@ color: white;
       <string>Haz click aqui</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="ClaveRevelar">
+     <property name="geometry">
+      <rect>
+       <x>550</x>
+       <y>300</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>MOSTRAR CLAVE</string>
+     </property>
+    </widget>
     <zorder>label</zorder>
     <zorder>Seguir</zorder>
     <zorder>TFUser</zorder>
     <zorder>TFClave</zorder>
     <zorder>label_4</zorder>
     <zorder>Restablecer</zorder>
+    <zorder>ClaveRevelar</zorder>
    </widget>
   </widget>
  </widget>

@@ -25,7 +25,7 @@ class PanelControl(QMainWindow):
         super().__init__()
         # Carga Panel de cotrol
         self.panel = uic.loadUi("frames\panel.ui",self)
-
+        
         # Establece titulo de la ventana
         self.panel.setWindowTitle("Bibliotk")
 
@@ -98,7 +98,9 @@ class PanelControl(QMainWindow):
         self.panel.ModificarU.clicked.connect(lambda:self.ModificarUsuarios())
 
             #Insertar datos
-        self.panel.NuevoA.clicked.connect(lambda:self.Insertar())
+        self.panel.NuevoA.clicked.connect(lambda:self.InsertarAutores())
+        self.panel.NuevoU.clicked.connect(lambda:self.InsertarUsuarios())
+        self.panel.NuevoC.clicked.connect(lambda:self.InsertarClientes())
 
             # Generar Reportes
         self.panel.Generar_Reportes_E.clicked.connect(lambda:self.reporteEst()) # Estadisticas
@@ -276,6 +278,10 @@ class PanelControl(QMainWindow):
         sql3="SELECT Activo FROM Autores"
         eliminar=consulta(sql3).fetchall()
         count=0
+        self.panel.NombreA.clear()
+        self.panel.Nombre2A.clear()
+        self.panel.ApellidoA.clear()
+        self.panel.Apellido2A.clear()
         
         for i in eliminar:
             Verf=i
@@ -494,6 +500,11 @@ class PanelControl(QMainWindow):
             self.panel.Nombre2A.setText(filaSeleccionada[2].text())
             self.panel.ApellidoA.setText(filaSeleccionada[3].text())
             self.panel.Apellido2A.setText(filaSeleccionada[4].text())
+        else:
+            self.panel.NombreA.clear()
+            self.panel.Nombre2A.clear()
+            self.panel.ApellidoA.clear()
+            self.panel.Apellido2A.clear()
 
     def verdatoLibros(self):
         filaSeleccionada = self.tabla.selectedItems()
@@ -578,6 +589,10 @@ class PanelControl(QMainWindow):
                         sql="UPDATE Autores SET Nombre=?,Nombre2=?,Apellido=?,Apellido2=? WHERE idAutores=?"
                         param=(Nombre,Nombre2,apellido,apellido2,fila)
                         consulta(sql,param)
+                        self.panel.NombreA.clear()
+                        self.panel.Nombre2A.clear()
+                        self.panel.ApellidoA.clear()
+                        self.panel.Apellido2A.clear()
                         self.datosAutores()
                 else:
                     QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
@@ -649,7 +664,7 @@ class PanelControl(QMainWindow):
     
 
         if filaSeleccionada:
-            if Nombre.isalpha() and apellido.isalpha():
+            if Nombre.isalpha() and apellido.isalpha() and self.validarClave(Clave):
                 if validacion == True:
                     if vddfi!=Nombre+" "+apellido:
                         ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
@@ -711,20 +726,160 @@ class PanelControl(QMainWindow):
             QMessageBox.question(self, '¡Aviso!' , "Seleccione un campo para modificar" , QMessageBox.Ok)
 
 
-    def Insertar(self):
+    def InsertarAutores(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            QMessageBox.question(self, 'Error' , "No puede inserta un autor seleccionado" , QMessageBox.Ok)
+            self.tabla.takeItem()
+        else:
+            sql="INSERT INTO Autores(Nombre,Nombre2,Apellido,Apellido2) VALUES (?,?,?,?)"
+            Nombre=self.panel.NombreA.text()
+            Nombre2=self.panel.Nombre2A.text()
+            Apellido=self.panel.ApellidoA.text()
+            Apellido2=self.panel.Apellido2A.text()
+            param=(Nombre,Nombre2,Apellido,Apellido2)
+            if Nombre!="" and Nombre2!="" and Apellido!="" and Apellido2!="":
+                if Nombre.isalpha() and Nombre2.isalpha() and Apellido.isalpha() and Apellido2.isalpha():
+                    consulta(sql,param)
+                    self.panel.NombreA.clear()
+                    self.panel.Nombre2A.clear()
+                    self.panel.ApellidoA.clear()
+                    self.panel.Apellido2A.clear()
+                    QMessageBox.question(self, '¡EXITO!' , "Autores registrado exitosamente" , QMessageBox.Ok)
+                else:
+                    QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+            else:
+                QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
+
+    def InsertarUsuarios(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            QMessageBox.question(self, 'Error' , "No puede inserta un Usuario seleccionado" , QMessageBox.Ok)
+            self.tabla.takeItem()
+        else:
+            sql="INSERT INTO Usuarios(Nombre,Apellido,username,Clave,email,Privilegios) VALUES (?,?,?,?,?,?)"
+            Nombre=self.panel.NombreU.text()
+            apellido=self.panel.ApellidoU.text()
+            Username=self.panel.UsernameU.text()
+            Clave=self.panel.ClaveU.text()
+            email=self.panel.EmailU.text()
+            Privilegios=self.panel.ComboGC_2.currentText()
+            param=(Nombre,apellido,Username,Clave,email,Privilegios)
+            validacion=True
         
-        sql="INSERT INTO Autores(Nombre,Nombre2,Apellido,Apellido2) VALUES (?,?,?,?)"
-        Nombre=self.panel.NombreA.text()
-        Nombre2=self.panel.Nombre2A.text()
-        Apellido=self.panel.ApellidoA.text()
-        Apellido2=self.panel.Apellido2A.text()
-        param=(Nombre,Nombre2,Apellido,Apellido2)
-        if Nombre!="" and Nombre2!="" and Apellido!="" and Apellido2!="":
-            consulta(sql,param)
+            if not re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,15}$',email.lower()):
+                validacion = False
+
+            if Nombre!="" and apellido!="" and Username!="" and Clave!="" and email!="" and Privilegios!="Seleccione Privilegios:":
+                if Nombre.isalpha() and apellido.isalpha() and validacion==True and self.validarClave(Clave):
+                    consulta(sql,param)
+                    self.panel.NombreU.clear()
+                    self.panel.ApellidoU.clear()
+                    self.panel.UsernameU.clear()
+                    self.panel.ClaveU.clear()
+                    self.panel.EmailU.clear()
+                    self.panel.ComboGC_2.setCurrentIndex(0)
+                    QMessageBox.question(self, '¡EXITO!' , "Usuario registrado exitosamente" , QMessageBox.Ok)
+                else:
+                    QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+            else:
+                QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
+
+
+    def InsertarClientes(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            QMessageBox.question(self, 'Error' , "No puede inserta un Cliente seleccionado" , QMessageBox.Ok)
+            self.tabla.takeItem()
+        else:
+            sql="INSERT INTO Clientes(Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente) VALUES (?,?,?,?,?,?,?,?)"
+            Cedula=self.panel.CedulaC.text()
+            Nombre=self.panel.NombreC.text()
+            Nombre2=self.panel.Nombre2C.text()
+            apellido=self.panel.ApellidoC.text()
+            apellido2=self.panel.Apellido2C.text()
+            Genero=self.panel.ComboGC.currentText()
+            now=self.panel.FechaNC.date()
+            fecha=now.toPyDate()
+            f1_str = fecha.strftime('%d/%m/%Y')
+            Estatus=self.panel.ComboEC.currentText()
+            param=(Cedula,Nombre,Nombre2,apellido,apellido2,Genero,f1_str,Estatus)
+            if Nombre!="" and Nombre2!="" and apellido!="" and apellido2!="" and Cedula!=""and Estatus!="Seleccione Estatus:" and Genero!="Seleccione un Género:":
+                if Cedula.isnumeric() and Nombre.isalpha() and Nombre2.isalpha() and apellido.isalpha() and apellido2.isalpha():
+                    consulta(sql,param)
+                    self.panel.CedulaC.clear()
+                    self.panel.NombreC.clear()
+                    self.panel.Nombre2C.clear()
+                    self.panel.ApellidoC.clear()
+                    self.panel.Apellido2C.clear()
+                    self.panel.ComboGC.setCurrentIndex(0)
+                    self.panel.ComboEC.setCurrentIndex(0)
+                    QMessageBox.question(self, '¡EXITO!' , "Autores registrado exitosamente" , QMessageBox.Ok)
+                else:
+                    QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+            else:
+                QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
+
+
+    def InsertarLibros(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            QMessageBox.question(self, 'Error' , "No puede inserta un Cliente seleccionado" , QMessageBox.Ok)
+            self.tabla.takeItem()
+        else:
+            sql="INSERT INTO Libros(ISBM,Titulo,F_Publicacion,num_pags,Editorial,Ejemplares,Genero) VALUES (?,?,?,?,?,?,?)"
+            ISBMn=self.panel.ISBML.text()
+            Titulo=self.panel.TituloL.text()
+            FechaP=self.panel.FechaPL.text()
+            Nropags=self.panel.Nropags.text()
+            Editorial=self.panel.EditorialL.text()
+            Ejemplares=self.panel.EjemplaresL.text()
+            Genero=self.panel.GeneroL.text()
+
+            param=(ISBMn,Titulo,FechaP,Nropags,Editorial,Ejemplares,Genero)
+            if ISBMn!="" and Titulo!="" and FechaP!="" and Nropags!="" and Editorial!=""and Ejemplares!="" and Genero!="":
+                if Ejemplares.isnumeric() and Nropags.isnumeric() and Genero.isalpha():
+                    consulta(sql,param)
+                    self.panel.ISBML.clear()
+                    self.panel.TituloL.clear()
+                    self.panel.FechaP.clear()
+                    self.panel.Nropags.clear()
+                    self.panel.EditorialL.clear()
+                    self.panel.Ejemplares.clear()
+                    self.panel.GeneroL.clear()
+                    QMessageBox.question(self, '¡EXITO!' , "Autores registrado exitosamente" , QMessageBox.Ok)
+                else:
+                    QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+            else:
+                QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
 
 
 
 
+    def validarClave(self, clave):
+        if len(clave) > 7 and len(clave) <= 25:
+            minuscula = False
+            mayuscula = False
+            numero = False
+            especial = False
+
+            for char in clave:
+                if (char.isdigit()):
+                    numero = True
+                if (char.islower()):
+                    minuscula = True
+                if (char.isupper()):
+                    mayuscula = True
+                if (not char.isalnum()):
+                    especial = True
+            if minuscula and mayuscula and numero and especial:
+                return True
+            else:
+                QMessageBox.critical(self, "Aviso", "La contraseña debe tener letras mayusculas, minusculas, numeros y caracteres especiales", QMessageBox.Ok)
+                return False
+        else:
+            QMessageBox.critical(self, "Aviso", "La contraseña debe tener entre 8 y 25 caracteres", QMessageBox.Ok)
+            return False
 
 
     def autoresIr(self):

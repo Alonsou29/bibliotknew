@@ -1,5 +1,5 @@
 import typing
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QMessageBox,QLineEdit
 from PyQt5 import QtCore, uic
 from panel import PanelControl
 from conexion import consulta
@@ -36,11 +36,14 @@ class MainWindow(QMainWindow):
         self.addFrame(r"frames\restablecer2.ui")
         self.addFrame(r"frames\restablecer3.ui")
 
+
         # Te lleva al login al presionar el boton de inicio
         self.stacked_widget.widget(0).Inicio.clicked.connect(self.loginIr)
 
         # Te lleva al panel de control despues de ingresar el username y la clave
         self.stacked_widget.widget(1).Seguir.clicked.connect(self.panelIr)
+
+        self.stacked_widget.widget(1).ClaveRevelar.stateChanged.connect(self.ver_password)
 
         # Te lleva a la primera pantalla de restablecer contraseña cuando se te ha olvidado
         self.stacked_widget.widget(1).Restablecer.clicked.connect(self.restablecer1Ir)
@@ -56,6 +59,7 @@ class MainWindow(QMainWindow):
 
         # Te lleva al incio despues de poner una nueva clave
         self.stacked_widget.widget(4).Seguir.clicked.connect(self.restablecerClave)
+
 
         # Contador de veces que se escribio la clave de usuario incorrectamente
         self.contClave = 0
@@ -82,6 +86,7 @@ class MainWindow(QMainWindow):
 
     def loginIr(self):
         self.stacked_widget.setCurrentIndex(1)
+
 
     def restablecer1Ir(self):
         self.stacked_widget.widget(1).TFClave.setText("")
@@ -198,6 +203,16 @@ class MainWindow(QMainWindow):
         if self.stacked_widget.widget(1).TFUser.text()!='' and self.stacked_widget.widget(1).TFClave.text()!='':
             if  self.verificarClave() != False:
                     self.panel = PanelControl()
+                    sql="SELECT idUsuario FROM Usuarios WHERE username=?"
+                    user=str(self.stacked_widget.widget(1).TFUser.text())
+                    param=(user,) 
+                    dato=consulta(sql,param).fetchone()
+                    Eliminar1=str(dato)
+                    Eliminar2=re.sub(",","",Eliminar1)
+                    Eliminar3=re.sub("'","",Eliminar2)
+                    Eliminar4=re.sub("()","",Eliminar3)
+                    vddfi =re.sub("[()]","",Eliminar4)
+                    self.panel.usuario=vddfi
                     self.panel.show()
                     self.hide()
             else:
@@ -256,7 +271,13 @@ class MainWindow(QMainWindow):
         else:
             print("no esta en bdd") 
             return False 
+        
 
+    def ver_password(self): #Método para mostrar la contraseña cuando el checkbox está activo
+        if self.stacked_widget.widget(1).ClaveRevelar.isChecked() == True:
+            self.stacked_widget.widget(1).TFClave.setEchoMode(QLineEdit.EchoMode.Normal)
+        else:
+            self.stacked_widget.widget(1).TFClave.setEchoMode(QLineEdit.EchoMode.Password)
 
 
 # Inicio de la aplicacion
