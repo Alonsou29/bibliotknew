@@ -21,7 +21,7 @@ import random
 class PanelControl(QMainWindow):
 
     # Constructor del frame
-    def __init__(self,userid):
+    def __init__(self):
         super().__init__()
         # Carga Panel de cotrol
         self.panel = uic.loadUi("frames\panel.ui",self)
@@ -36,8 +36,9 @@ class PanelControl(QMainWindow):
         self.verifCode = 0
 
         # Variable que usaremos para almacenar el id del usuario
-        self.usuario = userid
-        self.perfilDatos(self.usuario)
+        #self.usuario = userid
+
+        #self.perfilDatos(self.usuario)
 
         # Visualiza pantalla de inicio
         self.panel.stackedWidget.setCurrentIndex(0)
@@ -83,7 +84,7 @@ class PanelControl(QMainWindow):
         self.panel.RefrescarC.clicked.connect(lambda:self.datosClientes())
 
             #Eliminar Usuarios
-        EliminarUsql="UPDATE Usuarios SET Activo = 'INACTIVO' WHERE idUsuarios=?"
+        EliminarUsql="UPDATE Usuarios SET Activo = 'INACTIVO' WHERE idUsuario=?"
         self.panel.EliminarU.clicked.connect(lambda:self.eliminarFila(EliminarUsql))
         self.panel.RefrescarU.clicked.connect(lambda:self.datosUsuarios())
 
@@ -269,7 +270,14 @@ class PanelControl(QMainWindow):
         eliminar=consulta(sql3).fetchall()
         count=0
         tablerow=0
-        
+        self.panel.CedulaC.clear()
+        self.panel.NombreC.clear()
+        self.panel.Nombre2C.clear()
+        self.panel.ApellidoC.clear()
+        self.panel.Apellido2C.clear()
+        self.panel.ComboGC.setCurrentIndex(0)
+        self.panel.ComboEC.setCurrentIndex(0)
+
         for i in eliminar:
             print(i)
             Verf=i
@@ -309,6 +317,12 @@ class PanelControl(QMainWindow):
         eliminar=consulta(sql3).fetchone()
         count=0
         tablerow=0
+        self.panel.NombreU.clear()
+        self.panel.ApellidoU.clear()
+        self.panel.UsernameU.clear()
+        self.panel.ClaveU.clear()
+        self.panel.EmailU.clear()
+        self.panel.ComboGC_2.setCurrentIndex(0)
         for i in eliminar:
             Verf=i
             Eliminar1=str(Verf)
@@ -385,6 +399,13 @@ class PanelControl(QMainWindow):
         self.tableWidget.setRowCount(colum)
         tablerow=0
         count=0
+        self.panel.ISBML.clear()
+        self.panel.TituloL.clear()
+        self.panel.FechaPL.clear()
+        self.panel.Nropags.clear()
+        self.panel.EditorialL.clear()
+        self.panel.EjemplaresL.clear()
+        self.panel.GeneroL.clear()
 
         for i in eliminar:
             Verf=i
@@ -469,12 +490,15 @@ class PanelControl(QMainWindow):
             QMessageBox.critical(self, "Eliminar fila", "Seleccione una fila.   ", QMessageBox.Ok)
 
     def buscarAutores(self):
-        name=(self.panel.CdBuscar.text(),)
-        sql="SELECT idAutores,Nombre,Apellido FROM Autores WHERE Nombre=?"
-        datos=consulta(sql,name).fetchall()
+        name=self.panel.CdBuscar.text()
+        sql="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE Nombre LIKE ?"
+        ultimo=len(name)
+        letra=(name[0]+'%'+name[ultimo-1],)
+        param=(letra,)
+        datos=consulta(sql,letra).fetchall()
 
-        sql2="SELECT Activo FROM Autores WHERE Nombre=?"
-        eliminar=consulta(sql2,name).fetchone()
+        sql2="SELECT Activo FROM Autores WHERE Nombre LIKE ?"
+        eliminar=consulta(sql2,letra).fetchone()
         Eliminar1=str(eliminar)
         Eliminar2=re.sub(",","",Eliminar1)
         Eliminar3=re.sub("'","",Eliminar2)
@@ -663,7 +687,7 @@ class PanelControl(QMainWindow):
         if filaSeleccionada:
             self.panel.CedulaC.setText(filaSeleccionada[1].text())
             self.panel.dateEdit_2.setDate(fecha_sal)
-            self.panel.dateEdit_1.setDate(fecha_ent)
+            self.panel.dateEdit_3.setDate(fecha_ent)
 
 
 
@@ -1136,7 +1160,7 @@ class PanelControl(QMainWindow):
             # aqui se toman los datos de la bdd
 
             # Verifica que el correo ingresado este en la bdd
-            sql="SELECT Activo FROM Usuarios WHERE idPrestamo=?"
+            sql="SELECT Activo FROM Prestamo WHERE idPrestamo=?"
             param=(idPrest,) 
             dato=consulta(sql,param).fetchone()
             Eliminar1=str(dato)
