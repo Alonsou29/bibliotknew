@@ -1,6 +1,6 @@
 import sys
 import os
-from PyQt5 import uic
+from PyQt5 import uic, QtGui
 from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView, QInputDialog)
 from PyQt5.QtSql import *
 from conexion import consulta
@@ -21,14 +21,14 @@ import random
 class PanelControl(QMainWindow):
 
     # Constructor del frame
-    def __init__(self):
+    def __init__(self,userid):
         super().__init__()
         # Carga Panel de cotrol
         self.panel = uic.loadUi("frames\panel.ui",self)
  
         # Establece titulo de la ventana
         self.panel.setWindowTitle("Bibliotk")
-        
+        self.panel.setWindowIcon(QtGui.QIcon('logo.png'))
         # Establece el tamaño de la ventana y hace que no puedas cambiar su tamaño
         self.panel.setFixedSize(800, 600) # (Ancho, Alto)
 
@@ -36,9 +36,9 @@ class PanelControl(QMainWindow):
         self.verifCode = 0
 
         # Variable que usaremos para almacenar el id del usuario
-        #self.usuario = userid
+        self.usuario = userid
 
-        #self.perfilDatos(self.usuario)
+        self.perfilDatos(self.usuario)
 
         # Visualiza pantalla de inicio
         self.panel.stackedWidget.setCurrentIndex(0)
@@ -496,6 +496,7 @@ class PanelControl(QMainWindow):
         letra=(name[0]+'%'+name[ultimo-1],)
         param=(letra,)
         datos=consulta(sql,letra).fetchall()
+        print(datos)
 
         sql2="SELECT Activo FROM Autores WHERE Nombre LIKE ?"
         eliminar=consulta(sql2,letra).fetchone()
@@ -505,21 +506,29 @@ class PanelControl(QMainWindow):
         Eliminar4=re.sub("()","",Eliminar3)
         vddfi =re.sub("[()]","",Eliminar4)
         
-        print(vddfi)
-        if name!=('',):
-            if datos!=[]:
-                if vddfi=='ACTIVO':
-                    for row in datos:
-                                i=len(datos)
-                                self.panel.tabla_Autores.setRowCount(i)
-                                tablerow=0
-                                self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                                self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                                self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                                tablerow+=1
+        for j in eliminar:
+            Eliminar1=str(j)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(vddfi)
+            if name!=('',):
+                if datos!=[]:
+                    if vddfi=='ACTIVO':
+                        for row in datos:
+                                    i=len(datos)
+                                    self.panel.tabla_Autores.setRowCount(i)
+                                    tablerow=0
+                                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                                    tablerow+=1
+                    else:QMessageBox.critical(self, "Error", "Autor no existente en el sistema ", QMessageBox.Ok)
                 else:QMessageBox.critical(self, "Error", "Autor no existente en el sistema ", QMessageBox.Ok)
-            else:QMessageBox.critical(self, "Error", "Autor no existente en el sistema ", QMessageBox.Ok)
-        else:QMessageBox.critical(self, "Error", "Escriba el nombre de un autor ", QMessageBox.Ok)
+            else:QMessageBox.critical(self, "Error", "Escriba el nombre de un autor ", QMessageBox.Ok)
 
     def buscarLibros(self):
         name=(self.panel.LiBuscar.text(),)
@@ -1192,7 +1201,7 @@ class PanelControl(QMainWindow):
         pathBarras = os.path.abspath(r"reportes\barras.png")
         pathDona = os.path.abspath(r"reportes\dona.png")
 
-        dt = datetime.datetime.now()
+        dt = datetime.now()
         fecha = "{}-{}-{}".format(dt.day, dt.month, dt.year)
 
         # Diccionario para cambiar las {{variables}} por sus valores correspondientes
