@@ -16,6 +16,9 @@ from email.message import EmailMessage
 import ssl
 import smtplib
 import random
+from autores import Autores
+from clientes import Clientes
+from libros import Libros
 
 
 class PanelControl(QMainWindow):
@@ -122,6 +125,27 @@ class PanelControl(QMainWindow):
         self.panel.Generar_Reportes_E.clicked.connect(lambda:self.reporteEst()) # Estadisticas
         self.panel.Generar_Reportes_P.clicked.connect(lambda:self.reportePres()) # Prestamos
 
+            # Seleccionar Autores de libros
+        self.panel.Busca_autores_libros.clicked.connect(lambda:self.seleccionarAutores())
+        
+            # Seleccionar Cliente del prestamo
+        self.panel.Busca_cliente_prestamo.clicked.connect(lambda:self.seleccionarClientes())
+
+            # Seleccionar Libro del prestamo
+        self.panel.Busca_libro_prestamo.clicked.connect(lambda:self.seleccionarLibros())
+
+
+    def seleccionarAutores(self):
+        self.selecA = Autores()
+        self.selecA.show()
+
+    def seleccionarClientes(self):
+        self.selecC = Clientes()
+        self.selecC.show()
+
+    def seleccionarLibros(self):
+        self.selecL = Libros()
+        self.selecL.show()
 
     def perfilDatos(self,userid):
         sql="SELECT Nombre,Apellido,Username,Clave,email FROM Usuarios WHERE idUsuario=?"
@@ -1322,17 +1346,17 @@ class PanelControl(QMainWindow):
         else:
             QMessageBox.critical(self, "No se puede abrir el archivo", "Es posible que el archivo haya sido eliminado o se haya movido de lugar", QMessageBox.Ok)
 
-if __name__ == "__main__":
-    # Crea la app de Pyqt5
-    app = QApplication([])
+# if __name__ == "__main__":
+#     # Crea la app de Pyqt5
+#     app = QApplication([])
 
-    # Crea la instancia de nuestra ventana
-    window = PanelControl()
-    window.usuario = "1"
-    window.privilegios()
+#     # Crea la instancia de nuestra ventana
+#     window = PanelControl()
+#     window.usuario = "1"
+#     window.privilegios()
 
-    # Muestra la ventana
-    window.show()
+#     # Muestra la ventana
+#     window.show()
 
-    # Ejecuta la app
-    app.exec_()
+#     # Ejecuta la app
+#     app.exec_()
