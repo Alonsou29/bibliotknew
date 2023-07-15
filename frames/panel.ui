@@ -497,9 +497,9 @@ color: white;
        <property name="geometry">
         <rect>
          <x>330</x>
-         <y>400</y>
+         <y>387</y>
          <width>187</width>
-         <height>28</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="autoFillBackground">
@@ -516,8 +516,11 @@ color: white;
        <property name="maxLength">
         <number>10</number>
        </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
+       </property>
        <property name="placeholderText">
-        <string>Clave Vieja</string>
+        <string>Clave Antigua</string>
        </property>
        <property name="cursorMoveStyle">
         <enum>Qt::LogicalMoveStyle</enum>
@@ -533,9 +536,9 @@ color: white;
        <property name="geometry">
         <rect>
          <x>330</x>
-         <y>460</y>
+         <y>447</y>
          <width>187</width>
-         <height>28</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="autoFillBackground">
@@ -551,6 +554,9 @@ color: white;
        </property>
        <property name="maxLength">
         <number>10</number>
+       </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
        </property>
        <property name="placeholderText">
         <string>Clave Nueva</string>
@@ -589,6 +595,140 @@ color: white;
        </property>
        <property name="text">
         <string>Cambiar</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="ClaveRevelar_3">
+       <property name="geometry">
+        <rect>
+         <x>490</x>
+         <y>410</y>
+         <width>71</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QCheckBox {
+    spacing: 5px;
+}
+
+QCheckBox::indicator {
+    width: 30px;
+    height: 30px;
+}
+
+QCheckBox::indicator:unchecked {
+   
+	 image: url(:/imagenes/ocultar.pg);
+}
+
+QCheckBox::indicator:unchecked:hover {
+    image: url(:/imagenes/ocultar.pg);
+}
+
+QCheckBox::indicator:unchecked:pressed {
+    
+
+}
+
+QCheckBox::indicator:checked {
+    
+	image: url(:/imagenes/ver.pg);
+}
+
+QCheckBox::indicator:checked:hover {
+   image: url(:/imagenes/ver.pg);
+}
+
+QCheckBox::indicator:checked:pressed {
+   
+}
+
+
+
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>iconos/ver.png</normaloff>iconos/ver.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>30</width>
+         <height>20</height>
+        </size>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="ClaveRevelar_4">
+       <property name="geometry">
+        <rect>
+         <x>490</x>
+         <y>470</y>
+         <width>71</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QCheckBox {
+    spacing: 5px;
+}
+
+QCheckBox::indicator {
+    width: 30px;
+    height: 30px;
+}
+
+QCheckBox::indicator:unchecked {
+   
+	 image: url(:/imagenes/ocultar.pg);
+}
+
+QCheckBox::indicator:unchecked:hover {
+    image: url(:/imagenes/ocultar.pg);
+}
+
+QCheckBox::indicator:unchecked:pressed {
+    
+
+}
+
+QCheckBox::indicator:checked {
+    
+	image: url(:/imagenes/ver.pg);
+}
+
+QCheckBox::indicator:checked:hover {
+   image: url(:/imagenes/ver.pg);
+}
+
+QCheckBox::indicator:checked:pressed {
+   
+}
+
+
+
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>iconos/ver.png</normaloff>iconos/ver.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>30</width>
+         <height>20</height>
+        </size>
        </property>
       </widget>
      </widget>
@@ -1242,6 +1382,11 @@ font-size: 36px;
 background: transparent;
 }
 
+#label_24{
+font-family: Aharoni;
+color: white;
+font-size: 16px;
+}
 
 #BuscarL{
 background-color: #088ADA;
@@ -1472,42 +1617,6 @@ color: white;
        </property>
        <property name="placeholderText">
         <string>Número de Pags</string>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="FechaPL">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>190</y>
-         <width>187</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="maxLength">
-        <number>10</number>
-       </property>
-       <property name="placeholderText">
-        <string>F. de Publicación</string>
        </property>
        <property name="cursorMoveStyle">
         <enum>Qt::LogicalMoveStyle</enum>
@@ -1825,6 +1934,39 @@ color: white;
        </property>
        <property name="text">
         <string>Buscar Autores</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_24">
+       <property name="geometry">
+        <rect>
+         <x>570</x>
+         <y>190</y>
+         <width>171</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Fecha de Publicación</string>
+       </property>
+      </widget>
+      <widget class="QDateEdit" name="FechaPL">
+       <property name="geometry">
+        <rect>
+         <x>600</x>
+         <y>210</y>
+         <width>110</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+       <property name="date">
+        <date>
+         <year>2023</year>
+         <month>7</month>
+         <day>8</day>
+        </date>
        </property>
       </widget>
      </widget>
@@ -2319,7 +2461,7 @@ font-size: 36px;
 background: transparent;
 }
 
-#label_21,  #label_22{
+#label_21,  #label_22,  #label_25{
 font-family: Aharoni;
 color: white;
 font-size: 16px;
@@ -2782,42 +2924,6 @@ color: white;
         </size>
        </property>
       </widget>
-      <widget class="QLineEdit" name="fecha_ER">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>400</y>
-         <width>187</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#placeholderText{
-color: white;
-}</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="maxLength">
-        <number>10</number>
-       </property>
-       <property name="placeholderText">
-        <string>Fecha Entrega Real</string>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
       <widget class="QDateEdit" name="dateEdit_2">
        <property name="geometry">
         <rect>
@@ -2888,6 +2994,42 @@ color: white;
        </property>
        <property name="text">
         <string>Fecha Entrada</string>
+       </property>
+      </widget>
+      <widget class="QDateEdit" name="dateEdit_4">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>430</y>
+         <width>121</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+       <property name="date">
+        <date>
+         <year>2023</year>
+         <month>7</month>
+         <day>8</day>
+        </date>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_25">
+       <property name="geometry">
+        <rect>
+         <x>570</x>
+         <y>410</y>
+         <width>161</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Fecha Entrega Real</string>
        </property>
       </widget>
      </widget>

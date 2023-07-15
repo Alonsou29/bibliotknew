@@ -364,6 +364,140 @@ QCheckBox::indicator:checked:pressed {
       </size>
      </property>
     </widget>
+    <widget class="QCheckBox" name="ClaveRevelar_3">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>260</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox {
+    spacing: 5px;
+}
+
+QCheckBox::indicator {
+    width: 30px;
+    height: 30px;
+}
+
+QCheckBox::indicator:unchecked {
+   
+	 image: url(:/imagenes/ocultar.pg);
+}
+
+QCheckBox::indicator:unchecked:hover {
+    image: url(:/imagenes/ocultar.pg);
+}
+
+QCheckBox::indicator:unchecked:pressed {
+    
+
+}
+
+QCheckBox::indicator:checked {
+    
+	image: url(:/imagenes/ver.pg);
+}
+
+QCheckBox::indicator:checked:hover {
+   image: url(:/imagenes/ver.pg);
+}
+
+QCheckBox::indicator:checked:pressed {
+   
+}
+
+
+
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>iconos/ver.png</normaloff>iconos/ver.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="ClaveRevelar_4">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>340</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QCheckBox {
+    spacing: 5px;
+}
+
+QCheckBox::indicator {
+    width: 30px;
+    height: 30px;
+}
+
+QCheckBox::indicator:unchecked {
+   
+	 image: url(:/imagenes/ocultar.pg);
+}
+
+QCheckBox::indicator:unchecked:hover {
+    image: url(:/imagenes/ocultar.pg);
+}
+
+QCheckBox::indicator:unchecked:pressed {
+    
+
+}
+
+QCheckBox::indicator:checked {
+    
+	image: url(:/imagenes/ver.pg);
+}
+
+QCheckBox::indicator:checked:hover {
+   image: url(:/imagenes/ver.pg);
+}
+
+QCheckBox::indicator:checked:pressed {
+   
+}
+
+
+
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>iconos/ver.png</normaloff>iconos/ver.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
     <zorder>label</zorder>
     <zorder>Seguir</zorder>
     <zorder>label_4</zorder>
@@ -371,11 +505,11 @@ QCheckBox::indicator:checked:pressed {
     <zorder>TFClave_2</zorder>
     <zorder>ClaveRevelar</zorder>
     <zorder>ClaveRevelar_2</zorder>
+    <zorder>ClaveRevelar_3</zorder>
+    <zorder>ClaveRevelar_4</zorder>
    </widget>
   </widget>
  </widget>
- <resources>
-  <include location="iconos/resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
