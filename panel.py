@@ -137,15 +137,104 @@ class PanelControl(QMainWindow):
 
     def seleccionarAutores(self):
         self.selecA = Autores()
+        #self.selecA.
         self.selecA.show()
 
     def seleccionarClientes(self):
         self.selecC = Clientes()
+        self.tablaC2=self.selecC.tabla_Clientes2
+        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente FROM Clientes"
+        res= consulta(sql).fetchall()
+        colum=len(res)
+        self.tablaC2.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget = self.selecC.tabla_Clientes2
+        self.tableWidget.setRowCount(colum)
+        sql3="SELECT Activo FROM Clientes"
+        eliminar=consulta(sql3).fetchall()
+        count=0
+        tablerow=0
+
+        for i in eliminar:
+            print(i)
+            Verf=i
+            Eliminar1=str(Verf)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(vddfi)
+            if vddfi!="ACTIVO":
+                self.tabla.setRowHidden(count, True)
+            else:
+                for row in res:
+                    self.id= row[0]
+                    self.tablaC2.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                    self.tablaC2.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                    self.tablaC2.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                    self.tablaC2.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                    self.tablaC2.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                    self.tablaC2.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                    self.tablaC2.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                    self.tablaC2.setItem(tablerow,7,QTableWidgetItem(str(row[7])))
+                    self.tablaC2.setItem(tablerow,8,QTableWidgetItem(str(row[8])))
+                    tablerow+=1
+            count+=1
+        self.selecC.seleccionar.clicked.connect(lambda:self.btn_selectC())
         self.selecC.show()
 
     def seleccionarLibros(self):
         self.selecL = Libros()
+        self.tablaL2=self.selecL.tabla_Libros2
+        sql2="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Genero,Ejemplares FROM Libros"
+        res= consulta(sql2).fetchall()
+        self.tablaL2.setSelectionBehavior(QAbstractItemView.SelectRows)
+        colum=len(res[0])
+        sql3="SELECT Activo FROM Libros"
+        eliminar=consulta(sql3).fetchone()
+        self.tableWidget = self.selecL.tabla_Libros2
+        self.tableWidget.setRowCount(colum)
+        tablerow=0
+        count=0
+        
+        for i in eliminar:
+            Verf=i
+            Eliminar1=str(Verf)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(i)
+            print(vddfi)
+            for row in res:
+                if vddfi!="ACTIVO":
+                    self.tablaL2.setRowHidden(count, True)
+                else:
+                    self.id= row[0]
+                    self.tablaL2.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                    self.tablaL2.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                    self.tablaL2.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                    self.tablaL2.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                    self.tablaL2.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                    self.tablaL2.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                    self.tablaL2.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                    tablerow+=1
+                count+=1
+        self.selecL.seleccionar.clicked.connect(lambda:self.btn_selectL())
         self.selecL.show()
+        
+
+    def btn_selectL(self):
+        filaSeleccionada = self.tablaL2.selectedItems()
+        if filaSeleccionada:
+            self.panel.buscar_Libro.setText(filaSeleccionada[0].text())
+        self.selecL.close()
+    
+    def btn_selectC(self):
+        filaSeleccionada = self.tablaC2.selectedItems()
+        if filaSeleccionada:
+            self.panel.buscar_Cliente.setText(filaSeleccionada[0].text())
+        self.selecC.close()
+
 
     def perfilDatos(self,userid):
         sql="SELECT Nombre,Apellido,Username,Clave,email FROM Usuarios WHERE idUsuario=?"
@@ -201,9 +290,7 @@ class PanelControl(QMainWindow):
             self.verificarCorreo()
 
     def verificarCorreo(self):
-
         self.verifCode = random.randint(100000, 999999)
-
 
         sql = "SELECT email FROM Usuarios WHERE idUsuario=?"
         param=(self.usuario,)
@@ -654,7 +741,6 @@ class PanelControl(QMainWindow):
         else:QMessageBox.critical(self, "Error", "Escriba el nombre de un Usuario ", QMessageBox.Ok) 
 
 
-
     def verdatoAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
@@ -670,10 +756,12 @@ class PanelControl(QMainWindow):
 
     def verdatoLibros(self):
         filaSeleccionada = self.tabla.selectedItems()
+        now=filaSeleccionada[2].text()
+        fecha_dt = datetime.strptime(now,'%d/%m/%Y')
         if filaSeleccionada:
             self.panel.ISBML.setText(filaSeleccionada[0].text())
             self.panel.TituloL.setText(filaSeleccionada[1].text())
-            self.panel.FechaPL.setText(filaSeleccionada[2].text())
+            self.panel.FechaPL.setDate(fecha_dt)
             self.panel.Nropags.setText(filaSeleccionada[3].text())
             self.panel.EditorialL.setText(filaSeleccionada[4].text())
             self.panel.EjemplaresL.setText(filaSeleccionada[6].text())
@@ -718,11 +806,10 @@ class PanelControl(QMainWindow):
         fecha_sal = datetime.strptime(now,'%d/%m/%Y')
         fecha_ent = datetime.strptime(now1,'%d/%m/%Y')
         if filaSeleccionada:
-            self.panel.CedulaC.setText(filaSeleccionada[1].text())
+            self.panel.buscar_Cliente.setText(filaSeleccionada[1].text())
+            self.panel.buscar_Libro.setText(filaSeleccionada[2].text())
             self.panel.dateEdit_2.setDate(fecha_sal)
             self.panel.dateEdit_3.setDate(fecha_ent)
-
-
 
 
     def verdatoUsuarios(self):
@@ -784,7 +871,9 @@ class PanelControl(QMainWindow):
         print(dato)
         ISBMn=self.panel.ISBML.text()
         Titulo=self.panel.TituloL.text()
-        FechaP=self.panel.FechaPL.text()
+        now=self.panel.FechaPL.date()
+        fecha=now.toPyDate()
+        f1_str = fecha.strftime('%d/%m/%Y')
         Nropags=self.panel.Nropags.text()
         Editorial=self.panel.EditorialL.text()
         Ejemplares=self.panel.EjemplaresL.text()
@@ -800,13 +889,13 @@ class PanelControl(QMainWindow):
         if filaSeleccionada:
             if ISBMn==dato[0]:
                 if Editorial.isalpha() and Genero.isalpha() and Ejemplares.isnumeric() and Nropags.isnumeric():
-                    if vddfi!= ISBMn+" "+Titulo+" "+FechaP+" "+Nropags+" "+Editorial+" "+Ejemplares+" "+Genero:
+                    if vddfi!= ISBMn+" "+Titulo+" "+f1_str+" "+Nropags+" "+Editorial+" "+Ejemplares+" "+Genero:
                         ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
                         if ret!=16384:
                             fila = filaSeleccionada[0].text()
                         else:
                             sql="UPDATE Libros SET Titulo=?,F_Publicacion=?,num_pags=?,Editorial=?,Ejemplares=?,Genero=? WHERE ISBM=?"
-                            param=(Titulo,FechaP,Nropags,Editorial,Ejemplares,Genero,ISBMn)
+                            param=(Titulo,f1_str,Nropags,Editorial,Ejemplares,Genero,ISBMn)
                             consulta(sql,param)
                             self.datosLibros()
                     else:
@@ -1174,7 +1263,11 @@ class PanelControl(QMainWindow):
 
     def reporteEst(self):
         # Cambiar datos por los de la bdd
+        consul="SELECT COUNT(*) FROM Prestamo WHERE ISBM=?"
+        param=("213de",)
+        print(consulta(consul,param))
         self.creaDona(30, 70)
+
         self.creaBarras("Libro1", 120, "Libro2", 80, "Libro3", 50)
 
         # Abre File Dialog

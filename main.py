@@ -1,10 +1,10 @@
 import typing
 from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QMessageBox,QLineEdit
-from PyQt5 import QtCore, uic
+from PyQt5 import QtCore, uic, QtGui
 from panel import PanelControl
 from conexion import consulta
 import sys
-import sqlite3
+from sqlite3 import *
 import re
 from email.message import EmailMessage
 import ssl
@@ -59,7 +59,33 @@ class MainWindow(QMainWindow):
 
         # Te lleva al incio despues de poner una nueva clave
         self.stacked_widget.widget(4).Seguir.clicked.connect(self.restablecerClave)
+        consul="SELECT COUNT(*) FROM Prestamo WHERE ISBM=?"
+        param=("213de",)
+        da="SELECT ISBM FROM Prestamo"
+        dato=consulta(da).fetchall()
+        for i in range(len(dato)):
+            print(i)
+            print(dato[i])
+            print(dato[i-1])
+            if dato[i] != dato[i-1]:
+                Eliminar1=str(dato[i])
+                Eliminar2=re.sub(",","",Eliminar1)
+                Eliminar3=re.sub("'","",Eliminar2)
+                Eliminar4=re.sub("()","",Eliminar3)
+                vddfi =re.sub("[()]","",Eliminar4)
+                co="SELECT COUNT(ISBM) FROM Prestamo WHERE ISBM=?"
+                param2=(vddfi,)
+                h=consulta(co,param2).fetchall()
+                print(h)
+            
 
+        #print(consulta(consul,param).fetchone())
+        consul0="SELECT COUNT(idPrestamo) FROM Prestamo WHERE ACTIVO='ACTIVO' AND idClientes=1"
+        consul2="SELECT COUNT(idUsuario) FROM Usuarios WHERE ACTIVO='ACTIVO'"
+        consul3="SELECT COUNT(idAutores) FROM Autores WHERE ACTIVO='ACTIVO'"
+        #print(consulta(consul0).fetchone())
+        #print(consulta(consul2).fetchone())
+        #print(consulta(consul3).fetchone())
 
         # Contador de veces que se escribio la clave de usuario incorrectamente
         self.contClave = 0
@@ -301,6 +327,7 @@ if __name__ == "__main__":
 
     # Crea la instancia de nuestra ventana
     window = MainWindow()
+    window.setWindowIcon(QtGui.QIcon('logo.png'))
 
     # Muestra la ventana
     window.show()
