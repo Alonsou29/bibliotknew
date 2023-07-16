@@ -1,7 +1,7 @@
 import sys
 import os
 from PyQt5 import uic, QtGui
-from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView, QInputDialog)
+from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView, QInputDialog, QLineEdit)
 from PyQt5.QtSql import *
 from conexion import consulta
 from PyQt5.QtSql import *
@@ -134,6 +134,24 @@ class PanelControl(QMainWindow):
             # Seleccionar Libro del prestamo
         self.panel.Busca_libro_prestamo.clicked.connect(lambda:self.seleccionarLibros())
 
+        # Ojitos
+        self.panel.ClaveRevelar_3.stateChanged.connect(lambda:self.ver_claveVieja())
+        self.panel.ClaveRevelar_4.stateChanged.connect(lambda:self.ver_claveNueva())
+
+
+    # Funciones de los ojitos
+
+    def ver_claveVieja(self): #Método para mostrar la contraseña cuando el checkbox está activo
+        if self.panel.ClaveRevelar_3.isChecked() == True:
+            self.panel.ClaveVieja.setEchoMode(QLineEdit.EchoMode.Normal)
+        else:
+            self.panel.ClaveVieja.setEchoMode(QLineEdit.EchoMode.Password)
+
+    def ver_claveNueva(self): #Método para mostrar la contraseña cuando el checkbox está activo
+        if self.panel.ClaveRevelar_4.isChecked() == True:
+            self.panel.ClaveNueva.setEchoMode(QLineEdit.EchoMode.Normal)
+        else:
+            self.panel.ClaveNueva.setEchoMode(QLineEdit.EchoMode.Password)
 
     def seleccionarAutores(self):
         self.selecA = Autores()
@@ -1385,12 +1403,22 @@ class PanelControl(QMainWindow):
         # Crea el pdf a partir del archivo html
         pdfkit.from_string(outpuText, outputPDF, configuration=config)
 
+    # Mantenimiento Funciones
+
     def respaldarBDD(self):
         # Abre File Dialog
         rutadestino = QFileDialog.getExistingDirectory(self, caption="Selecciona Ubicación")
-        
+
+        # Verificamos que la ubicacion seleccionada no sea la misma que la de la carpeta de bibiotk
+        pathdb = os.path.abspath("")
+        path1 = os.path.normcase(pathdb)
+        path2 = os.path.normcase(rutadestino)
+        print(path1 + " " + path2)
+
         if not rutadestino:
             return
+        elif path1 == path2:
+            QMessageBox.critical(self, "Aviso", "No se puede respaldar la base de datos en esta ubicación", QMessageBox.Ok)
         else:
             # Copia la bdd en la ruta destino
             shutil.copy2("Bibliotkmdb.db", rutadestino)
@@ -1408,7 +1436,6 @@ class PanelControl(QMainWindow):
             ruta = os.path.normpath(rutadestino[0])
             nombreArchivo = ruta.split(os.sep)[-1]
 
-            print(nombreArchivo)
             if nombreArchivo == "Bibliotkmdb.db":
                 # Copia la bdd en la ruta destino
                 QMessageBox.information(self, "Aviso", "El programa se cerrará para efectuar los cambios", QMessageBox.Ok)
@@ -1439,17 +1466,16 @@ class PanelControl(QMainWindow):
         else:
             QMessageBox.critical(self, "No se puede abrir el archivo", "Es posible que el archivo haya sido eliminado o se haya movido de lugar", QMessageBox.Ok)
 
-# if __name__ == "__main__":
-#     # Crea la app de Pyqt5
-#     app = QApplication([])
+if __name__ == "__main__":
+    # Crea la app de Pyqt5
+    app = QApplication([])
 
-#     # Crea la instancia de nuestra ventana
-#     window = PanelControl()
-#     window.usuario = "1"
-#     window.privilegios()
+    # Crea la instancia de nuestra ventana
+    window = PanelControl("1")
+    window.privilegios()
 
-#     # Muestra la ventana
-#     window.show()
+    # Muestra la ventana
+    window.show()
 
-#     # Ejecuta la app
-#     app.exec_()
+    # Ejecuta la app
+    app.exec_()

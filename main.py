@@ -57,6 +57,11 @@ class MainWindow(QMainWindow):
         # Vuelve a enviar el codigo de verificacion en caso de que no haya llegado el correo
         self.stacked_widget.widget(3).Reenviar.clicked.connect(self.restablecerCorreo)
 
+        # Ojitos de recuperar clave
+        self.stacked_widget.widget(4).ClaveRevelar_3.stateChanged.connect(self.ver_claveNueva)
+
+        self.stacked_widget.widget(4).ClaveRevelar_4.stateChanged.connect(self.ver_claveOtraVez)
+
         # Te lleva al incio despues de poner una nueva clave
         self.stacked_widget.widget(4).Seguir.clicked.connect(self.restablecerClave)
         consul="SELECT COUNT(*) FROM Prestamo WHERE ISBM=?"
@@ -312,13 +317,26 @@ class MainWindow(QMainWindow):
             print("no esta en bdd") 
             return False 
         
-
+    # Ojito de login
     def ver_password(self): #Método para mostrar la contraseña cuando el checkbox está activo
         if self.stacked_widget.widget(1).ClaveRevelar.isChecked() == True:
             self.stacked_widget.widget(1).TFClave.setEchoMode(QLineEdit.EchoMode.Normal)
         else:
             self.stacked_widget.widget(1).TFClave.setEchoMode(QLineEdit.EchoMode.Password)
 
+    # Ojito recuperar clave nueva
+    def ver_claveNueva(self): #Método para mostrar la contraseña cuando el checkbox está activo
+        if self.stacked_widget.widget(4).ClaveRevelar_3.isChecked() == True:
+            self.stacked_widget.widget(4).TFClave.setEchoMode(QLineEdit.EchoMode.Normal)
+        else:
+            self.stacked_widget.widget(4).TFClave.setEchoMode(QLineEdit.EchoMode.Password)
+
+    # Ojito recuperar clave otraves
+    def ver_claveOtraVez(self): #Método para mostrar la contraseña cuando el checkbox está activo
+        if self.stacked_widget.widget(4).ClaveRevelar_4.isChecked() == True:
+            self.stacked_widget.widget(4).TFClave_2.setEchoMode(QLineEdit.EchoMode.Normal)
+        else:
+            self.stacked_widget.widget(4).TFClave_2.setEchoMode(QLineEdit.EchoMode.Password)
 
 # Inicio de la aplicacion
 if __name__ == "__main__":

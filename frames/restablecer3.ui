@@ -304,66 +304,6 @@ QCheckBox::indicator:checked:pressed {
       </size>
      </property>
     </widget>
-    <widget class="QCheckBox" name="ClaveRevelar_2">
-     <property name="geometry">
-      <rect>
-       <x>540</x>
-       <y>340</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QCheckBox {
-    spacing: 5px;
-}
-
-QCheckBox::indicator {
-    width: 28px;
-    height: 30px;
-}
-
-QCheckBox::indicator:unchecked {
-   
-	image: url(:/imagenes/ocultar.png);
-}
-
-QCheckBox::indicator:unchecked:hover {
-    image: url(:/imagenes/ocultar.png);
-}
-
-QCheckBox::indicator:unchecked:pressed {
-    
-	background-color: #088ADA;
-}
-
-QCheckBox::indicator:checked {
-    
-	image: url(:/imagenes/ver.png);
-}
-
-QCheckBox::indicator:checked:hover {
-   image: url(:/imagenes/ver.png);
-}
-
-QCheckBox::indicator:checked:pressed {
-    background-color: #088ADA;
-}
-
-
-
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="ClaveRevelar_3">
      <property name="geometry">
       <rect>
@@ -504,7 +444,6 @@ QCheckBox::indicator:checked:pressed {
     <zorder>TFClave</zorder>
     <zorder>TFClave_2</zorder>
     <zorder>ClaveRevelar</zorder>
-    <zorder>ClaveRevelar_2</zorder>
     <zorder>ClaveRevelar_3</zorder>
     <zorder>ClaveRevelar_4</zorder>
    </widget>
