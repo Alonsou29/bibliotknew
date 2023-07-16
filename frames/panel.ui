@@ -63,7 +63,7 @@ background-color: #4b0081; /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -514,7 +514,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>10</number>
+        <number>40</number>
        </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
@@ -553,7 +553,7 @@ color: white;
         <string/>
        </property>
        <property name="maxLength">
-        <number>10</number>
+        <number>40</number>
        </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>

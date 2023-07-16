@@ -172,7 +172,7 @@ class MainWindow(QMainWindow):
     def restablecerClave(self):
         clave1 = self.stacked_widget.widget(4).TFClave.text()
         clave2 = self.stacked_widget.widget(4).TFClave_2.text()
-        # Poner ojitos
+
         if clave1 == clave2:
             validado = self.validarClave(clave1)
             if validado:

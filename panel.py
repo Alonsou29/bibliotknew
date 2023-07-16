@@ -134,9 +134,15 @@ class PanelControl(QMainWindow):
             # Seleccionar Libro del prestamo
         self.panel.Busca_libro_prestamo.clicked.connect(lambda:self.seleccionarLibros())
 
-        # Ojitos
+            # Ojitos
         self.panel.ClaveRevelar_3.stateChanged.connect(lambda:self.ver_claveVieja())
         self.panel.ClaveRevelar_4.stateChanged.connect(lambda:self.ver_claveNueva())
+
+            # Cambiar clave en perfil
+        self.panel.Cambiar_Cla.clicked.connect(lambda:self.cambiarClave())
+
+            # Cambiar datos en perfil
+        self.panel.Modificar_P.clicked.connect(lambda:self.modificarPerfil())
 
 
     # Funciones de los ojitos
@@ -264,6 +270,87 @@ class PanelControl(QMainWindow):
             self.panel.UsernamePerfil.setText(i[2])
             self.panel.EmailPerfil.setText(i[4])
 
+    def modificarPerfil(self):
+        nombre = self.panel.NombrePerfil.text()
+        apellido = self.panel.ApellidoPerfil.text()
+        username = self.panel.UsernamePerfil.text()
+        email = self.panel.EmailPerfil.text()
+
+        validacion=True
+        
+        if not re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,15}$',email.lower()):
+            validacion = False
+
+        if nombre.isalpha() and apellido.isalpha():
+            if validacion == True:
+                sql="UPDATE Usuarios SET Nombre=?,Apellido=?,Username=?,email=? WHERE idUsuario=?"
+                param=(nombre,apellido,username,email, self.usuario)
+                consulta(sql,param)
+
+                asuntoCorreo = "Tus datos han sido modificados"
+                cuerpoCorreo = """Estimado usuario, se le notifica que sus datos de usuario han sido actualizados exitosamente.
+                Si usted no ha solicitado estos cambios por favor comuniquese con un administrador.
+
+                Bibliotk Software"""
+                
+                self.enviarCorreo(email, asuntoCorreo, cuerpoCorreo)
+                self.perfilDatos()
+            else:
+                QMessageBox.question(self, '¡Aviso!' , "Correo no valido" , QMessageBox.Ok)
+        else:
+            QMessageBox.question(self, '¡Aviso!' , "Los campos de Nombre y Apellido no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+
+    def cambiarClave(self):
+        clave1 = self.panel.ClaveVieja.text()
+        clave2 = self.panel.ClaveNueva.text()
+
+        if clave1 == clave2:
+            validado = self.validarClave(clave1)
+            if validado:
+                sql1 = "SELECT Clave FROM Usuarios WHERE idUsuario=?"
+                param=(self.usuario,)
+                dato = consulta(sql1,param).fetchone()
+                Eliminar1=str(dato)
+                Eliminar2=re.sub(",","",Eliminar1)
+                Eliminar3=re.sub("'","",Eliminar2)
+                Eliminar4=re.sub("()","",Eliminar3)
+                clavePerfil =re.sub("[()]","",Eliminar4)
+
+                if clavePerfil != clave1:
+                    # Cambia clave del usario con el correo self.correoR en la bdd
+                    sql="UPDATE Usuarios SET Clave=? WHERE idUsuario=?"
+                    param=(clave1, self.usuario)
+                    consulta(sql,param)
+
+                    # Enviamos un correo de notificacion
+                    sql2 = "SELECT email FROM Usuarios WHERE idUsuario=?"
+                    param=(self.usuario,)
+                    dato = consulta(sql2,param).fetchone()
+                    Eliminar1=str(dato)
+                    Eliminar2=re.sub(",","",Eliminar1)
+                    Eliminar3=re.sub("'","",Eliminar2)
+                    Eliminar4=re.sub("()","",Eliminar3)
+                    emailPerfil =re.sub("[()]","",Eliminar4)
+
+                    asuntoCorreo = "Contraseña modificada"
+                    cuerpoCorreo = """Estimado usuario, se le notifica que su contraseña ha sido actualizada exitosamente.
+                    Si usted no ha solicitado estos cambios por favor comuniquese con un administrador.
+
+                    Bibliotk Software"""
+
+                    self.enviarCorreo(emailPerfil, asuntoCorreo, cuerpoCorreo)
+                    QMessageBox.question(self, 'Aviso' , "Cambios realizados exitosamente" , QMessageBox.Ok)
+                    self.panel.ClaveVieja.setText("")
+                    self.panel.ClaveNueva.setText("")
+                else:
+                    QMessageBox.critical(self, "Aviso", "El usuario ya tiene esta clave", QMessageBox.Ok)
+                    self.panel.ClaveVieja.setText("")
+                    self.panel.ClaveNueva.setText("")
+            else:
+                self.panel.ClaveVieja.setText("")
+                self.panel.ClaveNueva.setText("")
+        else:
+            QMessageBox.critical(self, "Error", "Las contraseñas no coinciden", QMessageBox.Ok)
 
     def privilegios(self):
         # Verificamos si el usuario es admin o no
@@ -293,7 +380,7 @@ class PanelControl(QMainWindow):
 
     def perfilIr(self):
         self.panel.stackedWidget.setCurrentIndex(1)
-        # Comprobamos si el usuario está ferificado o no
+        # Comprobamos si el usuario está verificado o no
         sql = "SELECT Verificado FROM Usuarios WHERE idUsuario=?"
         param=(self.usuario,)
         dato = consulta(sql,param).fetchone()
@@ -963,7 +1050,7 @@ class PanelControl(QMainWindow):
                 else:
                      QMessageBox.question(self, '¡Aviso!' , "Correo no valido" , QMessageBox.Ok)
             else:
-                QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+                QMessageBox.question(self, '¡Aviso!' , "Los campos de Nombre y Apellido no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
                 
 
     def ModificarClientes(self):
