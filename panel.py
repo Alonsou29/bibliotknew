@@ -15,6 +15,8 @@ from datetime import *
 from email.message import EmailMessage
 import ssl
 import smtplib
+from socket import gaierror
+from urllib.error import URLError
 import random
 from autores import Autores
 from clientes import Clientes
@@ -89,8 +91,7 @@ class PanelControl(QMainWindow):
         self.panel.RefrescarC.clicked.connect(lambda:self.datosClientes())
 
             #Eliminar Usuarios
-        EliminarUsql="UPDATE Usuarios SET Activo = 'INACTIVO' WHERE idUsuario=?"
-        self.panel.EliminarU.clicked.connect(lambda:self.eliminarFila(EliminarUsql))
+        self.panel.EliminarU.clicked.connect(lambda:self.eliminarUser())
         self.panel.RefrescarU.clicked.connect(lambda:self.datosUsuarios())
 
             #Eliminar Prestamos
@@ -148,6 +149,31 @@ class PanelControl(QMainWindow):
             # Cambiar datos en perfil
         self.panel.Modificar_P.clicked.connect(lambda:self.modificarPerfil())
 
+
+    #Elimina las filas de usuario
+    def eliminarUser(self):
+        filaSeleccionada = self.tabla.selectedItems()
+
+        if filaSeleccionada:
+            ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Seguro que desea eliminar esta fila?" , QMessageBox.Yes | QMessageBox.No)
+            print(ret)
+            if ret!=16384:
+                fila = filaSeleccionada[0].text()
+                fila2 = filaSeleccionada[0].row()
+            else:
+                if filaSeleccionada:
+                        fila = filaSeleccionada[0].text()
+                        fila2 = filaSeleccionada[0].row()
+                        if fila != self.usuario:
+                            param2=(fila,)
+                            sql = "UPDATE Usuarios SET Activo = 'INACTIVO' WHERE idUsuario=?"
+                            consulta(sql,param2)
+                            self.tabla.setRowHidden(fila2, True)
+                            self.tabla.clearSelection()
+                        else:
+                            QMessageBox.critical(self, "Aviso", "No se puede borrar el usuario actual", QMessageBox.Ok)
+        else:
+            QMessageBox.critical(self, "Eliminar fila", "Seleccione una fila.   ", QMessageBox.Ok)
 
     # Funciones de los ojitos
 
@@ -369,18 +395,53 @@ class PanelControl(QMainWindow):
 
         if nombre.isalpha() and apellido.isalpha():
             if validacion == True:
-                sql="UPDATE Usuarios SET Nombre=?,Apellido=?,Username=?,email=? WHERE idUsuario=?"
-                param=(nombre,apellido,username,email, self.usuario)
-                consulta(sql,param)
 
-                asuntoCorreo = "Tus datos han sido modificados"
-                cuerpoCorreo = """Estimado usuario, se le notifica que sus datos de usuario han sido actualizados exitosamente.
-                Si usted no ha solicitado estos cambios por favor comuniquese con un administrador.
+                # Verificamos que otro usuario no tenga el mismo username
+                sql2 = "SELECT Username FROM Usuarios WHERE Username=? AND NOT idUsuario=?"
+                param2 = (username, self.usuario)
 
-                Bibliotk Software"""
-                
-                self.enviarCorreo(email, asuntoCorreo, cuerpoCorreo)
-                self.perfilDatos()
+                dato = consulta(sql2, param2).fetchone()
+                EliminarU1=str(dato)
+                EliminarU2=re.sub(",","",EliminarU1)
+                EliminarU3=re.sub("'","",EliminarU2)
+                EliminarU4=re.sub("()","",EliminarU3)
+                usernames =re.sub("[()]","",EliminarU4)
+
+                if usernames == "None":
+
+                    # Verificamos que otro usuario no tenga el mismo correo
+                    sql3 = "SELECT email FROM Usuarios WHERE UPPER(email)=UPPER(?) AND NOT idUsuario=?"
+                    param3 = (email, self.usuario)
+
+                    dato2 = consulta(sql3, param3).fetchone()
+                    EliminarE1=str(dato2)
+                    EliminarE2=re.sub(",","",EliminarE1)
+                    EliminarE3=re.sub("'","",EliminarE2)
+                    EliminarE4=re.sub("()","",EliminarE3)
+                    emails =re.sub("[()]","",EliminarE4)
+
+                    if emails == "None":
+                        asuntoCorreo = "Tus datos serán modificados"
+                        cuerpoCorreo = """Estimado usuario, se le notifica que sus datos de usuario serán modificados.
+                        Si usted no ha solicitado estos cambios por favor comuniquese con un administrador.
+
+                        Bibliotk Software"""
+                        
+                        enviado = self.enviarCorreo(email, asuntoCorreo, cuerpoCorreo)
+                        if enviado:
+                            sql="UPDATE Usuarios SET Nombre=?,Apellido=?,Username=?,email=? WHERE idUsuario=?"
+                            param=(nombre,apellido,username,email, self.usuario)
+                            consulta(sql,param)
+                            QMessageBox.question(self, 'Aviso' , "Cambios realizados exitosamente" , QMessageBox.Ok)
+                            self.perfilDatos()
+                        else:
+                            QMessageBox.critical(self,"Aviso", "No se ha podido enviar email para modificar sus datos. Verifique su conexión a internet")
+                    else:
+                        QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Email", QMessageBox.Ok)
+                        self.perfilDatos()
+                else:
+                    QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Username", QMessageBox.Ok)
+                    self.perfilDatos()
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Correo no valido" , QMessageBox.Ok)
         else:
@@ -403,10 +464,7 @@ class PanelControl(QMainWindow):
                 clavePerfil =re.sub("[()]","",Eliminar4)
 
                 if clavePerfil != clave1:
-                    # Cambia clave del usario con el correo self.correoR en la bdd
-                    sql="UPDATE Usuarios SET Clave=? WHERE idUsuario=?"
-                    param=(clave1, self.usuario)
-                    consulta(sql,param)
+                    
 
                     # Enviamos un correo de notificacion
                     sql2 = "SELECT email FROM Usuarios WHERE idUsuario=?"
@@ -419,15 +477,22 @@ class PanelControl(QMainWindow):
                     emailPerfil =re.sub("[()]","",Eliminar4)
 
                     asuntoCorreo = "Contraseña modificada"
-                    cuerpoCorreo = """Estimado usuario, se le notifica que su contraseña ha sido actualizada exitosamente.
+                    cuerpoCorreo = """Estimado usuario, se le notifica que su contraseña será modificada.
                     Si usted no ha solicitado estos cambios por favor comuniquese con un administrador.
 
                     Bibliotk Software"""
 
-                    self.enviarCorreo(emailPerfil, asuntoCorreo, cuerpoCorreo)
-                    QMessageBox.question(self, 'Aviso' , "Cambios realizados exitosamente" , QMessageBox.Ok)
-                    self.panel.ClaveVieja.setText("")
-                    self.panel.ClaveNueva.setText("")
+                    enviado = self.enviarCorreo(emailPerfil, asuntoCorreo, cuerpoCorreo)
+                    if enviado:
+                        # Cambia clave del usario con el correo self.correoR en la bdd
+                        sql="UPDATE Usuarios SET Clave=? WHERE idUsuario=?"
+                        param=(clave1, self.usuario)
+                        consulta(sql,param)
+                        QMessageBox.question(self, 'Aviso' , "Cambios realizados exitosamente" , QMessageBox.Ok)
+                        self.panel.ClaveVieja.setText("")
+                        self.panel.ClaveNueva.setText("")
+                    else:
+                        QMessageBox.critical(self, "Aviso", "No se ha podido enviar email para modificar su contraseña. Verifique su conexión a internet")
                 else:
                     QMessageBox.critical(self, "Aviso", "El usuario ya tiene esta clave", QMessageBox.Ok)
                     self.panel.ClaveVieja.setText("")
@@ -503,49 +568,60 @@ class PanelControl(QMainWindow):
 
         Bibliotk Software"""
         # print(str(self.verifCode))
-        self.enviarCorreo(emailUser, asuntoCorreo, cuerpoCorreo)
-        
-        numeroCorrecto = False
+        enviado = self.enviarCorreo(emailUser, asuntoCorreo, cuerpoCorreo)
+        if enviado:
+            numeroCorrecto = False
 
-        while not numeroCorrecto:
-            numero, estado = QInputDialog().getText(self, "Verificar Correo", "Para verificar su correo electrónico le hemos enviado\nun código de verificación, ingrese el código aquí: ")
-            if estado:
-                if numero.isdigit():
-                    if numero == str(self.verifCode):
-                        # En bdd cambiar verificado a SI
-                        sql="UPDATE Usuarios SET Verificado=? WHERE email=?"
-                        param=("SI", emailUser)
-                        consulta(sql,param)
+            while not numeroCorrecto:
+                numero, estado = QInputDialog().getText(self, "Verificar Correo", "Para verificar su correo electrónico le hemos enviado\nun código de verificación, ingrese el código aquí: ")
+                if estado:
+                    if numero.isdigit():
+                        if numero == str(self.verifCode):
+                            # En bdd cambiar verificado a SI
+                            sql="UPDATE Usuarios SET Verificado=? WHERE email=?"
+                            param=("SI", emailUser)
+                            consulta(sql,param)
 
-                        QMessageBox.information(self, "Aviso", "Correo verificado", QMessageBox.Ok)
-                        numeroCorrecto = True
+                            QMessageBox.information(self, "Aviso", "Correo verificado", QMessageBox.Ok)
+                            numeroCorrecto = True
+                        else:
+                            QMessageBox.critical(self, "Error", "Código incorrecto")
                     else:
-                        QMessageBox.critical(self, "Error", "Código incorrecto")
+                        QMessageBox.critical(self, "Error", "Código inválido")
                 else:
-                    QMessageBox.critical(self, "Error", "Código inválido")
-            else:
-                numeroCorrecto = True
+                    numeroCorrecto = True
+        else:
+            QMessageBox.critical(self, "Aviso", "No se ha podido enviar codigo para verificar su email")
     
 
     def enviarCorreo(self, email_receptor, asunto, cuerpo):
-        email_emisor = "bibliotksoftware@gmail.com"
-        email_clave = "lhztgqvmlivfklkt"
+        try:
+            email_emisor = "bibliotksoftware@gmail.com"
+            email_clave = "lhztgqvmlivfklkt"
 
-        # Preparamos el correo que enviaremos
-        em = EmailMessage()
-        em["From"] = email_emisor
-        em["To"] = email_receptor
-        em["Subject"] = asunto
-        em.set_content(cuerpo)
-        contexto = ssl.create_default_context()
+            # Preparamos el correo que enviaremos
+            em = EmailMessage()
+            em["From"] = email_emisor
+            em["To"] = email_receptor
+            em["Subject"] = asunto
+            em.set_content(cuerpo)
+            contexto = ssl.create_default_context()
 
-        # "smtp.gmail.com" es el tipo de correo del emisor
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=contexto) as smtp:
-            # Iniciamos sesion en bibliotksoftware@gmail.com
-            smtp.login(email_emisor, email_clave)
+            # "smtp.gmail.com" es el tipo de correo del emisor
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=contexto) as smtp:
+                # Iniciamos sesion en bibliotksoftware@gmail.com
+                smtp.login(email_emisor, email_clave)
 
-            # Enviamos email
-            smtp.sendmail(email_emisor, email_receptor, em.as_string())
+                # Enviamos email
+                smtp.sendmail(email_emisor, email_receptor, em.as_string())
+        
+            return True
+        except (gaierror, URLError):
+            QMessageBox.critical(self, "Error", "No se ha podido enviar el email debido a problemas de conexión, verifique su conexión a internet.")
+            return False
+        except smtplib.SMTPException as e:
+            QMessageBox.critical(self, "Error", "Se ha presentado un error al enviar el email: " + e)
+            return False
 
     def clientesIr(self):
         self.panel.stackedWidget.setCurrentIndex(2)
@@ -860,12 +936,12 @@ class PanelControl(QMainWindow):
         else:QMessageBox.critical(self, "Error", "Escriba el Titulo de un libro ", QMessageBox.Ok)
 
     def buscarClientes(self):
-        name=(self.panel.CCBuscar.text(),)
-        sql="SELECT Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,FechaNa,EstatusCliente FROM Clientes WHERE Nombre=?"
-        datos=consulta(sql,name).fetchall()
+        cedu=(self.panel.CCBuscar.text(),)
+        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,FechaNa,EstatusCliente FROM Clientes WHERE Cedula=?"
+        datos=consulta(sql,cedu).fetchall()
 
-        sql2="SELECT Activo FROM Clientes WHERE Nombre=?"
-        eliminar=consulta(sql2,name).fetchone()
+        sql2="SELECT Activo FROM Clientes WHERE Cedula=?"
+        eliminar=consulta(sql2,cedu).fetchone()
         Eliminar1=str(eliminar)
         Eliminar2=re.sub(",","",Eliminar1)
         Eliminar3=re.sub("'","",Eliminar2)
@@ -873,7 +949,7 @@ class PanelControl(QMainWindow):
         vddfi =re.sub("[()]","",Eliminar4)
         
         print(vddfi)
-        if name!=('',):
+        if cedu!=('',):
             if datos!=[]:
                 if vddfi=='ACTIVO':
                     for row in datos:
@@ -1161,10 +1237,40 @@ class PanelControl(QMainWindow):
                         if ret!=16384:
                             fila = filaSeleccionada[0].text()
                         else:
-                            sql="UPDATE Usuarios SET Nombre=?,Apellido=?,Username=?,Clave=?,email=?,Privilegios=? WHERE idUsuario=?"
-                            param=(Nombre,apellido,Username,Clave,email,Privilegios,fila)
-                            consulta(sql,param)
-                            self.datosUsuarios()
+
+                            # Verificamos que otro usuario no tenga el mismo username
+                            sql2 = "SELECT Username FROM Usuarios WHERE Username=? AND NOT idUsuario=?"
+                            param2 = (Username, fila)
+
+                            dato = consulta(sql2, param2).fetchone()
+                            EliminarU1=str(dato)
+                            EliminarU2=re.sub(",","",EliminarU1)
+                            EliminarU3=re.sub("'","",EliminarU2)
+                            EliminarU4=re.sub("()","",EliminarU3)
+                            usernames =re.sub("[()]","",EliminarU4)
+
+                            if usernames == "None":
+
+                                # Verificamos que otro usuario no tenga el mismo correo
+                                sql3 = "SELECT email FROM Usuarios WHERE UPPER(email)=UPPER(?) AND NOT idUsuario=?"
+                                param3 = (email, fila)
+
+                                dato2 = consulta(sql3, param3).fetchone()
+                                EliminarE1=str(dato2)
+                                EliminarE2=re.sub(",","",EliminarE1)
+                                EliminarE3=re.sub("'","",EliminarE2)
+                                EliminarE4=re.sub("()","",EliminarE3)
+                                emails =re.sub("[()]","",EliminarE4)
+
+                                if emails == "None":
+                                    sql="UPDATE Usuarios SET Nombre=?,Apellido=?,Username=?,Clave=?,email=?,Privilegios=? WHERE idUsuario=?"
+                                    param=(Nombre,apellido,Username,Clave,email,Privilegios,fila)
+                                    consulta(sql,param)
+                                    self.datosUsuarios()
+                                else:
+                                    QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Email", QMessageBox.Ok)
+                            else:
+                                QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Username", QMessageBox.Ok)
                     else:
                         QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
                 else:
@@ -1321,14 +1427,44 @@ class PanelControl(QMainWindow):
 
             if Nombre!="" and apellido!="" and Username!="" and Clave!="" and email!="" and Privilegios!="Seleccione Privilegios:":
                 if Nombre.isalpha() and apellido.isalpha() and validacion==True and self.validarClave(Clave):
-                    consulta(sql,param)
-                    self.panel.NombreU.clear()
-                    self.panel.ApellidoU.clear()
-                    self.panel.UsernameU.clear()
-                    self.panel.ClaveU.clear()
-                    self.panel.EmailU.clear()
-                    self.panel.ComboGC_2.setCurrentIndex(0)
-                    QMessageBox.question(self, '¡EXITO!' , "Usuario registrado exitosamente" , QMessageBox.Ok)
+
+                    # Verificamos que otro usuario no tenga el mismo username
+                    sql2 = "SELECT Username FROM Usuarios WHERE Username=?"
+                    param2 = (Username,)
+
+                    dato = consulta(sql2, param2).fetchone()
+                    EliminarU1=str(dato)
+                    EliminarU2=re.sub(",","",EliminarU1)
+                    EliminarU3=re.sub("'","",EliminarU2)
+                    EliminarU4=re.sub("()","",EliminarU3)
+                    usernames =re.sub("[()]","",EliminarU4)
+
+                    if usernames == "None":
+
+                        # Verificamos que otro usuario no tenga el mismo correo
+                        sql3 = "SELECT email FROM Usuarios WHERE email=? COLLATE NOCASE"
+                        param3 = (email,)
+
+                        dato2 = consulta(sql3, param3).fetchone()
+                        EliminarE1=str(dato2)
+                        EliminarE2=re.sub(",","",EliminarE1)
+                        EliminarE3=re.sub("'","",EliminarE2)
+                        EliminarE4=re.sub("()","",EliminarE3)
+                        emails =re.sub("[()]","",EliminarE4)
+
+                        if emails == "None":
+                            consulta(sql,param)
+                            self.panel.NombreU.clear()
+                            self.panel.ApellidoU.clear()
+                            self.panel.UsernameU.clear()
+                            self.panel.ClaveU.clear()
+                            self.panel.EmailU.clear()
+                            self.panel.ComboGC_2.setCurrentIndex(0)
+                            QMessageBox.question(self, '¡EXITO!' , "Usuario registrado exitosamente" , QMessageBox.Ok)
+                        else:
+                            QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Email", QMessageBox.Ok)
+                    else:
+                        QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Username", QMessageBox.Ok)
                 else:
                     QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
             else:

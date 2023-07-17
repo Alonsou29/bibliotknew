@@ -9,6 +9,8 @@ import re
 from email.message import EmailMessage
 import ssl
 import smtplib
+from socket import gaierror
+from urllib.error import URLError
 import random
 
 
@@ -143,7 +145,7 @@ class MainWindow(QMainWindow):
         self.correoR = self.stacked_widget.widget(2).TFCorreo.text()
 
         # Verifica que el correo ingresado este en la bdd
-        sql="SELECT idUsuario FROM Usuarios WHERE email=? AND Activo=?"
+        sql="SELECT idUsuario FROM Usuarios WHERE UPPER(email)=UPPER(?) AND Activo=?"
         param=(self.correoR, "ACTIVO") 
         dato=consulta(sql,param).fetchone()
         Eliminar1=str(dato)
@@ -153,8 +155,11 @@ class MainWindow(QMainWindow):
         idUser =re.sub("[()]","",Eliminar4)
 
         if idUser != "None":
-            self.restablecerCorreo()
-            self.stacked_widget.setCurrentIndex(3)
+            enviado = self.restablecerCorreo()
+            if enviado:
+                self.stacked_widget.setCurrentIndex(3)
+            else:
+                self.mainIr()
         else:
             QMessageBox.critical(self, "Aviso", "Este correo no pertenece a ningún usuario", QMessageBox.Ok)
 
@@ -182,7 +187,12 @@ class MainWindow(QMainWindow):
 
         Bibliotk Software"""
         # print(str(self.verifCode))
-        self.enviarCorreo(self.correoR, asuntoCorreo, cuerpoCorreo)
+        enviado = self.enviarCorreo(self.correoR, asuntoCorreo, cuerpoCorreo)
+
+        if enviado:
+            return True
+        else:
+            return False
 
     def restablecerClave(self):
         clave1 = self.stacked_widget.widget(4).TFClave.text()
@@ -191,18 +201,22 @@ class MainWindow(QMainWindow):
         if clave1 == clave2:
             validado = self.validarClave(clave1)
             if validado:
-                # Cambia clave del usario con el correo self.correoR en la bdd
-                sql="UPDATE Usuarios SET Clave=? WHERE email=?"
-                param=(clave1, self.correoR)
-                consulta(sql,param)
-                asuntoCorreo = "Contaseña Reestablecida"
-                cuerpoCorreo = """Estimado usuario, se le notifica que su contraseña ha sido restablecida exitosamente.
+                asuntoCorreo = "Contraseña Reestablecida"
+                cuerpoCorreo = """Estimado usuario, se le notifica que su contraseña será reestablecida.
                 Si usted no ha solicitado estos cambios por favor comuniquese con un administrador.
 
                 Bibliotk Software"""
-                self.enviarCorreo(self.correoR, asuntoCorreo, cuerpoCorreo)
-                QMessageBox.question(self, 'Aviso' , "Cambios realizados exitosamente" , QMessageBox.Ok)
-                self.mainIr()
+                enviado = self.enviarCorreo(self.correoR, asuntoCorreo, cuerpoCorreo)
+
+                if enviado:
+                    # Cambia clave del usario con el correo self.correoR en la bdd
+                    sql="UPDATE Usuarios SET Clave=? WHERE UPPER(email)=UPPER(?)"
+                    param=(clave1, self.correoR)
+                    consulta(sql,param)
+                    QMessageBox.question(self, 'Aviso' , "Cambios realizados exitosamente" , QMessageBox.Ok)
+                    self.mainIr()
+                else:
+                    self.mainIr()
             else:
                 self.stacked_widget.widget(4).TFClave.setText("")
                 self.stacked_widget.widget(4).TFClave_2.setText("")
@@ -239,24 +253,33 @@ class MainWindow(QMainWindow):
 
     # Funcion para enviar correos
     def enviarCorreo(self, email_receptor, asunto, cuerpo):
-        email_emisor = "bibliotksoftware@gmail.com"
-        email_clave = "lhztgqvmlivfklkt"
+        try:
+            email_emisor = "bibliotksoftware@gmail.com"
+            email_clave = "lhztgqvmlivfklkt"
 
-        # Preparamos el correo que enviaremos
-        em = EmailMessage()
-        em["From"] = email_emisor
-        em["To"] = email_receptor
-        em["Subject"] = asunto
-        em.set_content(cuerpo)
-        contexto = ssl.create_default_context()
+            # Preparamos el correo que enviaremos
+            em = EmailMessage()
+            em["From"] = email_emisor
+            em["To"] = email_receptor
+            em["Subject"] = asunto
+            em.set_content(cuerpo)
+            contexto = ssl.create_default_context()
 
-        # "smtp.gmail.com" es el tipo de correo del emisor
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=contexto) as smtp:
-            # Iniciamos sesion en bibliotksoftware@gmail.com
-            smtp.login(email_emisor, email_clave)
+            # "smtp.gmail.com" es el tipo de correo del emisor
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=contexto) as smtp:
+                # Iniciamos sesion en bibliotksoftware@gmail.com
+                smtp.login(email_emisor, email_clave)
 
-            # Enviamos email
-            smtp.sendmail(email_emisor, email_receptor, em.as_string())
+                # Enviamos email
+                smtp.sendmail(email_emisor, email_receptor, em.as_string())
+        
+            return True
+        except (gaierror, URLError):
+            QMessageBox.critical(self, "Error", "No se ha podido enviar el email debido a problemas de conexión, verifique su conexión a internet.")
+            return False
+        except smtplib.SMTPException as e:
+            QMessageBox.critical(self, "Error", "Se ha presentado un error al enviar el email: " + e)
+            return False
 
     # Funciones para validar antes de pasar al panel
     def panelIr(self):
@@ -312,8 +335,8 @@ class MainWindow(QMainWindow):
         user=str(self.stacked_widget.widget(1).TFUser.text())   
         claveU=str(self.stacked_widget.widget(1).TFClave.text(),)
         #se hace la consulta a la bdd
-        consul="SELECT Clave FROM Usuarios WHERE Username=?"
-        param=(user,)
+        consul="SELECT Clave FROM Usuarios WHERE Username=? AND Activo=?"
+        param=(user, "ACTIVO")
         Clave=consulta(consul,param).fetchone()
         #Esto elimina caracteres que da la bdd
         Clave1=str(Clave)
