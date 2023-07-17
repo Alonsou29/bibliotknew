@@ -40,6 +40,7 @@ class PanelControl(QMainWindow):
 
         # Variable que usaremos para almacenar el id del usuario
         self.usuario = userid
+        print(self.usuario)
 
         self.perfilDatos(self.usuario)
 
@@ -114,12 +115,14 @@ class PanelControl(QMainWindow):
 
             #Modificar Prestamos
         self.panel.tabla_Prestamos.clicked.connect(lambda:self.verdatoPrestamos())
+        self.panel.ModificarP.clicked.connect(lambda:self.modificarPrestamos())
 
             #Insertar datos
         self.panel.NuevoA.clicked.connect(lambda:self.InsertarAutores())
         self.panel.NuevoU.clicked.connect(lambda:self.InsertarUsuarios())
         self.panel.NuevoC.clicked.connect(lambda:self.InsertarClientes())
         self.panel.NuevoL.clicked.connect(lambda:self.InsertarLibros())
+        self.panel.NuevoP.clicked.connect(lambda:self.insertarPrestamo())
 
             # Generar Reportes
         self.panel.Generar_Reportes_E.clicked.connect(lambda:self.reporteEst()) # Estadisticas
@@ -659,6 +662,8 @@ class PanelControl(QMainWindow):
         self.tableWidget.setRowCount(colum)
         tablerow=0
         count=0
+        self.panel.buscar_Cliente.clear()
+        self.panel.buscar_Libro.clear()
 
         for i in eliminar:
             Verf=i
@@ -667,8 +672,7 @@ class PanelControl(QMainWindow):
             Eliminar3=re.sub("'","",Eliminar2)
             Eliminar4=re.sub("()","",Eliminar3)
             vddfi =re.sub("[()]","",Eliminar4)
-            print(i)
-            print(vddfi)
+
             for row in res:
                 if vddfi!="ACTIVO":
                     self.tabla.setRowHidden(count, True)
@@ -710,32 +714,27 @@ class PanelControl(QMainWindow):
         sql="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE Nombre LIKE ?"
         ultimo=len(name)
         letra=(name[0]+'%'+name[ultimo-1],)
-        param=(letra,)
         datos=consulta(sql,letra).fetchall()
         print(datos)
 
         sql2="SELECT Activo FROM Autores WHERE Nombre LIKE ?"
-        eliminar=consulta(sql2,letra).fetchone()
-        Eliminar1=str(eliminar)
-        Eliminar2=re.sub(",","",Eliminar1)
-        Eliminar3=re.sub("'","",Eliminar2)
-        Eliminar4=re.sub("()","",Eliminar3)
-        vddfi =re.sub("[()]","",Eliminar4)
-        
+        eliminar=consulta(sql2,letra).fetchall()
+        tablerow=0
         for j in eliminar:
-            Eliminar1=str(j)
+            Eliminar1=str(j) 
             Eliminar2=re.sub(",","",Eliminar1)
             Eliminar3=re.sub("'","",Eliminar2)
-            Eliminar4=re.sub("()","",Eliminar3)
-            vddfi =re.sub("[()]","",Eliminar4)
+            Eliminar4=re.sub("[()]","",Eliminar3)
+            vddfi =re.sub("\[]","",Eliminar4)
             print(vddfi)
             if name!=('',):
                 if datos!=[]:
                     if vddfi=='ACTIVO':
                         for row in datos:
+                                    print(row)
                                     i=len(datos)
-                                    self.panel.tabla_Autores.setRowCount(i)
-                                    tablerow=0
+                                    print(i)
+                                    self.panel.tabla_Autores.setRowCount(4)
                                     self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
                                     self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
                                     self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
@@ -745,6 +744,7 @@ class PanelControl(QMainWindow):
                     else:QMessageBox.critical(self, "Error", "Autor no existente en el sistema ", QMessageBox.Ok)
                 else:QMessageBox.critical(self, "Error", "Autor no existente en el sistema ", QMessageBox.Ok)
             else:QMessageBox.critical(self, "Error", "Escriba el nombre de un autor ", QMessageBox.Ok)
+        self.panel.CdBuscar.clear()
 
     def buscarLibros(self):
         name=(self.panel.LiBuscar.text(),)
@@ -906,16 +906,20 @@ class PanelControl(QMainWindow):
     
     def verdatoPrestamos(self):
         filaSeleccionada = self.tabla.selectedItems()
-        now=filaSeleccionada[4].text()
-        now1=filaSeleccionada[5].text()
-        fecha_sal = datetime.strptime(now,'%d/%m/%Y')
-        fecha_ent = datetime.strptime(now1,'%d/%m/%Y')
         if filaSeleccionada:
+            now=filaSeleccionada[4].text()
+            now1=filaSeleccionada[5].text()
+            fecha_sal = datetime.strptime(now,'%d/%m/%Y')
+            fecha_ent = datetime.strptime(now1,'%d/%m/%Y')
+            print(filaSeleccionada[6].text())
             self.panel.buscar_Cliente.setText(filaSeleccionada[1].text())
-            self.panel.buscar_Libro.setText(filaSeleccionada[2].text())
+            self.panel.buscar_Libro.setText(filaSeleccionada[3].text())
             self.panel.dateEdit_2.setDate(fecha_sal)
             self.panel.dateEdit_3.setDate(fecha_ent)
-
+            if filaSeleccionada[6].text()!="None":
+                now2=filaSeleccionada[6].text()
+                fecha_entReal = datetime.strptime(now2,'%d/%m/%Y')
+                self.dateEdit_4.setDate(fecha_entReal)
 
     def verdatoUsuarios(self):
         filaSeleccionada = self.tabla.selectedItems()
@@ -1010,7 +1014,6 @@ class PanelControl(QMainWindow):
             else:
                 QMessageBox.question(self, '¡Aviso!' , "El ISBM no puede ser modificado" , QMessageBox.Ok)
 
-
     def ModificarUsuarios(self):
         filaSeleccionada = self.tabla.selectedItems()
         sql="SELECT Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios WHERE idUsuario=?"
@@ -1032,7 +1035,6 @@ class PanelControl(QMainWindow):
         if not re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,15}$',email.lower()):
             validacion = False
     
-
         if filaSeleccionada:
             if Nombre.isalpha() and apellido.isalpha() and self.validarClave(Clave):
                 if validacion == True:
@@ -1052,7 +1054,6 @@ class PanelControl(QMainWindow):
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Los campos de Nombre y Apellido no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
                 
-
     def ModificarClientes(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
@@ -1075,8 +1076,7 @@ class PanelControl(QMainWindow):
             Eliminar3=re.sub("'","",Eliminar2)
             Eliminar4=re.sub("()","",Eliminar3)
             vddfi =re.sub("[()]","",Eliminar4)
-            print(vddfi)
-            print(Cedula+" "+Nombre+" "+Nombre2+" "+apellido+" "+apellido2+" "+Genero+" "+f1_str+" "+Estatus)
+
             if filaSeleccionada:
                 if Nombre.isalpha() and apellido.isalpha() and Nombre2.isalpha() and apellido2.isalpha() and Cedula.isnumeric():
                     if vddfi!=Cedula+" "+Nombre+" "+Nombre2+" "+apellido+" "+apellido2+" "+Genero+" "+f1_str+" "+Estatus:
@@ -1095,12 +1095,58 @@ class PanelControl(QMainWindow):
         else:
             QMessageBox.question(self, '¡Aviso!' , "Seleccione un campo para modificar" , QMessageBox.Ok)
 
+    def modificarPrestamos(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            sql="SELECT idClientes,idUsuario,ISBM,F_d_sal,F_d_ent,F_d_enReal FROM Prestamo WHERE idPrestamo=?"
+            fila=filaSeleccionada[0].text()
+            print(filaSeleccionada[0].text())
+            dato=consulta(sql,fila).fetchone()
+            ISBMn=self.panel.buscar_Libro.text()
+            IdClien=self.panel.buscar_Cliente.text()
+            IdUser=self.usuario
+            now1=self.panel.dateEdit_2.date()
+            fecha=now1.toPyDate()
+            fecha_sal = fecha.strftime('%d/%m/%Y')
+            now2=self.panel.dateEdit_3.date()
+            fecha2=now2.toPyDate()
+            fecha_ent = fecha2.strftime('%d/%m/%Y')
+            now3=self.panel.dateEdit_4.date()
+            fecha3=now3.toPyDate()
+            fecha_entReal = fecha3.strftime('%d/%m/%Y')
+
+            Eliminar1=str(dato)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            vddfi =re.sub("[()]","",Eliminar4)
+            print(ISBMn)
+            print(vddfi)
+            print(IdClien+" "+IdUser+" "+ISBMn+" "+fecha_sal+" "+fecha_ent+" "+fecha_entReal)
+
+            if filaSeleccionada:
+                if IdClien.isnumeric():
+                    if vddfi!=IdClien+" "+IdUser+" "+ISBMn+" "+fecha_sal+" "+fecha_ent+" "+fecha_entReal:
+                        ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
+                        if ret!=16384:
+                            fila = filaSeleccionada[0].text()
+                        else:
+                            sql="UPDATE Prestamo SET idClientes=?,idUsuario=?,ISBM=?,F_d_sal=?,F_d_ent=?,F_d_enReal=? WHERE idPrestamo=?"
+                            param=(IdClien,IdUser,ISBMn,fecha_sal,fecha_ent,fecha_entReal,fila,)
+                            consulta(sql,param)
+                            self.datosPrestamo()
+                    else:
+                        QMessageBox.question(self, '¡Aviso!' , "No hay cambios encontrados" , QMessageBox.Ok)
+                else:
+                    QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener letras, ni caracteres especiales" , QMessageBox.Ok)
+        else:
+            QMessageBox.question(self, '¡Aviso!' , "Seleccione un campo para modificar" , QMessageBox.Ok)
 
     def InsertarAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
             QMessageBox.question(self, 'Error' , "No puede inserta un autor seleccionado" , QMessageBox.Ok)
-            self.tabla.takeItem()
+            self.datosAutores()
         else:
             sql="INSERT INTO Autores(Nombre,Nombre2,Apellido,Apellido2) VALUES (?,?,?,?)"
             Nombre=self.panel.NombreA.text()
@@ -1125,7 +1171,7 @@ class PanelControl(QMainWindow):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
             QMessageBox.question(self, 'Error' , "No puede inserta un Usuario seleccionado" , QMessageBox.Ok)
-            self.tabla.takeItem()
+            self.datosUsuarios()
         else:
             sql="INSERT INTO Usuarios(Nombre,Apellido,username,Clave,email,Privilegios) VALUES (?,?,?,?,?,?)"
             Nombre=self.panel.NombreU.text()
@@ -1155,12 +1201,11 @@ class PanelControl(QMainWindow):
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
 
-
     def InsertarClientes(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
             QMessageBox.question(self, 'Error' , "No puede inserta un Cliente seleccionado" , QMessageBox.Ok)
-            self.tabla.takeItem()
+            self.datosClientes()
         else:
             sql="INSERT INTO Clientes(Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente) VALUES (?,?,?,?,?,?,?,?)"
             Cedula=self.panel.CedulaC.text()
@@ -1190,17 +1235,18 @@ class PanelControl(QMainWindow):
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
 
-
     def InsertarLibros(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
             QMessageBox.question(self, 'Error' , "No puede inserta un Cliente seleccionado" , QMessageBox.Ok)
-            self.tabla.takeItem()
+            self.datosLibros()
         else:
             sql="INSERT INTO Libros(ISBM,Titulo,F_Publicacion,num_pags,Editorial,Ejemplares,Genero) VALUES (?,?,?,?,?,?,?)"
             ISBMn=self.panel.ISBML.text()
             Titulo=self.panel.TituloL.text()
-            FechaP=self.panel.FechaPL.text()
+            now=self.panel.FechaPL.date()
+            fecha=now.toPyDate()
+            FechaP=fecha.strftime('%d/%m/%Y')
             Nropags=self.panel.Nropags.text()
             Editorial=self.panel.EditorialL.text()
             Ejemplares=self.panel.EjemplaresL.text()
@@ -1216,6 +1262,7 @@ class PanelControl(QMainWindow):
             print(vddfi)
 
             param=(ISBMn,Titulo,FechaP,Nropags,Editorial,Ejemplares,Genero)
+
             if ISBMn!="" and Titulo!="" and FechaP!="" and Nropags!="" and Editorial!=""and Ejemplares!="" and Genero!="":
                 if Ejemplares.isnumeric() and Nropags.isnumeric() and Genero.isalpha():
                     if ISBMn!= vddfi:
@@ -1235,8 +1282,45 @@ class PanelControl(QMainWindow):
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
 
+    def insertarPrestamo(self):
+        filaSeleccionada = self.tabla.selectedItems()
+        if filaSeleccionada:
+            QMessageBox.question(self, 'Error' , "No puede inserta un Cliente seleccionado" , QMessageBox.Ok)
+            self.datosPrestamo()
+        else:
+            sql="INSERT INTO Prestamo(idClientes,idUsuario,ISBM,F_d_sal,F_d_ent,F_d_enReal) VALUES (?,?,?,?,?,?)"
+            ISBMn=self.panel.buscar_Libro.text()
+            IdClien=self.panel.buscar_Cliente.text()
+            IdUser=self.usuario
+            now1=self.panel.dateEdit_2.date()
+            fecha=now1.toPyDate()
+            fecha_sal = fecha.strftime('%d/%m/%Y')
+            now2=self.panel.dateEdit_3.date()
+            fecha2=now2.toPyDate()
+            fecha_ent = fecha2.strftime('%d/%m/%Y')
+            now3=self.panel.dateEdit_4.date()
+            fecha3=now3.toPyDate()
+            fecha_entReal = fecha3.strftime('%d/%m/%Y')
 
+            param=(IdClien,IdUser,ISBMn,fecha_sal,fecha_ent,fecha_entReal)
 
+            if ISBMn!="" and IdClien!="":
+                if fecha_entReal!="":
+                    if IdClien.isnumeric():
+                        consulta(sql,param)
+                        self.panel.buscar_Cliente.clear()
+                        self.panel.buscar_Libro.clear()
+                        QMessageBox.question(self, '¡EXITO!' , "Prestamo registrado exitosamente" , QMessageBox.Ok)
+                    else:
+                        QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+                else:
+                    consulta(sql,param)
+                    self.panel.buscar_Cliente.clear()
+                    self.panel.buscar_Libro.clear()
+                    QMessageBox.question(self, '¡EXITO!' , "Prestamo registrado exitosamente" , QMessageBox.Ok)
+            else:
+                QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
+        
 
     def validarClave(self, clave):
         if len(clave) > 7 and len(clave) <= 25:
