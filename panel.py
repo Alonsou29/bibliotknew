@@ -767,7 +767,7 @@ class PanelControl(QMainWindow):
         sql2="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Genero,Ejemplares FROM Libros"
         res= consulta(sql2).fetchall()
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
-        colum=len(res[0])
+        colum=len(res)
         sql3="SELECT Activo FROM Libros"
         eliminar=consulta(sql3).fetchone()
         self.tableWidget = self.panel.tabla_Libros
@@ -811,7 +811,7 @@ class PanelControl(QMainWindow):
         sql2="SELECT idPrestamo,idClientes,idUsuario,ISBM,F_d_sal,F_d_ent,F_d_enReal FROM Prestamo"
         res= consulta(sql2).fetchall()
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
-        colum=len(res[0])
+        colum=len(res)
         sql3="SELECT Activo FROM Prestamo"
         eliminar=consulta(sql3).fetchone()
         self.tableWidget = self.panel.tabla_Prestamos
@@ -1712,9 +1712,62 @@ class PanelControl(QMainWindow):
         PAtotales =re.sub("[()]","",Eliminar4)
         self.panel.librosPrestLabel.setText(PAtotales)
 
+        #Datos de las barras
+        qry="SELECT ISBM FROM Prestamo WHERE ACTIVO='ACTIVO'"
+        xd=consulta(qry).fetchall()
+        con=0
+        datose=[]
+        lib=[]
+        for i in xd:
+            Eliminar1=str(i)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            ipn =re.sub("[()]","",Eliminar4)
+            if i!=xd[con]:
+                qry2="SELECT COUNT(idPrestamo),ISBM FROM Prestamo WHERE ISBM=? AND ACTIVO='ACTIVO'"
+                param=(ipn,)
+                res=consulta(qry2,param).fetchone()
+                Eliminar1=str(res)
+                Eliminar2=re.sub(",","",Eliminar1)
+                Eliminar3=re.sub("'","",Eliminar2)
+                Eliminar4=re.sub("()","",Eliminar3)
+                Estot =re.sub("[()]","",Eliminar4)
+                print(Estot)
+                print(Estot[0])
+                datose.append(res[0])
+                lib.append(res[1])
+                print(res[1])
+                con+=1
+
+        dt3=0
+        dt2=0
+        dt=0
+
+        log=len(datose)
+
+        if datose!=[]:
+            dt=int(max(datose))
+            datose.remove(dt)
+
+        if log>1:
+            dt2=int(max(datose))
+            datose.remove(dt2)
+       
+        if log>2:
+            dt3=int(max(datose))
+            datose.remove(dt3)
+
+
+        qry5="SELECT COUNT(idPrestamo) FROM Prestamo WHERE F_d_ent=F_d_enReal AND ACTIVO='ACTIVO'"
+        print(consulta(qry5).fetchone())
+
+        qry6="SELECT COUNT(idPrestamo) FROM Prestamo WHERE ACTIVO='ACTIVO'"
+        print(consulta(qry6).fetchone())
+
 
         self.creaDona(30, 70)
-        self.creaBarras("Libro1", 120, "Libro2", 80, "Libro3", 50)
+        self.creaBarras("Libro1", dt, "Libro2", dt2, "Libro3", dt3)
 
     # Crea un png del grafico de barras
     def creaBarras(self, libro1, numero1, libro2, numero2, libro3, numero3):
