@@ -88,7 +88,22 @@ class MainWindow(QMainWindow):
         consul0="SELECT COUNT(idPrestamo) FROM Prestamo WHERE ACTIVO='ACTIVO' AND idClientes=1"
         consul2="SELECT COUNT(idUsuario) FROM Usuarios WHERE ACTIVO='ACTIVO'"
         consul3="SELECT COUNT(idAutores) FROM Autores WHERE ACTIVO='ACTIVO'"
-        #print(consulta(consul0).fetchone())
+        print(consulta(consul0).fetchone())
+        qry="SELECT ISBM FROM Prestamo"
+        xd=consulta(qry).fetchall()
+        print(xd)
+        con=-1
+        for i in xd:
+            Eliminar1=str(i)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            ipn =re.sub("[()]","",Eliminar4)
+            if i!=xd[con]:
+                qry2="SELECT COUNT(?) FROM Prestamo WHERE ISBM=?"
+                param=(ipn,ipn,)
+                print(consulta(qry2,param).fetchall())
+            con+=1
         #print(consulta(consul2).fetchone())
         #print(consulta(consul3).fetchone())
 

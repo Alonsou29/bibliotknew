@@ -2636,7 +2636,7 @@ border: 1px solid white ;</string>
          <string>Buscar</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_16">
+       <widget class="QLineEdit" name="BuscarPrT">
         <property name="enabled">
          <bool>true</bool>
         </property>
