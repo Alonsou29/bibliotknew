@@ -868,8 +868,7 @@ class PanelControl(QMainWindow):
     def buscarAutores(self):
         name=self.panel.CdBuscar.text()
         sql="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE Nombre LIKE ?"
-        ultimo=len(name)
-        letra=(name[0]+'%'+name[ultimo-1],)
+        letra=('%'+name+'%',)
         datos=consulta(sql,letra).fetchall()
         print(datos)
 
@@ -889,8 +888,7 @@ class PanelControl(QMainWindow):
                         for row in datos:
                                     print(row)
                                     i=len(datos)
-                                    print(i)
-                                    self.panel.tabla_Autores.setRowCount(4)
+                                    self.panel.tabla_Autores.setRowCount(i)
                                     self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
                                     self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
                                     self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
@@ -903,12 +901,13 @@ class PanelControl(QMainWindow):
         self.panel.CdBuscar.clear()
 
     def buscarLibros(self):
-        name=(self.panel.LiBuscar.text(),)
-        sql="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Ejemplares,Genero FROM Libros WHERE Titulo=?"
-        datos=consulta(sql,name).fetchall()
+        name=self.panel.LiBuscar.text()
+        sql="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Ejemplares,Genero FROM Libros WHERE Titulo LIKE ?"
+        Searche=('%'+name+'%')
+        datos=consulta(sql,Searche).fetchall()
 
-        sql2="SELECT Activo FROM Libros WHERE Titulo=?"
-        eliminar=consulta(sql2,name).fetchone()
+        sql2="SELECT Activo FROM Libros WHERE Titulo LIKE ?"
+        eliminar=consulta(sql2,Searche).fetchone()
         Eliminar1=str(eliminar)
         Eliminar2=re.sub(",","",Eliminar1)
         Eliminar3=re.sub("'","",Eliminar2)
@@ -1008,8 +1007,8 @@ class PanelControl(QMainWindow):
             datos=consulta(sql,name).fetchall()
             print(datos)
 
-            sql2="SELECT Activo FROM Prestamo WHERE idPrestamo= ?"
-            eliminar=consulta(sql2,name).fetchall()
+            sql2="SELECT Activo FROM Prestamo WHERE idClientes= ?"
+            eliminar=consulta(sql2,name).fetchone()
             tablerow=0
 
             for j in eliminar:
@@ -1021,10 +1020,10 @@ class PanelControl(QMainWindow):
                 print(vddfi)
                 if name!=('',):
                     if datos!=[]:
-                        for row in datos:
-                            if vddfi=="ACTIVO":
+                        if vddfi=="ACTIVO":
+                            for row in datos:
                                 i=len(datos)
-                                self.panel.tabla_Usuarios.setRowCount(i)
+                                self.panel.tabla_Prestamos.setRowCount(i)
                                 self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
                                 self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
                                 self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
@@ -1038,7 +1037,6 @@ class PanelControl(QMainWindow):
                 else:QMessageBox.critical(self, "Error", "Escriba la ID de un cliente ", QMessageBox.Ok)
             self.panel.CdBuscar.clear()
         else:QMessageBox.critical(self, "Error", "Escriba la ID del cliente ", QMessageBox.Ok)
-
 
     def verdatoAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
