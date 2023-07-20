@@ -42,7 +42,6 @@ class PanelControl(QMainWindow):
 
         # Variable que usaremos para almacenar el id del usuario
         self.usuario = userid
-        print(self.usuario)
 
         self.perfilDatos(self.usuario)
 
@@ -191,18 +190,29 @@ class PanelControl(QMainWindow):
 
     def seleccionarAutores(self):
         self.selecA = Autores()
-        self.tablasAutoresLibros()
-        self.selecA.show()
+        self.selecA.remover.clicked.connect(lambda:self.removerAutor())
+        self.selecA.agregar.clicked.connect(lambda:self.agregarAutor(self.isbm))
+        self.tablaAutorLibros1()
 
     def agregarAutor(self,isbmp):
         filaSeleccionada = self.tablaA.selectedItems()
         if filaSeleccionada:
+            sql="SELECT idAutores FROM Autores_Libros WHERE idAutores=?"
             idd=filaSeleccionada[0].text()
-            sql5="INSERT INTO Autores_Libros(idAutores,ISBM) VALUES (?,?)"
-            param=(idd, isbmp)
-            consulta(sql5,param)
-            self.tablasAutoresLibros()
-    
+            pa=(idd,)
+            val=consulta(sql,pa).fetchone()
+            Eliminar1=str(val)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            aidi =re.sub("[()]","",Eliminar4)
+            if aidi!=idd:
+                sql5="INSERT INTO Autores_Libros(idAutores,ISBM) VALUES (?,?)"
+                param=(idd, isbmp)
+                consulta(sql5,param) 
+            else:QMessageBox.critical(self.selecA, "Error", "El Autor ya se encuentra en la lista")
+            self.tablaAutorLibros1()
+
     def removerAutor(self):
         filaSeleccionada = self.tablaA2.selectedItems()
         if filaSeleccionada:
@@ -210,12 +220,13 @@ class PanelControl(QMainWindow):
             sql5="DELETE FROM Autores_Libros WHERE idAutores=?"
             param=(idd,)
             consulta(sql5,param)
-            self.tablasAutoresLibros()
+            self.tablaAutorLibros1()
         
-    def tablasAutoresLibros(self):
+    def tablaAutorLibros1(self):
         filaSeleccionada = self.tabla.selectedItems()
         if filaSeleccionada:
             isbmn=filaSeleccionada[0].text()
+            self.isbm=isbmn
             self.tablaA=self.selecA.tabla_Autores2
             sql2="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores"
             res= consulta(sql2).fetchall()
@@ -247,57 +258,43 @@ class PanelControl(QMainWindow):
                         self.tablaA.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
                         tablerow+=1 
                 count+=1
+            self.tablaAutorLibros2(isbmn)
+            self.selecA.show()
+        else: QMessageBox.critical(self, "Error", "Seleccione un Libro")
+       
+
+    def tablaAutorLibros2(self,isbmn):
+            self.tablaA2=self.selecA.tabla_Autores3
+            self.tablaA2.setSelectionBehavior(QAbstractItemView.SelectRows)
             qry="SELECT idAutores FROM Autores_Libros WHERE ISBM=?"
             parameters=(isbmn,)
             autores=consulta(qry,parameters).fetchall()
-            #print(len(autores))
             hola=len(autores)
             final=[]
-            for j in range(len(autores)):
-                print(j)
-                Autor=autores[j]
+            for j in autores:
+                Autor=j
                 Eliminar1=str(Autor)
                 Eliminar2=re.sub(",","",Eliminar1)
                 Eliminar3=re.sub("'","",Eliminar2)
                 Eliminar4=re.sub("()","",Eliminar3)
                 autores3 =re.sub("[()]","",Eliminar4)
-                #print(autores3)
-                self.tablaA2=self.selecA.tabla_Autores3
-                self.tablaA2.setSelectionBehavior(QAbstractItemView.SelectRows)
-                sql5="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE idAutores=?"
+                sql5="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE idAutores=? AND ACTIVO='ACTIVO'"
                 parat=(autores3,)
                 res3= consulta(sql5,parat).fetchall()
-                print(res3)
                 final.append(res3[0])
             self.tablaA.setSelectionBehavior(QAbstractItemView.SelectRows)
             self.tableWidget = self.selecA.tabla_Autores3
             self.tableWidget.setRowCount(hola)
             tablerow2=0
-            sql3="SELECT Activo FROM Autores"
-            eliminar2=consulta(sql3).fetchall()
-            count+=1
             #tabla de los autores de ese libro
-            for a in eliminar2:
-                Verf=a
-                Eliminar1=str(Verf)
-                Eliminar2=re.sub(",","",Eliminar1)
-                Eliminar3=re.sub("'","",Eliminar2)
-                Eliminar4=re.sub("()","",Eliminar3)
-                vddfi =re.sub("[()]","",Eliminar4)
-                if vddfi!="ACTIVO":
-                    self.tablaA2.setRowHidden(count, True)
-                else:
-                    for row1 in final:
-                        self.tablaA2.setItem(tablerow2,0,QTableWidgetItem(str(row1[0])))
-                        self.tablaA2.setItem(tablerow2,1,QTableWidgetItem(str(row1[1])))
-                        self.tablaA2.setItem(tablerow2,2,QTableWidgetItem(str(row1[2])))
-                        self.tablaA2.setItem(tablerow2,3,QTableWidgetItem(str(row1[3])))
-                        self.tablaA2.setItem(tablerow2,4,QTableWidgetItem(str(row1[4])))
-                        tablerow2+=1 
-        else: QMessageBox.critical(self, "Error", "Seleccione un Libro")
-        self.selecA.agregar.clicked.connect(lambda:self.agregarAutor(isbmn))
-        self.selecA.remover.clicked.connect(lambda:self.removerAutor())
-
+            for row1 in final:
+                self.tablaA2.setItem(tablerow2,0,QTableWidgetItem(str(row1[0])))
+                self.tablaA2.setItem(tablerow2,1,QTableWidgetItem(str(row1[1])))
+                self.tablaA2.setItem(tablerow2,2,QTableWidgetItem(str(row1[2])))
+                self.tablaA2.setItem(tablerow2,3,QTableWidgetItem(str(row1[3])))
+                self.tablaA2.setItem(tablerow2,4,QTableWidgetItem(str(row1[4])))
+                tablerow2+=1
+        
 
 
 
@@ -458,15 +455,15 @@ class PanelControl(QMainWindow):
                             param=(nombre,apellido,username,email, self.usuario)
                             consulta(sql,param)
                             QMessageBox.question(self, 'Aviso' , "Cambios realizados exitosamente" , QMessageBox.Ok)
-                            self.perfilDatos()
+                            self.perfilDatos(self.usuario)
                         else:
                             QMessageBox.critical(self,"Aviso", "No se ha podido enviar email para modificar sus datos. Verifique su conexión a internet")
                     else:
                         QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Email", QMessageBox.Ok)
-                        self.perfilDatos()
+                        self.perfilDatos(self.usuario)
                 else:
                     QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Username", QMessageBox.Ok)
-                    self.perfilDatos()
+                    self.perfilDatos(self.usuario)
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Correo no valido" , QMessageBox.Ok)
         else:
@@ -928,7 +925,7 @@ class PanelControl(QMainWindow):
     def buscarLibros(self):
         name=self.panel.LiBuscar.text()
         sql="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Ejemplares,Genero FROM Libros WHERE Titulo LIKE ?"
-        Searche=('%'+name+'%')
+        Searche=('%'+name+'%',)
         datos=consulta(sql,Searche).fetchall()
 
         sql2="SELECT Activo FROM Libros WHERE Titulo LIKE ?"
@@ -938,7 +935,6 @@ class PanelControl(QMainWindow):
         Eliminar3=re.sub("'","",Eliminar2)
         Eliminar4=re.sub("()","",Eliminar3)
         vddfi =re.sub("[()]","",Eliminar4)
-        
         print(vddfi)
         if name!=('',):
             if datos!=[]:
@@ -1449,45 +1445,47 @@ class PanelControl(QMainWindow):
                 validacion = False
 
             if Nombre!="" and apellido!="" and Username!="" and Clave!="" and email!="" and Privilegios!="Seleccione Privilegios:":
-                if Nombre.isalpha() and apellido.isalpha() and validacion==True and self.validarClave(Clave):
+                if Nombre.isalpha() and apellido.isalpha():
+                    if validacion==True:
+                        if self.validarClave(Clave):
+                            # Verificamos que otro usuario no tenga el mismo username
+                            sql2 = "SELECT Username FROM Usuarios WHERE Username=?"
+                            param2 = (Username,)
 
-                    # Verificamos que otro usuario no tenga el mismo username
-                    sql2 = "SELECT Username FROM Usuarios WHERE Username=?"
-                    param2 = (Username,)
+                            dato = consulta(sql2, param2).fetchone()
+                            EliminarU1=str(dato)
+                            EliminarU2=re.sub(",","",EliminarU1)
+                            EliminarU3=re.sub("'","",EliminarU2)
+                            EliminarU4=re.sub("()","",EliminarU3)
+                            usernames =re.sub("[()]","",EliminarU4)
 
-                    dato = consulta(sql2, param2).fetchone()
-                    EliminarU1=str(dato)
-                    EliminarU2=re.sub(",","",EliminarU1)
-                    EliminarU3=re.sub("'","",EliminarU2)
-                    EliminarU4=re.sub("()","",EliminarU3)
-                    usernames =re.sub("[()]","",EliminarU4)
+                            if usernames == "None":
+                                # Verificamos que otro usuario no tenga el mismo correo
+                                sql3 = "SELECT email FROM Usuarios WHERE email=? COLLATE NOCASE"
+                                param3 = (email,)
 
-                    if usernames == "None":
+                                dato2 = consulta(sql3, param3).fetchone()
+                                EliminarE1=str(dato2)
+                                EliminarE2=re.sub(",","",EliminarE1)
+                                EliminarE3=re.sub("'","",EliminarE2)
+                                EliminarE4=re.sub("()","",EliminarE3)
+                                emails =re.sub("[()]","",EliminarE4)
 
-                        # Verificamos que otro usuario no tenga el mismo correo
-                        sql3 = "SELECT email FROM Usuarios WHERE email=? COLLATE NOCASE"
-                        param3 = (email,)
-
-                        dato2 = consulta(sql3, param3).fetchone()
-                        EliminarE1=str(dato2)
-                        EliminarE2=re.sub(",","",EliminarE1)
-                        EliminarE3=re.sub("'","",EliminarE2)
-                        EliminarE4=re.sub("()","",EliminarE3)
-                        emails =re.sub("[()]","",EliminarE4)
-
-                        if emails == "None":
-                            consulta(sql,param)
-                            self.panel.NombreU.clear()
-                            self.panel.ApellidoU.clear()
-                            self.panel.UsernameU.clear()
-                            self.panel.ClaveU.clear()
-                            self.panel.EmailU.clear()
-                            self.panel.ComboGC_2.setCurrentIndex(0)
-                            QMessageBox.question(self, '¡EXITO!' , "Usuario registrado exitosamente" , QMessageBox.Ok)
-                        else:
-                            QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Email", QMessageBox.Ok)
+                                if emails == "None":
+                                    consulta(sql,param)
+                                    self.panel.NombreU.clear()
+                                    self.panel.ApellidoU.clear()
+                                    self.panel.UsernameU.clear()
+                                    self.panel.ClaveU.clear()
+                                    self.panel.EmailU.clear()
+                                    self.panel.ComboGC_2.setCurrentIndex(0)
+                                    QMessageBox.question(self, '¡EXITO!' , "Usuario registrado exitosamente" , QMessageBox.Ok)
+                                else:
+                                    QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Email", QMessageBox.Ok)
+                            else:
+                                QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Username", QMessageBox.Ok)
                     else:
-                        QMessageBox.critical(self, "Aviso", "Un usuario ya tiene este Username", QMessageBox.Ok)
+                        QMessageBox.critical(self, "Aviso", "Correo invalido", QMessageBox.Ok)               
                 else:
                     QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
             else:
@@ -1513,19 +1511,29 @@ class PanelControl(QMainWindow):
             param=(Cedula,Nombre,Nombre2,apellido,apellido2,Genero,f1_str,Estatus)
             if Nombre!="" and Nombre2!="" and apellido!="" and apellido2!="" and Cedula!=""and Estatus!="Seleccione Estatus:" and Genero!="Seleccione un Género:":
                 if Cedula.isnumeric() and Nombre.isalpha() and Nombre2.isalpha() and apellido.isalpha() and apellido2.isalpha():
-                    consulta(sql,param)
-                    self.panel.CedulaC.clear()
-                    self.panel.NombreC.clear()
-                    self.panel.Nombre2C.clear()
-                    self.panel.ApellidoC.clear()
-                    self.panel.Apellido2C.clear()
-                    self.panel.ComboGC.setCurrentIndex(0)
-                    self.panel.ComboEC.setCurrentIndex(0)
-                    QMessageBox.question(self, '¡EXITO!' , "Autores registrado exitosamente" , QMessageBox.Ok)
-                else:
-                    QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
-            else:
-                QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
+                    consul="SELECT Cedula FROM Clientes WHERE Cedula=?"
+                    param=(Cedula,)
+                    ci=consulta(consul,param).fetchone()
+                    EliminarU1=str(ci)
+                    EliminarU2=re.sub(",","",EliminarU1)
+                    EliminarU3=re.sub("'","",EliminarU2)
+                    EliminarU4=re.sub("()","",EliminarU3)
+                    cii =re.sub("[()]","",EliminarU4)
+                    print(cii)
+                    print(Cedula)
+                    if Cedula!=cii:
+                        consulta(sql,param)
+                        self.panel.CedulaC.clear()
+                        self.panel.NombreC.clear()
+                        self.panel.Nombre2C.clear()
+                        self.panel.ApellidoC.clear()
+                        self.panel.Apellido2C.clear()
+                        self.panel.ComboGC.setCurrentIndex(0)
+                        self.panel.ComboEC.setCurrentIndex(0)
+                        QMessageBox.question(self, '¡EXITO!' , "Autores registrado exitosamente" , QMessageBox.Ok)
+                    else:QMessageBox.question(self, '¡ERROR!' , "Ya se encuentra un cliente registrado con esa cedula" , QMessageBox.Ok)
+                else:QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+            else:QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
 
     def InsertarLibros(self):
         filaSeleccionada = self.tabla.selectedItems()
