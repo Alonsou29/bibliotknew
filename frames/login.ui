@@ -170,7 +170,7 @@ color: white;
       <number>30</number>
      </property>
      <property name="placeholderText">
-      <string extracomment="Nombre de usuario">Nombre de usuario</string>
+      <string extracomment="Nombre de usuario">Nombre de Usuario o Correo</string>
      </property>
      <property name="cursorMoveStyle">
       <enum>Qt::LogicalMoveStyle</enum>

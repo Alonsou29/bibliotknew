@@ -202,10 +202,36 @@ su contraseña</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QPushButton" name="atras">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>540</y>
+       <width>101</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Tahoma</family>
+       <pointsize>-1</pointsize>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Atrás</string>
+     </property>
+    </widget>
     <zorder>label</zorder>
     <zorder>Seguir</zorder>
     <zorder>TFCorreo</zorder>
     <zorder>label_4</zorder>
+    <zorder>atras</zorder>
    </widget>
   </widget>
  </widget>

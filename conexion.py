@@ -5,6 +5,7 @@ from PyQt5.QtSql import *
 import sys
 
 #no tocar esta funcion jeje
+
 try:
     file=open('Bibliotkmdb.db') 
     print(file)

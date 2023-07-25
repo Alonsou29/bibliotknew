@@ -3,6 +3,7 @@ import os
 from PyQt5 import uic, QtGui
 from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView, QInputDialog, QLineEdit)
 from PyQt5.QtSql import *
+from PyQt5.QtGui import QPixmap
 from conexion import consulta
 from PyQt5.QtSql import *
 import re
@@ -15,7 +16,7 @@ from datetime import *
 from email.message import EmailMessage
 import ssl
 import smtplib
-from socket import gaierror
+from socket import gaierror, create_connection
 from urllib.error import URLError
 import random
 from autores import Autores
@@ -33,9 +34,10 @@ class PanelControl(QMainWindow):
  
         # Establece titulo de la ventana
         self.panel.setWindowTitle("Bibliotk")
-        self.panel.setWindowIcon(QtGui.QIcon('logo.png'))
+        self.panel.setWindowIcon(QtGui.QIcon('bibliotk.png'))
         # Establece el tamaño de la ventana y hace que no puedas cambiar su tamaño
         self.panel.setFixedSize(800, 600) # (Ancho, Alto)
+
 
         # Variable que usaremos para codigos de verificacion en correos
         self.verifCode = 0
@@ -85,7 +87,7 @@ class PanelControl(QMainWindow):
         self.panel.RefrescarL.clicked.connect(lambda:self.datosLibros())
 
             #Eliminar Clientes
-        EliminarCsql="UPDATE Clientes SET Activo = 'INACTIVO' WHERE Cedula=?"
+        EliminarCsql="UPDATE Clientes SET Activo = 'INACTIVO' WHERE idClientes=?"
         self.panel.EliminarC.clicked.connect(lambda:self.eliminarFila(EliminarCsql))
         self.panel.RefrescarC.clicked.connect(lambda:self.datosClientes())
 
@@ -149,6 +151,11 @@ class PanelControl(QMainWindow):
         self.panel.Modificar_P.clicked.connect(lambda:self.modificarPerfil())
 
 
+    # Evento de cierre, se asegura de cerrar todas las otras ventanas si existen
+    def closeEvent(self, event):
+        for window in QApplication.topLevelWidgets():
+            window.close()
+
     #Elimina las filas de usuario
     def eliminarUser(self):
         filaSeleccionada = self.tabla.selectedItems()
@@ -192,7 +199,7 @@ class PanelControl(QMainWindow):
         self.selecA = Autores()
         self.selecA.remover.clicked.connect(lambda:self.removerAutor())
         self.selecA.agregar.clicked.connect(lambda:self.agregarAutor(self.isbm))
-        self.tablaAutorLibros1()
+        self.tablaAutorLibros1() 
 
     def agregarAutor(self,isbmp):
         filaSeleccionada = self.tablaA.selectedItems()
@@ -296,13 +303,12 @@ class PanelControl(QMainWindow):
                 tablerow2+=1
         
 
-
-
     def seleccionarClientes(self):
         self.selecC = Clientes()
         self.tablaC2=self.selecC.tabla_Clientes2
-        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente FROM Clientes"
-        res= consulta(sql).fetchall()
+        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente FROM Clientes WHERE EstatusCliente=?"
+        param = ("LIBRE",)
+        res= consulta(sql, param).fetchall()
         colum=len(res)
         self.tablaC2.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.selecC.tabla_Clientes2
@@ -991,10 +997,10 @@ class PanelControl(QMainWindow):
         
     def buscarUsuarios(self):
         name=(self.panel.CUBuscar.text(),)
-        sql="SELECT idUsuario,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios WHERE Nombre=?"
+        sql="SELECT idUsuario,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios WHERE UPPER(Nombre)= UPPER(?)"
         datos=consulta(sql,name).fetchall()
 
-        sql2="SELECT Activo FROM Usuarios WHERE Nombre=?"
+        sql2="SELECT Activo FROM Usuarios WHERE UPPER(Nombre)= UPPER(?)"
         eliminar=consulta(sql2,name).fetchone()
         Eliminar1=str(eliminar)
         Eliminar2=re.sub(",","",Eliminar1)
@@ -1320,7 +1326,7 @@ class PanelControl(QMainWindow):
             vddfi =re.sub("[()]","",Eliminar4)
 
             if filaSeleccionada:
-                if Nombre.isalpha() and apellido.isalpha() and Nombre2.isalpha() and apellido2.isalpha() and Cedula.isnumeric():
+                if Nombre.isalpha() and apellido.isalpha() and Nombre2.isalpha() and apellido2.isalpha():
                     if vddfi!=Cedula+" "+Nombre+" "+Nombre2+" "+apellido+" "+apellido2+" "+Genero+" "+f1_str+" "+Estatus:
                         ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
                         if ret!=16384:
@@ -1813,6 +1819,15 @@ class PanelControl(QMainWindow):
         self.creaDona(30, 70)
         self.creaBarras("Libro1", dt, "Libro2", dt2, "Libro3", dt3)
 
+        # Recarga imagenes de estadisticas
+        self.pixmapBarras = QPixmap("reportes/barras.png")
+        self.panel.barrasLabel.setPixmap(self.pixmapBarras)
+
+        self.pixmapDona = QPixmap("reportes/dona.png")
+        self.panel.donaLabel.setPixmap(self.pixmapDona)
+
+
+
     # Crea un png del grafico de barras
     def creaBarras(self, libro1, numero1, libro2, numero2, libro3, numero3):
 
@@ -1951,8 +1966,8 @@ class PanelControl(QMainWindow):
             # aqui se toman los datos de la bdd
 
             # Verifica que el correo ingresado este en la bdd
-            sql="SELECT Activo FROM Prestamo WHERE idPrestamo=?"
-            param=(idPrest,) 
+            sql="SELECT Activo FROM Prestamo WHERE idPrestamo=? AND Activo=?"
+            param=(idPrest,"ACTIVO") 
             dato=consulta(sql,param).fetchone()
             Eliminar1=str(dato)
             Eliminar2=re.sub(",","",Eliminar1)
@@ -1973,6 +1988,7 @@ class PanelControl(QMainWindow):
                     param=(idPrest,)
                     datos=consulta(qry,param).fetchone()
                     self.generarReportePres(rutadestino, idPrest, datos[0], datos[1], datos[2], datos[3], datos[4], datos[5])
+                    self.panel.idPresReporte.setText("")
             else:
                 QMessageBox.critical(self, "Aviso", "ID de préstamo inválido")
         else:
@@ -2107,13 +2123,22 @@ class PanelControl(QMainWindow):
         msgAbout.exec()
 
     def abrirManual(self):
-        # Abre el manual de usuario en una pestaña del navegador predeterminado
-        path = "Manual de Usuario.pdf"
-        rutaCompleta = os.path.abspath(path)
-        if os.path.exists(rutaCompleta):
-            webbrowser.open_new_tab(path)
-        else:
-            QMessageBox.critical(self, "No se puede abrir el archivo", "Es posible que el archivo haya sido eliminado o se haya movido de lugar", QMessageBox.Ok)
+        # Comprobamos si hay internet para abrir el libro virtual del manual de usuario
+        try:
+            s = create_connection(("publuu.com", 80))
+            if s is not None:
+                s.close
+            webbrowser.open_new_tab("https://publuu.com/flip-book/185493/465244")
+        except OSError:
+            QMessageBox.critical(self, "No hay conexión a internet", "No se a podido aceder a la version online del manual, se abrirá la versión local", QMessageBox.Ok)
+    
+            # Abre el manual de usuario en una pestaña del navegador predeterminado
+            path = "Manual de Usuario Bibliotk.pdf"
+            rutaCompleta = os.path.abspath(path)
+            if os.path.exists(rutaCompleta):
+                webbrowser.open_new_tab(path)
+            else:
+                QMessageBox.critical(self, "No se puede abrir el archivo local", "Es posible que el archivo haya sido eliminado o se haya movido de lugar", QMessageBox.Ok)
 
 if __name__ == "__main__":
     # Crea la app de Pyqt5
