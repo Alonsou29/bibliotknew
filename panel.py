@@ -2133,7 +2133,7 @@ class PanelControl(QMainWindow):
             QMessageBox.critical(self, "No hay conexión a internet", "No se a podido aceder a la version online del manual, se abrirá la versión local", QMessageBox.Ok)
     
             # Abre el manual de usuario en una pestaña del navegador predeterminado
-            path = "Manual de Usuario Bibliotk.pdf"
+            path = "Manual_de_Usuario_Bibliotk.pdf"
             rutaCompleta = os.path.abspath(path)
             if os.path.exists(rutaCompleta):
                 webbrowser.open_new_tab(path)

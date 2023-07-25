@@ -63,7 +63,7 @@ background-color: #4b0081; /* rot */
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Inicio">
      <widget class="QFrame" name="frame">
@@ -156,7 +156,7 @@ border: none;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:22px; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Comic sans'; font-size:12pt;&quot;&gt;Bibliotek es una aplicación diseñada específicamente para gestionar y organizar las operaciones diarias de una biblioteca. Proporciona gestión de préstamos, búsqueda de libros, administración de usuarios y generación de informes. Permite a los bibliotecarios mantener un inventario actualizado, facilitar la consulta de libros por parte de los usuarios, y enviar recordatorios de devolución. En resumen, Bibliotek automatiza y agiliza los procesos de una biblioteca, mejorando la eficiencia y la experiencia del personal.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Comic sans'; font-size:12pt;&quot;&gt;Bibliotk es una aplicación diseñada específicamente para gestionar y organizar las operaciones diarias de una biblioteca. Proporciona gestión de préstamos, búsqueda de libros, administración de usuarios y generación de informes. Permite a los bibliotecarios mantener un inventario actualizado, facilitar la consulta de libros por parte de los usuarios, y enviar recordatorios de devolución. En resumen, Bibliotk automatiza y agiliza los procesos de una biblioteca, mejorando la eficiencia y la experiencia del personal.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_2">
@@ -3231,9 +3231,6 @@ font-size: 50px;
        <property name="text">
         <string/>
        </property>
-       <property name="pixmap">
-        <pixmap>../reportes/barras.png</pixmap>
-       </property>
        <property name="scaledContents">
         <bool>true</bool>
        </property>
@@ -3249,9 +3246,6 @@ font-size: 50px;
        </property>
        <property name="text">
         <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../reportes/dona.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
