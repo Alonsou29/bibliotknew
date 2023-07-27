@@ -199,6 +199,7 @@ class PanelControl(QMainWindow):
         self.selecA = Autores()
         self.selecA.remover.clicked.connect(lambda:self.removerAutor())
         self.selecA.agregar.clicked.connect(lambda:self.agregarAutor(self.isbm))
+        self.selecA.BuscarA.clicked.connect(lambda:self.buscarAutores2())
         self.tablaAutorLibros1() 
 
     def agregarAutor(self,isbmp):
@@ -230,6 +231,30 @@ class PanelControl(QMainWindow):
             param=(idd,)
             consulta(sql5,param)
             self.tablaAutorLibros1()
+
+    def buscarAutores2(self):
+        name=self.selecA.CdBuscar.text()
+        sql="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE Nombre LIKE ? AND ACTIVO='ACTIVO'"
+        letra=('%'+name+'%',)
+        datos=consulta(sql,letra).fetchall()
+        print(datos)
+
+        tablerow=0
+        if name!=('',):
+            if datos!=[]:
+                    for row in datos:
+                        print(row)
+                        i=len(datos)
+                        self.selecA.tabla_Autores2.setRowCount(i)
+                        self.tablaA.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                        self.tablaA.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                        self.tablaA.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                        self.tablaA.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                        self.tablaA.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                        tablerow+=1
+            else:QMessageBox.critical(self, "Error", "Autor no existente en el sistema ", QMessageBox.Ok)
+        else:QMessageBox.critical(self, "Error", "Escriba el nombre de un autor ", QMessageBox.Ok)
+        self.panel.CdBuscar.clear()
         
     def tablaAutorLibros1(self):
         filaSeleccionada = self.tabla.selectedItems()
