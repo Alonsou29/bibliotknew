@@ -31,6 +31,7 @@ class PanelControl(QMainWindow):
         super().__init__()
         # Carga Panel de cotrol
         self.panel = uic.loadUi("frames\panel.ui",self)
+        self.EstadoPag=True
  
         # Establece titulo de la ventana
         self.panel.setWindowTitle("Bibliotk")
@@ -65,7 +66,7 @@ class PanelControl(QMainWindow):
         self.panel.actionAcerca_de.triggered.connect(self.acercaDe) # Ayuda: Acerca de
         self.panel.actionManual_de_Usuario.triggered.connect(self.abrirManual) # Ayuda: Manual de usuario
 
-
+        
 
         #FUNCIONES DE LOS BOTONES
 
@@ -196,11 +197,16 @@ class PanelControl(QMainWindow):
             self.panel.ClaveNueva.setEchoMode(QLineEdit.EchoMode.Password)
 
     def seleccionarAutores(self):
-        self.selecA = Autores()
-        self.selecA.remover.clicked.connect(lambda:self.removerAutor())
-        self.selecA.agregar.clicked.connect(lambda:self.agregarAutor(self.isbm))
-        self.selecA.BuscarA.clicked.connect(lambda:self.buscarAutores2())
-        self.tablaAutorLibros1() 
+        if self.EstadoPag:
+            self.EstadoPag=False
+            self.selecA = Autores()
+            self.selecA.remover.clicked.connect(lambda:self.removerAutor())
+            self.selecA.agregar.clicked.connect(lambda:self.agregarAutor(self.isbm))
+            self.selecA.BuscarA.clicked.connect(lambda:self.buscarAutores2())
+            self.tablaAutorLibros1()
+        else:
+            self.EstadoPag=True
+
 
     def agregarAutor(self,isbmp):
         filaSeleccionada = self.tablaA.selectedItems()
@@ -321,7 +327,7 @@ class PanelControl(QMainWindow):
     def seleccionarClientes(self):
         self.selecC = Clientes()
         self.tablaC2=self.selecC.tabla_Clientes2
-        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente FROM Clientes WHERE EstatusCliente=?"
+        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente FROM Clientes WHERE EstatusCliente=? AND ACTIVO='ACTIVO'"
         param = ("LIBRE",)
         res= consulta(sql, param).fetchall()
         colum=len(res)
@@ -493,7 +499,6 @@ class PanelControl(QMainWindow):
 
                 if clavePerfil != clave1:
                     
-
                     # Enviamos un correo de notificacion
                     sql2 = "SELECT email FROM Usuarios WHERE idUsuario=?"
                     param=(self.usuario,)
@@ -761,6 +766,7 @@ class PanelControl(QMainWindow):
         self.tableWidget = self.panel.tabla_Libros
         self.tableWidget.setRowCount(colum)
         tablerow=0
+
       
         self.panel.ISBML.clear()
         self.panel.TituloL.clear()
@@ -1253,14 +1259,13 @@ class PanelControl(QMainWindow):
             fecha_entReal = fecha3.strftime('%d/%m/%Y')
             fd=datetime.now()
             ff=fd.date()
-            una_fecha = datetime.strptime(ff,'%d/%m/%Y') 
             Eliminar1=str(dato)
             Eliminar2=re.sub(",","",Eliminar1)
             Eliminar3=re.sub("'","",Eliminar2)
             Eliminar4=re.sub("()","",Eliminar3)
             vddfi =re.sub("[()]","",Eliminar4)
             print(fecha_entReal)
-            print(una_fecha)
+            print(ff)
             print(ISBMn)
             print(vddfi)
             print(IdClien+" "+IdUser+" "+ISBMn+" "+fecha_sal+" "+fecha_ent+" "+fecha_entReal)
@@ -1271,7 +1276,7 @@ class PanelControl(QMainWindow):
                         ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
                         print(ret)
                         if ret!=65536:
-                            if fecha_entReal!=una_fecha:
+                            if fecha_entReal!=ff:
                                 fecha_entReal=fecha3.strftime('%d/%m/%Y')
                                 print(fecha_entReal)
                                 sql2="UPDATE Clientes SET EstatusCliente=? WHERE idClientes=?"
@@ -1516,8 +1521,8 @@ class PanelControl(QMainWindow):
                 Ejemplar=0
             fd=datetime.now()
             ff=fd.date()
-            una_fecha = ff.strftime('%d/%m/%Y')
-            
+            una_fecha=ff.strftime('%d/%m/%Y')
+            print(ff)
             param4=(IdClien,)
             estatus1=consulta(sql4,param4).fetchone()
             Eliminar1=str(estatus1)
@@ -1539,7 +1544,8 @@ class PanelControl(QMainWindow):
                                     menos=Ejemplar-1
                                     param2=(menos,ISBMn)
                                     consulta(sql2,param2)
-                                    param3=("BLOQUEADO",IdClien)
+                                    nwe="BLOQUEADO"
+                                    param3=(nwe,IdClien,)
                                     consulta(sql5,param3)
                                     self.panel.buscar_Cliente.clear()
                                     self.panel.buscar_Libro.clear()
@@ -1550,7 +1556,7 @@ class PanelControl(QMainWindow):
                                     consulta(sql,param12)
                                     menos=Ejemplar-1
                                     param2=(menos,ISBMn)
-                                    consulta(sql5,param3)
+                                    consulta(sql2,param2)
                                     self.panel.buscar_Cliente.clear()
                                     self.panel.buscar_Libro.clear()
                                     QMessageBox.question(self, '¡EXITO!' , "Prestamo registrado exitosamente" , QMessageBox.Ok)
@@ -1605,7 +1611,6 @@ class PanelControl(QMainWindow):
         self.panel.stackedWidget.setCurrentIndex(6)
         self.cargarEstadisticas()
         
-
     def cargarEstadisticas(self):
         # Estos datos deben ser cambiados por los de la bdd
 
@@ -1663,16 +1668,17 @@ class PanelControl(QMainWindow):
         qry="SELECT ISBM FROM Prestamo WHERE ACTIVO='ACTIVO'"
         xd=consulta(qry).fetchall()
         con=0
+        fila=[]
         datose=[]
-        lib=[]
         for i in xd:
             Eliminar1=str(i)
             Eliminar2=re.sub(",","",Eliminar1)
             Eliminar3=re.sub("'","",Eliminar2)
             Eliminar4=re.sub("()","",Eliminar3)
             ipn =re.sub("[()]","",Eliminar4)
-            if i!=xd[con]:
-                qry2="SELECT COUNT(idPrestamo),ISBM FROM Prestamo WHERE ISBM=? AND ACTIVO='ACTIVO'"
+            print(ipn)
+            if ipn not in fila:
+                qry2="SELECT COUNT(idPrestamo) FROM Prestamo WHERE ISBM=? AND ACTIVO='ACTIVO'"
                 param=(ipn,)
                 res=consulta(qry2,param).fetchone()
                 Eliminar1=str(res)
@@ -1680,41 +1686,53 @@ class PanelControl(QMainWindow):
                 Eliminar3=re.sub("'","",Eliminar2)
                 Eliminar4=re.sub("()","",Eliminar3)
                 Estot =re.sub("[()]","",Eliminar4)
-                print(Estot)
-                print(Estot[0])
-                datose.append(res[0])
-                lib.append(res[1])
-                print(res[1])
+                Estote=int(Estot)
+                datose.append(Estote)
+                fila.append(ipn)
                 con+=1
-
         dt3=0
         dt2=0
         dt=0
-
+    
         log=len(datose)
+        
+        if datose!=[] and log==1:
+            dt=int(max(datose,default=0))
+            #datose.remove(dt)
 
-        if datose!=[]:
-            dt=int(max(datose))
-            datose.remove(dt)
-
-        if log>1:
-            dt2=int(max(datose))
-            datose.remove(dt2)
+        if datose!=[] and log>1:
+            dt=int(max(datose,default=0))
+            #datose.remove(dt)
+            dt2=int(max(datose,default=0))
+            #datose.remove(dt2)
        
-        if log>2:
-            dt3=int(max(datose))
-            datose.remove(dt3)
-
+        if datose!=[] and log>2:
+            dt=int(max(datose,default=0))
+            datose.remove(dt)
+            dt2=int(max(datose,default=0))
+            datose.remove(dt2)
+            dt3=int(max(datose,default=0))
+        
 
         qry5="SELECT COUNT(idPrestamo) FROM Prestamo WHERE F_d_ent=F_d_enReal AND ACTIVO='ACTIVO'"
-        print(consulta(qry5).fetchone())
+        p=consulta(qry5).fetchone()
+        Eliminar1=str(p)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        donutdt1 =re.sub("[()]","",Eliminar4)
 
-        qry6="SELECT COUNT(idPrestamo) FROM Prestamo WHERE ACTIVO='ACTIVO'"
-        print(consulta(qry6).fetchone())
+        qry6="SELECT COUNT(idPrestamo) FROM Prestamo WHERE F_d_ent!=F_d_enReal AND ACTIVO='ACTIVO'"
+        p1=consulta(qry6).fetchone()
+        Eliminar1=str(p1)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        donutdt2 =re.sub("[()]","",Eliminar4)
 
 
-        self.creaDona(30, 70)
-        self.creaBarras("Libro1", dt, "Libro2", dt2, "Libro3", dt3)
+        self.creaDona(donutdt1, donutdt2)
+        self.creaBarras("", dt, "Libro2", dt2, "Libro3", dt3)
 
         # Recarga imagenes de estadisticas
         self.pixmapBarras = QPixmap("reportes/barras.png")
@@ -1722,7 +1740,6 @@ class PanelControl(QMainWindow):
 
         self.pixmapDona = QPixmap("reportes/dona.png")
         self.panel.donaLabel.setPixmap(self.pixmapDona)
-
 
 
     # Crea un png del grafico de barras
@@ -1845,7 +1862,53 @@ class PanelControl(QMainWindow):
         Eliminar4=re.sub("()","",Eliminar3)
         PAtotales =re.sub("[()]","",Eliminar4)
 
-        self.creaBarras("Libro1", 120, "Libro2", 80, "Libro3", 50)
+        qry="SELECT ISBM FROM Prestamo WHERE ACTIVO='ACTIVO'"
+        xd=consulta(qry).fetchall()
+        con=0
+        fila=[]
+        datose=[]
+        for i in xd:
+            Eliminar1=str(i)
+            Eliminar2=re.sub(",","",Eliminar1)
+            Eliminar3=re.sub("'","",Eliminar2)
+            Eliminar4=re.sub("()","",Eliminar3)
+            ipn =re.sub("[()]","",Eliminar4)
+            print(ipn)
+            if ipn not in fila:
+                qry2="SELECT COUNT(idPrestamo) FROM Prestamo WHERE ISBM=? AND ACTIVO='ACTIVO'"
+                param=(ipn,)
+                res=consulta(qry2,param).fetchone()
+                Eliminar1=str(res)
+                Eliminar2=re.sub(",","",Eliminar1)
+                Eliminar3=re.sub("'","",Eliminar2)
+                Eliminar4=re.sub("()","",Eliminar3)
+                Estot =re.sub("[()]","",Eliminar4)
+                Estote=int(Estot)
+                datose.append(Estote)
+                fila.append(ipn)
+                con+=1
+        dt3=0
+        dt2=0
+        dt=0
+    
+        log=len(datose)
+        
+        if datose!=[] and log==1:
+            dt=int(max(datose,default=0))
+
+        if datose!=[] and log>1:
+            dt=int(max(datose,default=0))
+            datose.remove(dt)
+            dt2=int(max(datose,default=0))
+       
+        if datose!=[] and log>2:
+            dt=int(max(datose,default=0))
+            datose.remove(dt)
+            dt2=int(max(datose,default=0))
+            datose.remove(dt2)
+            dt3=int(max(datose,default=0))
+
+        self.creaBarras("Libro1", dt, "Libro2", dt2, "Libro3", dt3)
 
         # Abre File Dialog
         rutadestino = QFileDialog.getExistingDirectory(self, caption="Selecciona Ubicación")
@@ -2032,7 +2095,7 @@ class PanelControl(QMainWindow):
             s = create_connection(("publuu.com", 80))
             if s is not None:
                 s.close
-            webbrowser.open_new_tab("https://publuu.com/flip-book/185493/465244")
+            webbrowser.open_new_tab("https://publuu.com/flip-book/198125/479879")
         except OSError:
             QMessageBox.critical(self, "No hay conexión a internet", "No se a podido aceder a la version online del manual, se abrirá la versión local", QMessageBox.Ok)
     
