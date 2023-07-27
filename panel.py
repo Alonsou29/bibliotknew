@@ -1693,24 +1693,25 @@ class PanelControl(QMainWindow):
         dt3=0
         dt2=0
         dt=0
-    
+        print(fila)
         log=len(datose)
+        print(datose)
         
         if datose!=[] and log==1:
             dt=int(max(datose,default=0))
-            #datose.remove(dt)
 
-        if datose!=[] and log>1:
-            dt=int(max(datose,default=0))
-            #datose.remove(dt)
-            dt2=int(max(datose,default=0))
-            #datose.remove(dt2)
-       
-        if datose!=[] and log>2:
+        if datose!=[] and log>1 and log<=2:
             dt=int(max(datose,default=0))
             datose.remove(dt)
             dt2=int(max(datose,default=0))
+            
+        if datose!=[] and log>2:
+            dt=int(max(datose,default=0))
+            datose.remove(dt)
+            print(dt)
+            dt2=int(max(datose,default=0))
             datose.remove(dt2)
+            print(dt2)
             dt3=int(max(datose,default=0))
         
 
@@ -1732,7 +1733,7 @@ class PanelControl(QMainWindow):
 
 
         self.creaDona(donutdt1, donutdt2)
-        self.creaBarras("", dt, "Libro2", dt2, "Libro3", dt3)
+        self.creaBarras(fila[0], dt, fila[1], dt2, fila[2], dt3)
 
         # Recarga imagenes de estadisticas
         self.pixmapBarras = QPixmap("reportes/barras.png")
@@ -1896,7 +1897,7 @@ class PanelControl(QMainWindow):
         if datose!=[] and log==1:
             dt=int(max(datose,default=0))
 
-        if datose!=[] and log>1:
+        if datose!=[] and log>1 and log<=2:
             dt=int(max(datose,default=0))
             datose.remove(dt)
             dt2=int(max(datose,default=0))
@@ -1908,7 +1909,25 @@ class PanelControl(QMainWindow):
             datose.remove(dt2)
             dt3=int(max(datose,default=0))
 
-        self.creaBarras("Libro1", dt, "Libro2", dt2, "Libro3", dt3)
+        qry5="SELECT COUNT(idPrestamo) FROM Prestamo WHERE F_d_ent=F_d_enReal AND ACTIVO='ACTIVO'"
+        p=consulta(qry5).fetchone()
+        Eliminar1=str(p)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        donutdt1 =re.sub("[()]","",Eliminar4)
+
+        qry6="SELECT COUNT(idPrestamo) FROM Prestamo WHERE F_d_ent!=F_d_enReal AND ACTIVO='ACTIVO'"
+        p1=consulta(qry6).fetchone()
+        Eliminar1=str(p1)
+        Eliminar2=re.sub(",","",Eliminar1)
+        Eliminar3=re.sub("'","",Eliminar2)
+        Eliminar4=re.sub("()","",Eliminar3)
+        donutdt2 =re.sub("[()]","",Eliminar4)
+
+
+        self.creaDona(donutdt1,donutdt2)
+        self.creaBarras(fila[0], dt, fila[1], dt2, fila[2], dt3)
 
         # Abre File Dialog
         rutadestino = QFileDialog.getExistingDirectory(self, caption="Selecciona Ubicación")
