@@ -1,7 +1,7 @@
 import sys
 import os
 from PyQt5 import uic, QtGui
-from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView, QInputDialog, QLineEdit)
+from PyQt5.QtWidgets import (QMainWindow,QApplication,QMessageBox,QStackedWidget, QFileDialog,QTableWidgetItem,QAbstractItemView, QInputDialog, QLineEdit,QDateEdit,QCalendarWidget)
 from PyQt5.QtSql import *
 from PyQt5.QtGui import QPixmap
 from conexion import consulta
@@ -204,15 +204,17 @@ class PanelControl(QMainWindow):
     def agregarAutor(self,isbmp):
         filaSeleccionada = self.tablaA.selectedItems()
         if filaSeleccionada:
-            sql="SELECT idAutores FROM Autores_Libros WHERE idAutores=?"
+            sql="SELECT idAutores FROM Autores_Libros WHERE idAutores=? AND ISBM=? AND ACTIVO='ACTIVO'"
             idd=filaSeleccionada[0].text()
-            pa=(idd,)
+            pa=(idd,isbmp)
             val=consulta(sql,pa).fetchone()
             Eliminar1=str(val)
             Eliminar2=re.sub(",","",Eliminar1)
             Eliminar3=re.sub("'","",Eliminar2)
             Eliminar4=re.sub("()","",Eliminar3)
             aidi =re.sub("[()]","",Eliminar4)
+            print(aidi)
+            print(idd)
             if aidi!=idd:
                 sql5="INSERT INTO Autores_Libros(idAutores,ISBM) VALUES (?,?)"
                 param=(idd, isbmp)
@@ -235,36 +237,23 @@ class PanelControl(QMainWindow):
             isbmn=filaSeleccionada[0].text()
             self.isbm=isbmn
             self.tablaA=self.selecA.tabla_Autores2
-            sql2="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores"
+            sql2="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE ACTIVO='ACTIVO'"
             res= consulta(sql2).fetchall()
             colum=len(res)
             self.tablaA.setSelectionBehavior(QAbstractItemView.SelectRows)
             self.tableWidget = self.selecA.tabla_Autores2
             self.tableWidget.setRowCount(colum)
             tablerow=0
-            sql3="SELECT Activo FROM Autores"
-            eliminar=consulta(sql3).fetchall()
-            count=0
-            #tabla todos los autores
-            for i in eliminar:
-                Verf=i
-                Eliminar1=str(Verf)
-                Eliminar2=re.sub(",","",Eliminar1)
-                Eliminar3=re.sub("'","",Eliminar2)
-                Eliminar4=re.sub("()","",Eliminar3)
-                vddfi =re.sub("[()]","",Eliminar4)
-                if vddfi!="ACTIVO":
-                    self.tablaA.setRowHidden(count, True)
-                else:
-                    for row in res:
-                        self.id= row[0]
-                        self.tablaA.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                        self.tablaA.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                        self.tablaA.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                        self.tablaA.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                        self.tablaA.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                        tablerow+=1 
-                count+=1
+
+            for row in res:
+                self.id= row[0]
+                self.tablaA.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                self.tablaA.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                self.tablaA.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                self.tablaA.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                self.tablaA.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                tablerow+=1 
+
             self.tablaAutorLibros2(isbmn)
             self.selecA.show()
         else: QMessageBox.critical(self, "Error", "Seleccione un Libro")
@@ -287,13 +276,15 @@ class PanelControl(QMainWindow):
                 autores3 =re.sub("[()]","",Eliminar4)
                 sql5="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE idAutores=? AND ACTIVO='ACTIVO'"
                 parat=(autores3,)
-                res3= consulta(sql5,parat).fetchall()
-                final.append(res3[0])
+                res3= consulta(sql5,parat).fetchone()
+                final.append(res3)
+            print(final)
             self.tablaA.setSelectionBehavior(QAbstractItemView.SelectRows)
             self.tableWidget = self.selecA.tabla_Autores3
             self.tableWidget.setRowCount(hola)
             tablerow2=0
             #tabla de los autores de ese libro
+            
             for row1 in final:
                 self.tablaA2.setItem(tablerow2,0,QTableWidgetItem(str(row1[0])))
                 self.tablaA2.setItem(tablerow2,1,QTableWidgetItem(str(row1[1])))
@@ -302,7 +293,6 @@ class PanelControl(QMainWindow):
                 self.tablaA2.setItem(tablerow2,4,QTableWidgetItem(str(row1[4])))
                 tablerow2+=1
         
-
     def seleccionarClientes(self):
         self.selecC = Clientes()
         self.tablaC2=self.selecC.tabla_Clientes2
@@ -349,40 +339,25 @@ class PanelControl(QMainWindow):
     def seleccionarLibros(self):
         self.selecL = Libros()
         self.tablaL2=self.selecL.tabla_Libros2
-        sql2="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Genero,Ejemplares FROM Libros"
+        sql2="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Genero,Ejemplares FROM Libros WHERE ACTIVO='ACTIVO'"
         res= consulta(sql2).fetchall()
         self.tablaL2.setSelectionBehavior(QAbstractItemView.SelectRows)
-        colum=len(res[0])
-        sql3="SELECT Activo FROM Libros"
-        eliminar=consulta(sql3).fetchone()
+        colum=len(res)
         self.tableWidget = self.selecL.tabla_Libros2
         self.tableWidget.setRowCount(colum)
         tablerow=0
-        count=0
         
-        for i in eliminar:
-            Verf=i
-            Eliminar1=str(Verf)
-            Eliminar2=re.sub(",","",Eliminar1)
-            Eliminar3=re.sub("'","",Eliminar2)
-            Eliminar4=re.sub("()","",Eliminar3)
-            vddfi =re.sub("[()]","",Eliminar4)
-            print(i)
-            print(vddfi)
-            for row in res:
-                if vddfi!="ACTIVO":
-                    self.tablaL2.setRowHidden(count, True)
-                else:
-                    self.id= row[0]
-                    self.tablaL2.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                    self.tablaL2.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                    self.tablaL2.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                    self.tablaL2.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                    self.tablaL2.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                    self.tablaL2.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-                    self.tablaL2.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-                    tablerow+=1
-                count+=1
+        for row in res:
+            self.id= row[0]
+            self.tablaL2.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tablaL2.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tablaL2.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            self.tablaL2.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+            self.tablaL2.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+            self.tablaL2.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+            self.tablaL2.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+            tablerow+=1
+
         self.selecL.seleccionar.clicked.connect(lambda:self.btn_selectL())
         self.selecL.show()
         
@@ -599,7 +574,6 @@ class PanelControl(QMainWindow):
         enviado = self.enviarCorreo(emailUser, asuntoCorreo, cuerpoCorreo)
         if enviado:
             numeroCorrecto = False
-
             while not numeroCorrecto:
                 numero, estado = QInputDialog().getText(self, "Verificar Correo", "Para verificar su correo electrónico le hemos enviado\nun código de verificación, ingrese el código aquí: ")
                 if estado:
@@ -659,19 +633,22 @@ class PanelControl(QMainWindow):
         self.panel.stackedWidget.setCurrentIndex(3)
         self.datosLibros()
    
-
    #Muestra los datos de cliente
     def datosClientes(self):
         self.tabla=self.panel.tabla_Clientes
-        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente FROM Clientes"
+        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente FROM Clientes WHERE ACTIVO='ACTIVO'"
         res= consulta(sql).fetchall()
         colum=len(res)
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Clientes
+        now2='01/01/2015'
+        now1='01/01/1940'
         self.tableWidget.setRowCount(colum)
-        sql3="SELECT Activo FROM Clientes"
-        eliminar=consulta(sql3).fetchall()
-        count=0
+        fecha_up = datetime.strptime(now2,'%d/%m/%Y')
+        fecha_dw = datetime.strptime(now1,'%d/%m/%Y')
+        self.panel.FechaNC.setDateRange(fecha_dw,fecha_up)
+        fec=datetime.now()
+        print(fec.date())
         tablerow=0
         self.panel.CedulaC.clear()
         self.panel.NombreC.clear()
@@ -681,44 +658,29 @@ class PanelControl(QMainWindow):
         self.panel.ComboGC.setCurrentIndex(0)
         self.panel.ComboEC.setCurrentIndex(0)
 
-        for i in eliminar:
-            print(i)
-            Verf=i
-            Eliminar1=str(Verf)
-            Eliminar2=re.sub(",","",Eliminar1)
-            Eliminar3=re.sub("'","",Eliminar2)
-            Eliminar4=re.sub("()","",Eliminar3)
-            vddfi =re.sub("[()]","",Eliminar4)
-            print(vddfi)
-            if vddfi!="ACTIVO":
-                self.tabla.setRowHidden(count, True)
-            else:
-                for row in res:
-                    self.id= row[0]
-                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                    self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-                    self.tabla.setItem(tablerow,7,QTableWidgetItem(str(row[7])))
-                    self.tabla.setItem(tablerow,8,QTableWidgetItem(str(row[8])))
-                    tablerow+=1
-            count+=1
+        for row in res:
+            self.id= row[0]
+            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+            self.tabla.setItem(tablerow,7,QTableWidgetItem(str(row[7])))
+            self.tabla.setItem(tablerow,8,QTableWidgetItem(str(row[8])))
+            tablerow+=1
 
     #Muestra los datos de usuarios
     def datosUsuarios(self):
         self.tabla=self.panel.tabla_Usuarios
-        sql2="SELECT idUsuario,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios"
+        sql2="SELECT idUsuario,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios WHERE ACTIVO='ACTIVO'"
         res= consulta(sql2).fetchall()
         colum=len(res)
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Usuarios
         self.tableWidget.setRowCount(colum)
-        sql3="SELECT Activo FROM Usuarios"
-        eliminar=consulta(sql3).fetchone()
-        count=0
+
         tablerow=0
         self.panel.NombreU.clear()
         self.panel.ApellidoU.clear()
@@ -726,82 +688,55 @@ class PanelControl(QMainWindow):
         self.panel.ClaveU.clear()
         self.panel.EmailU.clear()
         self.panel.ComboGC_2.setCurrentIndex(0)
-        for i in eliminar:
-            Verf=i
-            Eliminar1=str(Verf)
-            Eliminar2=re.sub(",","",Eliminar1)
-            Eliminar3=re.sub("'","",Eliminar2)
-            Eliminar4=re.sub("()","",Eliminar3)
-            vddfi =re.sub("[()]","",Eliminar4)
-            print(i)
-            print(vddfi)
-            if vddfi!="ACTIVO":
-                self.tabla.setRowHidden(count, True)
-            else:
-                for row in res:
-                    self.id= row[0]
-                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                    self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-                    tablerow+=1
-            count+=1
+
+        for row in res:
+            self.id= row[0]
+            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+            tablerow+=1
 
     #Muestra los datos de Autores
     def datosAutores(self):
         self.tabla=self.panel.tabla_Autores
-        sql2="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores"
+        sql2="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE ACTIVO='ACTIVO'"
         res= consulta(sql2).fetchall()
         colum=len(res)
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget = self.panel.tabla_Autores
         self.tableWidget.setRowCount(colum)
         tablerow=0
-        sql3="SELECT Activo FROM Autores"
-        eliminar=consulta(sql3).fetchall()
-        count=0
+
         self.panel.NombreA.clear()
         self.panel.Nombre2A.clear()
         self.panel.ApellidoA.clear()
         self.panel.Apellido2A.clear()
         
-        for i in eliminar:
-            Verf=i
-            Eliminar1=str(Verf)
-            Eliminar2=re.sub(",","",Eliminar1)
-            Eliminar3=re.sub("'","",Eliminar2)
-            Eliminar4=re.sub("()","",Eliminar3)
-            vddfi =re.sub("[()]","",Eliminar4)
-
-            if vddfi!="ACTIVO":
-                self.tabla.setRowHidden(count, True)
-            else:
-                for row in res:
-                    self.id= row[0]
-                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                    tablerow+=1 
-            count+=1
+        for row in res:
+            self.id= row[0]
+            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+            tablerow+=1 
 
     #Muestra los datos de libros
     def datosLibros(self):
         self.tabla=self.panel.tabla_Libros
-        sql2="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Genero,Ejemplares FROM Libros"
+        sql2="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Genero,Ejemplares FROM Libros WHERE ACTIVO='ACTIVO'"
         res= consulta(sql2).fetchall()
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         colum=len(res)
-        sql3="SELECT Activo FROM Libros"
-        eliminar=consulta(sql3).fetchone()
+
         self.tableWidget = self.panel.tabla_Libros
         self.tableWidget.setRowCount(colum)
         tablerow=0
-        count=0
+      
         self.panel.ISBML.clear()
         self.panel.TituloL.clear()
         self.panel.FechaPL.clear()
@@ -810,68 +745,50 @@ class PanelControl(QMainWindow):
         self.panel.EjemplaresL.clear()
         self.panel.GeneroL.clear()
 
-        for i in eliminar:
-            Verf=i
-            Eliminar1=str(Verf)
-            Eliminar2=re.sub(",","",Eliminar1)
-            Eliminar3=re.sub("'","",Eliminar2)
-            Eliminar4=re.sub("()","",Eliminar3)
-            vddfi =re.sub("[()]","",Eliminar4)
-            print(i)
-            print(vddfi)
-            for row in res:
-                if vddfi!="ACTIVO":
-                    self.tabla.setRowHidden(count, True)
-                else:
-                    self.id= row[0]
-                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                    self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-                    tablerow+=1
-                count+=1
+        for row in res:
+            self.id= row[0]
+            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+            tablerow+=1
 
     def datosPrestamo(self):
         self.tabla=self.panel.tabla_Prestamos
-        sql2="SELECT idPrestamo,idClientes,idUsuario,ISBM,F_d_sal,F_d_ent,F_d_enReal FROM Prestamo"
+        sql2="SELECT idPrestamo,idClientes,idUsuario,ISBM,F_d_sal,F_d_ent,F_d_enReal FROM Prestamo WHERE ACTIVO='ACTIVO'"
         res= consulta(sql2).fetchall()
         self.tabla.setSelectionBehavior(QAbstractItemView.SelectRows)
         colum=len(res)
-        sql3="SELECT Activo FROM Prestamo"
-        eliminar=consulta(sql3).fetchone()
         self.tableWidget = self.panel.tabla_Prestamos
         self.tableWidget.setRowCount(colum)
         tablerow=0
-        count=0
+        fec=datetime.now()
+        now2='1/1/2025'
+        fecha_up = datetime.strptime(now2,'%d/%m/%Y')
+        fechadw= "{}/{}/{}".format(fec.day, fec.month, fec.year)
+        fecha_dw = datetime.strptime(fechadw,'%d/%m/%Y')
+        self.panel.dateEdit_2.setDateRange(fecha_dw,fecha_up)
+        self.panel.dateEdit_3.setDateRange(fecha_dw,fecha_up)
+        self.panel.dateEdit_4.setDateRange(fecha_dw,fecha_up)
+        
+        print(fec.date())
         self.panel.buscar_Cliente.clear()
         self.panel.buscar_Libro.clear()
 
-        for i in eliminar:
-            Verf=i
-            Eliminar1=str(Verf)
-            Eliminar2=re.sub(",","",Eliminar1)
-            Eliminar3=re.sub("'","",Eliminar2)
-            Eliminar4=re.sub("()","",Eliminar3)
-            vddfi =re.sub("[()]","",Eliminar4)
+        for row in res:
+            self.id= row[0]
+            self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+            self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+            self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+            self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+            self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+            self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+            self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+            tablerow+=1
 
-            for row in res:
-                if vddfi!="ACTIVO":
-                    self.tabla.setRowHidden(count, True)
-                else:
-                    self.id= row[0]
-                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                    self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-                    tablerow+=1
-                count+=1
-                
     #Elimina las filas 
     def eliminarFila(self,sql):
         filaSeleccionada = self.tabla.selectedItems()
@@ -895,173 +812,117 @@ class PanelControl(QMainWindow):
 
     def buscarAutores(self):
         name=self.panel.CdBuscar.text()
-        sql="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE Nombre LIKE ?"
+        sql="SELECT idAutores,Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE Nombre LIKE ? AND ACTIVO='ACTIVO'"
         letra=('%'+name+'%',)
         datos=consulta(sql,letra).fetchall()
         print(datos)
 
-        sql2="SELECT Activo FROM Autores WHERE Nombre LIKE ?"
-        eliminar=consulta(sql2,letra).fetchall()
         tablerow=0
-        for j in eliminar:
-            Eliminar1=str(j) 
-            Eliminar2=re.sub(",","",Eliminar1)
-            Eliminar3=re.sub("'","",Eliminar2)
-            Eliminar4=re.sub("[()]","",Eliminar3)
-            vddfi =re.sub("\[]","",Eliminar4)
-            print(vddfi)
-            if name!=('',):
-                if datos!=[]:
-                    if vddfi=='ACTIVO':
-                        for row in datos:
-                                    print(row)
-                                    i=len(datos)
-                                    self.panel.tabla_Autores.setRowCount(i)
-                                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                                    tablerow+=1
-                    else:QMessageBox.critical(self, "Error", "Autor no existente en el sistema ", QMessageBox.Ok)
-                else:QMessageBox.critical(self, "Error", "Autor no existente en el sistema ", QMessageBox.Ok)
-            else:QMessageBox.critical(self, "Error", "Escriba el nombre de un autor ", QMessageBox.Ok)
+        if name!=('',):
+            if datos!=[]:
+                    for row in datos:
+                        print(row)
+                        i=len(datos)
+                        self.panel.tabla_Autores.setRowCount(i)
+                        self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                        self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                        self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                        self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                        self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                        tablerow+=1
+            else:QMessageBox.critical(self, "Error", "Autor no existente en el sistema ", QMessageBox.Ok)
+        else:QMessageBox.critical(self, "Error", "Escriba el nombre de un autor ", QMessageBox.Ok)
         self.panel.CdBuscar.clear()
 
     def buscarLibros(self):
         name=self.panel.LiBuscar.text()
-        sql="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Ejemplares,Genero FROM Libros WHERE Titulo LIKE ?"
+        sql="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Ejemplares,Genero FROM Libros WHERE Titulo LIKE ? AND ACTIVO='ACTIVO'"
         Searche=('%'+name+'%',)
         datos=consulta(sql,Searche).fetchall()
 
-        sql2="SELECT Activo FROM Libros WHERE Titulo LIKE ?"
-        eliminar=consulta(sql2,Searche).fetchone()
-        Eliminar1=str(eliminar)
-        Eliminar2=re.sub(",","",Eliminar1)
-        Eliminar3=re.sub("'","",Eliminar2)
-        Eliminar4=re.sub("()","",Eliminar3)
-        vddfi =re.sub("[()]","",Eliminar4)
-        print(vddfi)
         if name!=('',):
             if datos!=[]:
-                if vddfi=='ACTIVO':
                     for row in datos:
-                                i=len(datos)
-                                self.panel.tabla_Libros.setRowCount(i)
-                                tablerow=0
-                                self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                                self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                                self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                                self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                                self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                                self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[6])))
-                                self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[5])))
-                                tablerow+=1
-                else:QMessageBox.critical(self, "Error", "Libro no existente en el sistema ", QMessageBox.Ok)
+                        i=len(datos)
+                        self.panel.tabla_Libros.setRowCount(i)
+                        tablerow=0
+                        self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                        self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                        self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                        self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                        self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                        self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[6])))
+                        self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[5])))
+                        tablerow+=1
             else:QMessageBox.critical(self, "Error", "Libro no existente en el sistema ", QMessageBox.Ok)
         else:QMessageBox.critical(self, "Error", "Escriba el Titulo de un libro ", QMessageBox.Ok)
 
     def buscarClientes(self):
         cedu=(self.panel.CCBuscar.text(),)
-        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,FechaNa,EstatusCliente FROM Clientes WHERE Cedula=?"
+        sql="SELECT idClientes,Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,FechaNa,EstatusCliente FROM Clientes WHERE Cedula=? AND ACTIVO='ACTIVO'"
         datos=consulta(sql,cedu).fetchall()
+        tablerow=0
 
-        sql2="SELECT Activo FROM Clientes WHERE Cedula=?"
-        eliminar=consulta(sql2,cedu).fetchone()
-        Eliminar1=str(eliminar)
-        Eliminar2=re.sub(",","",Eliminar1)
-        Eliminar3=re.sub("'","",Eliminar2)
-        Eliminar4=re.sub("()","",Eliminar3)
-        vddfi =re.sub("[()]","",Eliminar4)
-        
-        print(vddfi)
         if cedu!=('',):
             if datos!=[]:
-                if vddfi=='ACTIVO':
                     for row in datos:
-                                i=len(datos)
-                                self.panel.tabla_Clientes.setRowCount(i)
-                                tablerow=0
-                                self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                                self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                                self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                                self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                                self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                                self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-                                self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-                                self.tabla.setItem(tablerow,7,QTableWidgetItem(str(row[7])))
-                                tablerow+=1
-                else:QMessageBox.critical(self, "Error", "Cliente no existente en el sistema ", QMessageBox.Ok)
+                        i=len(datos)
+                        self.panel.tabla_Clientes.setRowCount(i)       
+                        self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                        self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                        self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                        self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                        self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                        self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                        self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                        self.tabla.setItem(tablerow,7,QTableWidgetItem(str(row[7])))
+                        tablerow+=1
             else:QMessageBox.critical(self, "Error", "Cliente no existente en el sistema ", QMessageBox.Ok)
         else:QMessageBox.critical(self, "Error", "Escriba el nombre de un Cliente ", QMessageBox.Ok)
         
     def buscarUsuarios(self):
-        name=(self.panel.CUBuscar.text(),)
-        sql="SELECT idUsuario,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios WHERE UPPER(Nombre)= UPPER(?)"
+        name=('%'+self.panel.CUBuscar.text()+'%',)
+        sql="SELECT idUsuario,Nombre,Apellido,Username,Clave,email,Privilegios FROM Usuarios WHERE UPPER(Nombre) LIKE UPPER(?)"
         datos=consulta(sql,name).fetchall()
 
-        sql2="SELECT Activo FROM Usuarios WHERE UPPER(Nombre)= UPPER(?)"
-        eliminar=consulta(sql2,name).fetchone()
-        Eliminar1=str(eliminar)
-        Eliminar2=re.sub(",","",Eliminar1)
-        Eliminar3=re.sub("'","",Eliminar2)
-        Eliminar4=re.sub("()","",Eliminar3)
-        vddfi =re.sub("[()]","",Eliminar4)
-        
-        print(vddfi)
         if name!=('',):
             if datos!=[]:
-                if vddfi=='ACTIVO':
                     for row in datos:
-                                i=len(datos)
-                                self.panel.tabla_Usuarios.setRowCount(i)
-                                tablerow=0
-                                self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                                self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                                self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                                self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                                self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                                self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-                                tablerow+=1
-                else:QMessageBox.critical(self, "Error", "Usuario no existente en el sistema ", QMessageBox.Ok)
+                        i=len(datos)
+                        self.panel.tabla_Usuarios.setRowCount(i)
+                        tablerow=0
+                        self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                        self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                        self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                        self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                        self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                        self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                        tablerow+=1
             else:QMessageBox.critical(self, "Error", "Usuario no existente en el sistema ", QMessageBox.Ok)
         else:QMessageBox.critical(self, "Error", "Escriba el nombre de un Usuario ", QMessageBox.Ok) 
 
     def buscarPrestamos(self):
         if self.panel.BuscarPrT.text().isnumeric():
-            name=self.panel.BuscarPrT.text()
-            sql="SELECT idPrestamo,idClientes,idUsuario,ISBM,F_d_sal,F_d_ent,F_d_enReal FROM Prestamo WHERE idClientes=?"
+            name=(self.panel.BuscarPrT.text(),)
+            sql="SELECT idPrestamo,idClientes,idUsuario,ISBM,F_d_sal,F_d_ent,F_d_enReal FROM Prestamo WHERE idClientes=? AND ACTIVO='ACTIVO'"
             datos=consulta(sql,name).fetchall()
             print(datos)
-            sql2="SELECT Activo FROM Prestamo WHERE idClientes= ?"
-            eliminar=consulta(sql2,name).fetchone()
-            tablerow=0
 
-            for j in eliminar:
-                Eliminar1=str(j) 
-                Eliminar2=re.sub(",","",Eliminar1)
-                Eliminar3=re.sub("'","",Eliminar2)
-                Eliminar4=re.sub("[()]","",Eliminar3)
-                vddfi =re.sub("\[]","",Eliminar4)
-                print(vddfi)
-                if name!=('',):
-                    if datos!=[]:
-                        if vddfi=="ACTIVO":
-                            for row in datos:
-                                i=len(datos)
-                                self.panel.tabla_Prestamos.setRowCount(i)
-                                self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
-                                self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
-                                self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
-                                self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
-                                self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
-                                self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
-                                self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
-                                tablerow+=1
-                        else:QMessageBox.critical(self, "Error", "El Prestamo no existente en el sistema ", QMessageBox.Ok)
-                    else:QMessageBox.critical(self, "Error", "El Prestamo no existente en el sistema ", QMessageBox.Ok)
-                else:QMessageBox.critical(self, "Error", "Escriba la ID de un cliente ", QMessageBox.Ok)
-            self.panel.CdBuscar.clear()
+            tablerow=0
+            if datos!=[]:
+                for row in datos:
+                    i=len(datos)
+                    self.panel.tabla_Prestamos.setRowCount(i)
+                    self.tabla.setItem(tablerow,0,QTableWidgetItem(str(row[0])))
+                    self.tabla.setItem(tablerow,1,QTableWidgetItem(str(row[1])))
+                    self.tabla.setItem(tablerow,2,QTableWidgetItem(str(row[2])))
+                    self.tabla.setItem(tablerow,3,QTableWidgetItem(str(row[3])))
+                    self.tabla.setItem(tablerow,4,QTableWidgetItem(str(row[4])))
+                    self.tabla.setItem(tablerow,5,QTableWidgetItem(str(row[5])))
+                    self.tabla.setItem(tablerow,6,QTableWidgetItem(str(row[6])))
+                    tablerow+=1
+                self.panel.CdBuscar.clear()
+            else:QMessageBox.critical(self, "Error", "Cliente no encontrado ", QMessageBox.Ok)
         else:QMessageBox.critical(self, "Error", "Escriba la ID del cliente ", QMessageBox.Ok)
 
     def verdatoAutores(self):
@@ -1155,8 +1016,9 @@ class PanelControl(QMainWindow):
  
     def ModificarAutores(self):
         filaSeleccionada = self.tabla.selectedItems()
-        sql="SELECT Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE idAutores=?"
-        fila=filaSeleccionada[0].text()
+        sql="SELECT Nombre,Nombre2,Apellido,Apellido2 FROM Autores WHERE idAutores=? AND ACTIVO='ACTIVO'"
+        fila=(int(filaSeleccionada[0].text()),)
+    
         dato=consulta(sql,fila).fetchone()
         Nombre=self.panel.NombreA.text()
         Nombre2=self.panel.Nombre2A.text()
@@ -1167,7 +1029,7 @@ class PanelControl(QMainWindow):
         Eliminar3=re.sub("'","",Eliminar2)
         Eliminar4=re.sub("()","",Eliminar3)
         vddfi =re.sub("[()]","",Eliminar4)
-        print(vddfi)
+    
         if filaSeleccionada:
             if Nombre.isalpha() and apellido.isalpha() and Nombre2.isalpha() and apellido2.isalpha():
                 if vddfi!=Nombre+" "+Nombre2+" "+apellido+" "+apellido2:
@@ -1176,8 +1038,9 @@ class PanelControl(QMainWindow):
                         fila = filaSeleccionada[0].text()
                         fila2 = filaSeleccionada[0].row()
                     else:
-                        sql="UPDATE Autores SET Nombre=?,Nombre2=?,Apellido=?,Apellido2=? WHERE idAutores=?"
-                        param=(Nombre,Nombre2,apellido,apellido2,fila)
+                        sql="UPDATE Autores SET Nombre=?,Nombre2=?,Apellido=?,Apellido2=? WHERE idAutores=? AND ACTIVO='ACTIVO'"
+                        fila2=filaSeleccionada[0].text()
+                        param=(Nombre,Nombre2,apellido,apellido2,fila2)
                         consulta(sql,param)
                         self.panel.NombreA.clear()
                         self.panel.Nombre2A.clear()
@@ -1189,7 +1052,7 @@ class PanelControl(QMainWindow):
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
 
-    
+
     def ModificarLibros(self):
         filaSeleccionada = self.tabla.selectedItems()
         sql="SELECT ISBM,Titulo,F_Publicacion,num_pags,Editorial,Ejemplares,Genero FROM Libros WHERE ISBM=?"
@@ -1254,7 +1117,7 @@ class PanelControl(QMainWindow):
             validacion = False
     
         if filaSeleccionada:
-            if Nombre.isalpha() and apellido.isalpha() and self.validarClave(Clave):
+            if Nombre.isalpha() and apellido.isalpha() and self.validarClave(Clave) and Privilegios!='Seleccione Privilegios:':
                 if validacion == True:
                     if vddfi!=Nombre+" "+apellido:
                         ret = QMessageBox.question(self, '¡ADVERTENCIA!' , "¿Desea modificar esta fila?" , QMessageBox.Yes | QMessageBox.No)
@@ -1300,7 +1163,7 @@ class PanelControl(QMainWindow):
                 else:
                      QMessageBox.question(self, '¡Aviso!' , "Correo no valido" , QMessageBox.Ok)
             else:
-                QMessageBox.question(self, '¡Aviso!' , "Los campos de Nombre y Apellido no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
+                QMessageBox.question(self, '¡Aviso!' , "Los campos de Nombre y Apellido no pueden tener valores numericos, ni caracteres especiales o no hay privilegios asignados" , QMessageBox.Ok)
                 
     def ModificarClientes(self):
         filaSeleccionada = self.tabla.selectedItems()
@@ -1363,7 +1226,9 @@ class PanelControl(QMainWindow):
             now3=self.panel.dateEdit_4.date()
             fecha3=now3.toPyDate()
             fecha_entReal = fecha3.strftime('%d/%m/%Y')
-            una_fecha = '08/07/2023'
+            fd=datetime.now()
+            ff=fd.date()
+            una_fecha = datetime.strptime(ff,'%d/%m/%Y') 
             Eliminar1=str(dato)
             Eliminar2=re.sub(",","",Eliminar1)
             Eliminar3=re.sub("'","",Eliminar2)
@@ -1503,7 +1368,6 @@ class PanelControl(QMainWindow):
             QMessageBox.question(self, 'Error' , "No puede inserta un Cliente seleccionado" , QMessageBox.Ok)
             self.datosClientes()
         else:
-            sql="INSERT INTO Clientes(Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente) VALUES (?,?,?,?,?,?,?,?)"
             Cedula=self.panel.CedulaC.text()
             Nombre=self.panel.NombreC.text()
             Nombre2=self.panel.Nombre2C.text()
@@ -1514,10 +1378,10 @@ class PanelControl(QMainWindow):
             fecha=now.toPyDate()
             f1_str = fecha.strftime('%d/%m/%Y')
             Estatus=self.panel.ComboEC.currentText()
-            param=(Cedula,Nombre,Nombre2,apellido,apellido2,Genero,f1_str,Estatus)
-            if Nombre!="" and Nombre2!="" and apellido!="" and apellido2!="" and Cedula!=""and Estatus!="Seleccione Estatus:" and Genero!="Seleccione un Género:":
+            
+            if Nombre!="" and Nombre2!="" and apellido!="" and apellido2!="" and Cedula!="" and Estatus!="Seleccione Estatus:" and Genero!="Seleccione un Género:":
                 if Cedula.isnumeric() and Nombre.isalpha() and Nombre2.isalpha() and apellido.isalpha() and apellido2.isalpha():
-                    consul="SELECT Cedula FROM Clientes WHERE Cedula=?"
+                    consul="SELECT Cedula FROM Clientes WHERE Cedula=? AND ACTIVO='ACTIVO'"
                     param=(Cedula,)
                     ci=consulta(consul,param).fetchone()
                     EliminarU1=str(ci)
@@ -1525,10 +1389,11 @@ class PanelControl(QMainWindow):
                     EliminarU3=re.sub("'","",EliminarU2)
                     EliminarU4=re.sub("()","",EliminarU3)
                     cii =re.sub("[()]","",EliminarU4)
-                    print(cii)
-                    print(Cedula)
+
                     if Cedula!=cii:
-                        consulta(sql,param)
+                        sql="INSERT INTO Clientes(Cedula,Nombre,Nombre2,Apellido,Apellido2,Genero,fechaNa,EstatusCliente) VALUES (?,?,?,?,?,?,?,?)"
+                        param=(Cedula,Nombre,Nombre2,apellido,apellido2,Genero,f1_str,Estatus,)
+                        consulta(sql,param).fetchone()
                         self.panel.CedulaC.clear()
                         self.panel.NombreC.clear()
                         self.panel.Nombre2C.clear()
@@ -1536,7 +1401,7 @@ class PanelControl(QMainWindow):
                         self.panel.Apellido2C.clear()
                         self.panel.ComboGC.setCurrentIndex(0)
                         self.panel.ComboEC.setCurrentIndex(0)
-                        QMessageBox.question(self, '¡EXITO!' , "Autores registrado exitosamente" , QMessageBox.Ok)
+                        QMessageBox.question(self, '¡EXITO!' , "Cliente registrado exitosamente" , QMessageBox.Ok)
                     else:QMessageBox.question(self, '¡ERROR!' , "Ya se encuentra un cliente registrado con esa cedula" , QMessageBox.Ok)
                 else:QMessageBox.question(self, '¡Aviso!' , "Los campos no pueden tener valores numericos, ni caracteres especiales" , QMessageBox.Ok)
             else:QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
@@ -1595,10 +1460,10 @@ class PanelControl(QMainWindow):
             self.datosPrestamo()
         else:
             sql="INSERT INTO Prestamo(idClientes,idUsuario,ISBM,F_d_sal,F_d_ent,F_d_enReal) VALUES (?,?,?,?,?,?)"
-            sql2="UPDATE Libros SET Ejemplares=? WHERE ISBM=?"
-            sql3="SELECT Ejemplares FROM Libros WHERE ISBM=?"
-            sql4="SELECT EstatusCliente FROM Clientes WHERE idClientes=?"
-            sql5="UPDATE Clientes SET EstatusCliente=? WHERE idClientes=?"
+            sql2="UPDATE Libros SET Ejemplares=? WHERE ISBM=? AND ACTIVO='ACTIVO'"
+            sql3="SELECT Ejemplares FROM Libros WHERE ISBM=? AND ACTIVO='ACTIVO'"
+            sql4="SELECT EstatusCliente FROM Clientes WHERE idClientes=? AND ACTIVO='ACTIVO'"
+            sql5="UPDATE Clientes SET EstatusCliente=? WHERE idClientes=? AND ACTIVO='ACTIVO'"
             ISBMn=self.panel.buscar_Libro.text()
             IdClien=self.panel.buscar_Cliente.text()
             IdUser=self.usuario
@@ -1613,13 +1478,20 @@ class PanelControl(QMainWindow):
             fecha_entReal = fecha3.strftime('%d/%m/%Y')
             param3=(ISBMn,)
             Ejem=consulta(sql3,param3).fetchone()
+            print(Ejem)
             Eliminar1=str(Ejem)
-            Eliminar2=re.sub(",","",Eliminar1)
-            Eliminar3=re.sub("'","",Eliminar2)
-            Eliminar4=re.sub("()","",Eliminar3)
-            Ejemplar1 =re.sub("[()]","",Eliminar4)
-            Ejemplar=int(Ejemplar1)
-            una_fecha = '08/07/2023'
+            if Eliminar1 != 'None':
+                Eliminar1=str(Ejem)
+                Eliminar2=re.sub(",","",Eliminar1)
+                Eliminar3=re.sub("'","",Eliminar2)
+                Eliminar4=re.sub("()","",Eliminar3)
+                Ejemplar1 =re.sub("[()]","",Eliminar4)
+                Ejemplar=int(Ejemplar1)
+            else:
+                Ejemplar=0
+            fd=datetime.now()
+            ff=fd.date()
+            una_fecha = ff.strftime('%d/%m/%Y')
             
             param4=(IdClien,)
             estatus1=consulta(sql4,param4).fetchone()
@@ -1668,7 +1540,7 @@ class PanelControl(QMainWindow):
                     QMessageBox.question(self, '¡EXITO!' , "Prestamo registrado exitosamente" , QMessageBox.Ok)
             else:
                 QMessageBox.question(self, '¡Aviso!' , "Inserte datos para continuar" , QMessageBox.Ok)
-        
+
 
     def validarClave(self, clave):
         if len(clave) > 7 and len(clave) <= 25:
@@ -1896,7 +1768,7 @@ class PanelControl(QMainWindow):
 
     def reporteEst(self):
         # Cambiar datos por los de la bdd
-        consul="SELECT COUNT(*) FROM Prestamo WHERE ISBM=?"
+        consul="SELECT COUNT(*) FROM Prestamo WHERE ISBM=? AND ACTIVO='ACTIVO'"
         param=("213de",)
         print(consulta(consul,param))
         self.creaDona(30, 70)
@@ -1984,10 +1856,17 @@ class PanelControl(QMainWindow):
                 else:
                     # select datos del prestamo aqui
                     # Se quito el autor del libro mientras se resuelve el bug de autores
-                    qry="SELECT cedula,Nombre,Prestamo.ISBM,Titulo,F_d_sal,F_d_ent FROM Clientes INNER JOIN Prestamo ON Clientes.idClientes=Prestamo.idClientes INNER JOIN Libros ON Prestamo.ISBM=Libros.ISBM WHERE idPrestamo=?"
+                    qry="SELECT cedula,Nombre,apellido,Prestamo.ISBM,Titulo,F_d_sal,F_d_ent FROM Clientes INNER JOIN Prestamo ON Clientes.idClientes=Prestamo.idClientes INNER JOIN Libros ON Prestamo.ISBM=Libros.ISBM WHERE idPrestamo=?"
                     param=(idPrest,)
                     datos=consulta(qry,param).fetchone()
-                    self.generarReportePres(rutadestino, idPrest, datos[0], datos[1], datos[2], datos[3], datos[4], datos[5])
+                    dat=(datos[1],datos[2])
+                    Eliminar1=str(dat)
+                    Eliminar2=re.sub(",","",Eliminar1)
+                    Eliminar3=re.sub("'","",Eliminar2)
+                    Eliminar4=re.sub("()","",Eliminar3)
+                    presname =re.sub("[()]","",Eliminar4)
+
+                    self.generarReportePres(rutadestino, idPrest, datos[0],presname, datos[3], datos[4], datos[5],datos[6])
                     self.panel.idPresReporte.setText("")
             else:
                 QMessageBox.critical(self, "Aviso", "ID de préstamo inválido")
